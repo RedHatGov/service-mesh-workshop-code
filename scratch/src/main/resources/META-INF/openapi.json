@@ -1,9 +1,9 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "version" : "0.0.1",
     "title" : "CandV",
-    "description" : "The CandV API"
+    "description" : "The CandV API",
+    "version" : "0.0.1"
   },
   "basePath" : "/api/v0",
   "schemes" : [ "http" ],
@@ -38,8 +38,8 @@
         "description" : "Returns the JSON for the entire clipboard",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "in" : "path",
           "name" : "boardId",
+          "in" : "path",
           "description" : "ID of item to fetch from the database",
           "required" : true,
           "type" : "integer",
@@ -70,8 +70,8 @@
         "description" : "Add an item into this board",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "in" : "path",
           "name" : "boardId",
+          "in" : "path",
           "description" : "ID of board to add this item into",
           "required" : true,
           "type" : "integer",
@@ -101,15 +101,15 @@
         "description" : "Returns the JSON for a specific item in a board",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "in" : "path",
           "name" : "boardId",
+          "in" : "path",
           "description" : "ID of board to fetch from the database",
           "required" : true,
           "type" : "integer",
           "format" : "int64"
         }, {
-          "in" : "path",
           "name" : "itemId",
+          "in" : "path",
           "description" : "ID of item to fetch from the database",
           "required" : true,
           "type" : "integer",
@@ -134,15 +134,15 @@
         "description" : "Removes the item from this board",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "in" : "path",
           "name" : "boardId",
+          "in" : "path",
           "description" : "ID of board to delete from",
           "required" : true,
           "type" : "integer",
           "format" : "int64"
         }, {
-          "in" : "path",
           "name" : "itemId",
+          "in" : "path",
           "description" : "ID of item to delete",
           "required" : true,
           "type" : "integer",
@@ -160,6 +160,22 @@
           }
         }
       }
+    },
+    "/test" : {
+      "get" : {
+        "description" : "testing get",
+        "responses" : {
+          "200" : {
+            "description" : "yay",
+            "schema" : {
+              "type" : "string"
+            },
+            "examples" : {
+              "application/json" : "\"some text\""
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {
@@ -167,25 +183,25 @@
       "type" : "object",
       "properties" : {
         "timestamp" : {
-          "type" : "string",
-          "description" : "A timestamp of when the item was put in the clipboard as ISO 8601 e.g.: 2014-09-08T08:02:17-05:00"
+          "description" : "A timestamp of when the item was put in the clipboard as ISO 8601 e.g.: 2014-09-08T08:02:17-05:00",
+          "type" : "string"
         },
         "raw" : {
-          "type" : "string",
-          "description" : "The raw string of the item on the clipboard"
+          "description" : "The raw string of the item on the clipboard",
+          "type" : "string"
         }
       }
     },
     "Identifier" : {
-      "type" : "integer",
-      "description" : "An identifier for a board or item"
+      "description" : "An identifier for a board or item",
+      "type" : "integer"
     },
     "Error" : {
       "required" : [ "code", "message" ],
       "properties" : {
         "code" : {
-          "type" : "integer",
-          "format" : "int32"
+          "format" : "int32",
+          "type" : "integer"
         },
         "message" : {
           "type" : "string"
