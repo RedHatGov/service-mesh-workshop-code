@@ -17,5 +17,5 @@ public interface Test {
   @GET
   @Produces("application/json")
   @Consumes("application/json")
-  String generatedMethod6() { return "TESTED"; }
+  String generatedMethod6();
 }
