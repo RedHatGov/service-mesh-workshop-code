@@ -1,3 +1,6 @@
+# PLEASE NOTE THIS REPO IS IN-WORK 
+## This header will be removed when the initial version is ready for beta usage
+
 # OpenShift Examples - Microservices
 Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment of large, complex applications.
 
