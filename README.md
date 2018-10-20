@@ -10,6 +10,11 @@ Here's what it looks like:
 
 ![Screenshot](./.screens/microservices.gif)
 
+Here's how it's architected:
+![Diagram](.design/ocp-arch.png)
+
+
+
 ###### :information_source: This example is based on OpenShift Container Platform version 3.10.  It should work with older versions but has not been tested.
 
 
