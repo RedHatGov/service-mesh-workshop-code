@@ -1,0 +1,16 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#icon { 
+    background:url(/images/icon.png) left top; 
+    width:20px; 
+    height:20px;
+    padding-left: 24px;
+    background-repeat: no-repeat;
+}
