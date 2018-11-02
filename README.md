@@ -11,6 +11,9 @@ Here's what it looks like:
 ![Screenshot](./.screens/microservices.gif)
 
 Here's how it's architected:
+
+![Diagram](.design/highlevel-arch.png)
+
 ![Diagram](.design/ocp-arch.png)
 
 
