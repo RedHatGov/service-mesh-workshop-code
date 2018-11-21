@@ -1,7 +1,7 @@
 # PLEASE NOTE THIS REPO IS IN-WORK 
 ## This header will be removed when the initial version is ready for beta usage
 
-# OpenShift Examples - Microservices
+# Microservices
 Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment of large, complex applications.
 
 This git repo showcases an app built using the microservice architecture with several intentionally simple components. The goal is to showcase an example way to develop and manage microservices using a container platform. However, this example is not meant to be prescriptive - obviously your team and business goals will drive your specific architecture and environment. The technology should translate and hopefully you will find this repo helpful.
@@ -59,8 +59,8 @@ The parts in action here are:
 
 ## Contributing
 [See guidelines here](./CONTRIBUTING.md). But in general I would love for help with 2 things.
-1. Use this repo and [report issues](1), even fix them if you can.
-2. Have [discussions](2) on topics related to this repo. Things like "Securing services", or "Microservices vs SOA"... 
+1. Use this repo and [report issues][1], even fix them if you can.
+2. Have [discussions][2] on topics related to this repo. Things like "Securing services", or "Microservices vs SOA"... 
    - currently doing this in issues (and tagging them as a `discussion`).
 
 ## License
