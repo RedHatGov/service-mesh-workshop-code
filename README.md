@@ -6,17 +6,6 @@ Microservices, also known as the microservice architecture, is a software develo
 
 This git repo showcases an app built using the microservice architecture with several intentionally simple components. The goal is to showcase an example way to develop and manage microservices using a container platform. However, this example is not meant to be prescriptive - obviously your team and business goals will drive your specific architecture and environment. The technology should translate and hopefully you will find this repo helpful.
 
-Here's how it's architected:
-
-![Diagram](design/highlevel-arch.png)
-*In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). All of this is running on top of an OpenShift cluster. Additional service interactions and deployment details are in other diagrams.*
-
-![Diagram](design/ocp-arch.png)
-*The above diagram shows how the services are related and additionally how they are abstracted from the underlying infrastructure (compute and storage) when deployed on top of an OpenShift cluster*
-
-###### :information_source: This example is based on OpenShift Container Platform version 3.11.  It should work with other versions but has not been tested.
-
-
 ## Why microservices?
 Agility. Deliver application updates faster. Isolate and fix bugs easier. Done right, a microservices architecture will you help to meet several important non-functional requirements for your software:
 * scalability
@@ -26,8 +15,18 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 * extensibility
 * availability
 
+## Here's how it's architected:
+
+![Diagram](design/highlevel-arch.png)
+*In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). All of this is running on top of an OpenShift cluster. Additional service interactions and deployment details are in other diagrams.*
+
+![Diagram](design/ocp-arch.png)
+*The above diagram shows how the services are related and additionally how they are abstracted from the underlying infrastructure (compute and storage) when deployed on top of an OpenShift cluster*
+
+###### :information_source: This example is based on OpenShift Container Platform version 3.11.  It should work with other versions but has not been tested.
+
 ## How to run this?
-First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? That's OK, download the CDK for free here: https://developers.redhat.com/products/cdk/overview/.
+First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? That's OK, download the CDK (or minishift) for free here: https://developers.redhat.com/products/cdk/overview/. You will need a fairly beefy machine to run *everything* on the same machine via CDK, so I'd recommend you expose extra CPUs and Mem to the CDK when you start your cluster.
 
 Once you're logged into the cluster with oc...
  - TBD steps to run
@@ -44,10 +43,11 @@ The parts in action here are:
     * service autoscaling
     * service health checks and recovery
     * dynamic storage allocation and persistent volume mapping
+    * Kubernetes operators to manage middleware components (e.g. Kafka)
 * Middleware components in this example:
     * API management and metrics (on the external facing services)
-    * authorization and service security via SSO
-    * Kafka for streaming messaging
+    * authorization and ingress security via SSO
+    * Kafka for user activity tracking and streaming
     * advanced service management via a service mesh (optional)
 
 

@@ -8,6 +8,9 @@ var cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var kafka = require('./kafka-events');
+kafka.init();
+
 var app = express();
 app.use(cors());
 
@@ -25,13 +28,11 @@ app.use(function(req,res,next) {
   res.locals.ua = req.get('user-agent');  // put user agent info into the response data for client side logic
   next();
 });
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  kafka.sender.sendServicePayload('error','404 error', function(err, data){console.log(err);});
+  next(createError(404)); // catch 404 and forward to error handler
 });
 
 // error handler
@@ -39,7 +40,6 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');
