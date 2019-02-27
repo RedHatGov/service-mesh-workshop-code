@@ -18,7 +18,7 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 ## Here's how it's architected:
 
 ![Diagram](design/highlevel-arch.png)
-*In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). All of this is running on top of an OpenShift cluster. Additional service interactions and deployment details are in other diagrams.*
+*In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). The Istio service mesh is shown as an optional component because some of the demos in this repo depend upon it. All of this is running on top of an OpenShift cluster. Additional service interactions and deployment details are in other diagrams.*
 
 ![Diagram](design/ocp-arch.png)
 *The above diagram shows how the services are related and additionally how they are abstracted from the underlying infrastructure (compute and storage) when deployed on top of an OpenShift cluster*
