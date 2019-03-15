@@ -2,7 +2,7 @@
 ## This header will be removed when the initial version is ready for beta usage
 
 # Microservices
-Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment of large, complex applications.
+Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment/scaling of complex applications.
 
 This git repo showcases an app built using the microservice architecture with several intentionally simple components. The goal is to showcase an example way to develop and manage microservices using a container platform. However, this example is not meant to be prescriptive - obviously your team and business goals will drive your specific architecture and environment. The technology should translate and hopefully you will find this repo helpful.
 
@@ -18,10 +18,10 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 ## Here's how it's architected:
 
 ![Diagram](design/highlevel-arch.png)
-*In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). The Istio service mesh is shown as an optional component because some of the demos in this repo depend upon it. All of this is running on top of an OpenShift cluster. Additional service interactions and deployment details are in other diagrams.*
+*In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). The Istio service mesh is shown as an optional component because some of the demos in this repo depend upon it. All of this is running on top of an OpenShift cluster. (Additional service interactions and deployment details are in other diagrams).*
 
 ![Diagram](design/ocp-arch.png)
-*The above diagram shows how the services are related and additionally how they are abstracted from the underlying infrastructure (compute and storage) when deployed on top of an OpenShift cluster*
+*The above diagram shows how the services are related and additionally how they are abstracted from the underlying infrastructure (compute and storage) when deployed on top of an OpenShift cluster. (The abstraction means this can be run in AWS, GCP, Azure, on-prem, or in some hybrid combination).*
 
 ###### :information_source: This example is based on OpenShift Container Platform version 3.11.  It should work with other versions but has not been tested.
 
