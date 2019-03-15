@@ -28,8 +28,15 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 ## How to run this?
 First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? That's OK, download the CDK (or minishift) for free here: https://developers.redhat.com/products/cdk/overview/. You will need a fairly beefy machine to run *everything* on the same machine via CDK, so I'd recommend you expose extra CPUs and Mem to the CDK when you start your cluster.
 
+You will also need to install/configure the additional dependencies you plan to leverage. We assume you want to run these in the cluster, but feel free to tweak the install scripts to move things outside or to use already existing shared services in different namespaces.
+   - [3Scale](./install/3scale)
+   - [Single Sign On](./install/sso)
+   - [Kafka](./install/kafka)
+   - [Istio](./install/istio)
+
 Once you're logged into the cluster with oc...
  - TBD steps to run
+
 
 Now that you have the basic app up and running, how about trying out [some demos](./deployment/demos)
 
