@@ -1,6 +1,6 @@
 # CONTEXT-SCRAPER
 ## Automatic digging through items to find contextual matches 
-This microservice provides the ability to analyize the board items to find contextual matches. These contextual matches can be other board items or things scraped from trusted internet sources.
+This microservice provides the ability to analyze the board items to find contextual matches. These contextual matches can be other board items or things scraped from trusted internet sources.
 
 ## Development instructions
 ### Local Installation / Run / Test
