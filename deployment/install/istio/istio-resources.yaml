@@ -30,7 +30,7 @@ spec:
       branch: v85
       repo: https://github.com/fabric8-launcher/launcher-booster-catalog.git
   threeScale:
-    enabled: true
+    enabled: false
     prefix: openshift-istio-tech-preview/
     version: 0.3.0
     adapter:

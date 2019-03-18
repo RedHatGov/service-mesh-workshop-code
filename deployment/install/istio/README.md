@@ -10,8 +10,12 @@ The simple version is:
 3) Make sure you are `oc login`-ed as a cluster admin
 4) Run ./istio-install.sh
 
-Note: I keep a copy of required yaml in this repo, but [you can get the latest here](2).
+## Automatic sidecar injection
+Please make sure your OpenShift cluster is enabled for this by following these instructions:
+https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#updating-master-configuration
 
+
+Note: I keep a copy of required yaml in this repo, but [you can get the latest here](2).
 
 [1]: https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html
 [2]: https://github.com/Maistra/openshift-ansible/tree/maistra-0.8/istio
