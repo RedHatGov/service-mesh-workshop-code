@@ -52,10 +52,11 @@ The parts in action here are:
     * dynamic storage allocation and persistent volume mapping
     * Kubernetes operators to manage middleware components (e.g. Kafka)
 * Middleware components in this example:
-    * API management and metrics (on the external facing services)
+    * API management and metrics (on the external facing APIs)
     * authorization and ingress security via SSO
-    * Kafka for user activity tracking and streaming
-    * advanced service management via a service mesh (optional)
+    * Kafka for streaming
+    * advanced service traffic management via Istio
+    * additional service observability via Istio
 
 
 ## References, useful links, good videos to check out

@@ -1,8 +1,8 @@
-# Istio setup
+# 3Scale setup
 The latest official install guide can be found here:
 [TBD](1). 
 
-Note that if you are using Istio too, you can create on the 3scale adapter by [following instructions here](3).
+Note that if you are using Istio too, you can leverage the 3scale adapter by [following instructions here](3).
 
 The simple version is:
 1) TBD

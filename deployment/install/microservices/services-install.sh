@@ -9,3 +9,4 @@ oc project microservices-demo
 #oc adm policy add-scc-to-user privileged -z <service account> -n <namespace>
 oc adm policy add-scc-to-user anyuid -z default -n microservices-demo
 oc adm policy add-scc-to-user privileged -z default -n microservices-demo
+
