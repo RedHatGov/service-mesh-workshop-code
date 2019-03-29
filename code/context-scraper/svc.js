@@ -1,15 +1,16 @@
 var express = require('express')
 var cors = require('cors')
+var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
 
 const SERVICE_NAME = process.env.SERVICE_NAME || 'microservices-demo'
 
 var app = express()
 var port = process.env.PORT || '8080'
 app.use(cors())
-
-//app.use(bodyParser.json())
-//app.use(bodyParser.urlencoded({ extended: false }))
-//app.use(cookieParser())
+//app.use(bodyParser.json()) // https://expressjs.com/en/resources/middleware/body-parser.html
+//app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-form-urlencoded
+app.use(cookieParser()) // https://expressjs.com/en/resources/middleware/cookie-parser.html
 
 app.use(function(req,res,next) {
     req.SERVICE_NAME = SERVICE_NAME
