@@ -6,7 +6,7 @@ SAAS_TENANT_NAME=
 # You can add a new one with the appropriate permissions
 ACCESS_TOKEN=
 
-oc new-project THREE_SCALE_GATEWAY_PROJ
+oc new-project $THREE_SCALE_GATEWAY_PROJ
 
 # Test to ensure the URL is correct
 curl -k -i https://${ACCESS_TOKEN}@${SAAS_TENANT_NAME}-admin.3scale.net/admin/api/services.json | grep -m 1 "200 OK" || (echo "Access Token Failed" && exit)
