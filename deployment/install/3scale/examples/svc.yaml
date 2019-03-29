@@ -1,0 +1,38 @@
+---
+swagger: "2.0"
+info:
+  title: Movies2
+  version: 1.0.0
+paths:
+  /movies/biography:
+    get:
+      summary: Get Movie Biography
+      description: Biography of movies
+      operationId: movie-biography
+      responses:
+        200:
+          description: Movies Retrieved
+          schema:
+            $ref: '#/definitions/Movies'
+  /movies/drama/:
+    get:
+      summary: Get All Dramas
+      description: Returns all dramas
+      operationId: get-drama
+      responses:
+        200:
+          description: Dramas Retrieved
+          schema:
+            $ref: '#/definitions/Movies'
+definitions:
+  Movies:
+    title: Root Type for Movies
+    description: The root of the Movies type's schema.
+    type: object
+    properties:
+      name:
+        type: string
+    example: |-
+      {
+          "name": "Ghandi"
+      }
