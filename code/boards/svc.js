@@ -3,7 +3,7 @@ var cors = require('cors')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 
-const SERVICE_NAME = process.env.SERVICE_NAME || 'context-scraper'
+const SERVICE_NAME = process.env.SERVICE_NAME || 'boards'
 
 var app = express()
 var port = process.env.PORT || '8080'
@@ -28,7 +28,7 @@ app.use(function(req,res,next) {
 // x-b3-flags
 // x-ot-span-context
 
-app.use('/scrape', require('./api_v1'))
+app.use('/api', require('./api_v1'))
 
 app.use(function(req, res, next) { // catch 404 and forward to error handler
     var err = new Error('Not Found')
