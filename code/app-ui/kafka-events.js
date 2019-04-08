@@ -1,3 +1,9 @@
+// Created by: Jason Dudash
+// https://github.com/dudash
+//
+// (C) 2019
+// Released under the terms of Apache-2.0 License
+//
 // The events module is to make it easy to publish a Kafka events
 // in the app-ui service. This object will create a connection
 // to the Kafka broker and the sendPayload function does the rest.

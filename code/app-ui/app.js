@@ -1,3 +1,9 @@
+// Created by: Jason Dudash
+// https://github.com/dudash
+//
+// (C) 2019
+// Released under the terms of Apache-2.0 License
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
