@@ -1,8 +1,8 @@
-THREE_SCALE_PROJ=3scale-demo
+THREE_SCALE_PROJ=shared-apimgmt
 AMP_TEMPLATE=https://raw.githubusercontent.com/3scale/3scale-amp-openshift-templates/2.4.0.GA/amp/amp.yml
 OCP_ROUTE=apps.sulu.nub3s.io
 WILDCARD_DOMAIN=$THREE_SCALE_PROJ.$OCP_ROUTE
-TENANT_NAME=3scale-demo
+TENANT_NAME=shared-apimgmt
 ADMIN_PASSWORD=admin
 
 # UPDATE THE ROUTER TO ALLOW WILDCARD ROUTES

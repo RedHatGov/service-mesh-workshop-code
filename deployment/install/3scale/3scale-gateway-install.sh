@@ -2,6 +2,8 @@ export THREE_SCALE_GATEWAY_PROJ=shared-apimgmt
 export APICAST_TEMPLATE=https://raw.githubusercontent.com/3scale/3scale-amp-openshift-templates/2.4.0.GA/apicast-gateway/apicast.yml
 # ENTER THE NAME OF YOUR 3SCALE SaaS TENANT
 export SAAS_TENANT_NAME=
+# BY DEFAULT USE 3SCALE.NET, BUT THIS CAN BE ANY 3SCALE MANAGER
+export 3SCALE_ADMIN_LOCATION=admin.3scale.net
 # Get the Access Token from Settings Widget->Personal->Tokens
 # You can add a new one with the appropriate permissions
 export ACCESS_TOKEN=
@@ -14,9 +16,9 @@ export WILDCARD_DOMAIN=$THREE_SCALE_GATEWAY_PROJ.$OCP_ROUTE
 oc new-project $THREE_SCALE_GATEWAY_PROJ
 
 # # Test to ensure the URL is correct
-curl -k -i https://${ACCESS_TOKEN}@${SAAS_TENANT_NAME}-admin.3scale.net/admin/api/services.json || grep -m 1 "200 OK" || (echo "Access Token Failed" && exit)
+curl -k -i https://${ACCESS_TOKEN}@${SAAS_TENANT_NAME}-${3SCALE_ADMIN_LOCATION}/admin/api/services.json || grep -m 1 "200 OK" || (echo "Access Token Failed" && exit)
 
-oc create secret generic apicast-configuration-url-secret --from-literal=password=https://${ACCESS_TOKEN}@${SAAS_TENANT_NAME}-admin.3scale.net  --type=kubernetes.io/basic-auth
+oc create secret generic apicast-configuration-url-secret --from-literal=password=https://${ACCESS_TOKEN}@${SAAS_TENANT_NAME}-${3SCALE_ADMIN_LOCATION}  --type=kubernetes.io/basic-auth
 
 oc new-app -f $APICAST_TEMPLATE -p LOG_LEVEL=debug --param APICAST_NAME=$APICAST_NAME
 
