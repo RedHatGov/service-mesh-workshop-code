@@ -2,14 +2,19 @@
   "name": "context-scraper",
   "version": "1.0.0",
   "description": "find contextual matches from input data",
-  "main": "index.js",
+  "main": "svc.js",
   "scripts": {
     "start": "node svc.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dudash",
   "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dudash/openshift-microservices/issues"
+  },
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "request": "^2.88.0",

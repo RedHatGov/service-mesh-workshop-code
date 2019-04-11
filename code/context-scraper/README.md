@@ -13,29 +13,59 @@ Unrestricted testing URL: ```http GET https://www.googleapis.com/customsearch/v1
 Restricted testing URL: ```http GET https://www.googleapis.com/customsearch/v1/siterestrict key==AIzaSyDRdgirA2Pakl4PMi7t-8LFfnnjEFHnbY4 cx==005627457786250373845:lwanzyzfwji q==microservices```
 
 ## API Documentation
-TBD
+* GET /scrape/custom_search?term==YOUR_TERM_HERE
+
+example return JSON data is an array of:
+```
+{
+    "link": "https://www.reddit.com/r/gaming/comments/anwgxf/here_is_an_example_of_old_graphics_on_crt_vs/",
+    "snippet": "Feb 6, 2019 ... Here is an example of old graphics on CRT, vs. modern emulation. On the CRT \nthey look more detailed as your brain fills in the blurred gaps.",
+    "thumbnail": [
+        {
+            "height": "162",
+            "src": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRy33fwR5E7lfc6OTSvfTXyWZZuQui4P_2GeNY8dXOICCp6w3TwEQNDUzg",
+            "width": "310"
+        }
+    ],
+    "title": "Here is an example of old graphics on CRT, vs. modern emulation ..."
+}
+```
+Note: thumbnail is not always included.
 
 
-## Development instructions
+## Developer instructions
 
 ### Env Vars
-* CSE_API_KEY - API key to use for google (defaults to mine: `AIzaSyDRdgirA2Pakl4PMi7t-8LFfnnjEFHnbY4`)
-* CSE_ENGINE_ID - cx parameter for the google search (defaults to mine: `005627457786250373845:lwanzyzfwji`)
+* GOOGLE_APIS_URL - URL to ping for google search (defaults to: `https://www.googleapis.com/customsearch/v1/siterestrict`)
+* GOOGLE_API_KEY - API key to use for google (defaults to mine: `AIzaSyDRdgirA2Pakl4PMi7t-8LFfnnjEFHnbY4`)
+* GOOGLE_CX - cx parameter for the google search (defaults to mine: `005627457786250373845:lwanzyzfwji`)
+* SERVICE_NAME - so you can rename the service 
+* DEBUG_STACK_TRACE - set to `true` to dump 404 and 500 error stacks
+* DEBUG_FORCED_CONTEXT_VALUE - set to force the context scraping to a fixed value
+
 
 ### Local Installation / Run / Test
 ```bash
 $ npm install
 ```
 
-#### Running the app locally
+#### Running locally
+Start the service:
 ```bash
 $ npm start
+```
+In another terminal you can test with:
+```bash
+$ http GET localhost:8080/scrape/custom_search?term==YOUR_TERM_HERE
 ```
 
 ### Running on OpenShift
 ```bash
 TBD
 ```
+
+### Developer Tips
+For more info on using request-promises [check this out](https://github.com/request/request-promise)
 
 [1]: https://developers.google.com/custom-search/v1/overview
 [2]: https://httpie.org/

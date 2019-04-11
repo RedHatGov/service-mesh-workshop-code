@@ -23,6 +23,10 @@ done
 oc -n openshift import-image redhat-sso73-openshift:1.0
 ```
 
+*(do only if you already have an image stream pointing to the old Red Hat registry...)*
+```
+oc get is redhat-sso73-openshift -o json | sed "s/registry.redhat.io/registry.access.redhat.com/g" | oc replace --force -f -
+```
 
 ## Install
 You can install SSO by using one of the templates available in OpenShift. [Full details are here][2].
