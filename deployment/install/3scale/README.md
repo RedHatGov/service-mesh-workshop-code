@@ -18,6 +18,8 @@ Alternate version:
     2) Update the environment variables in 3scale-gateway-install.sh with the appropriate values. Retrieve the Access Token from
     Get the Access Token from Settings Widget->Personal->Tokens
     3) Run ./3scale-gateway-install.sh
+    4) If your cluster allows wildcard routing or you have cluser admin rights to enable wildcard routing, comment out the commands in 3scale-gateway-install.sh to install the wildcard router.
+    5) If your cluster doesn't allow wildcard routing, create individual routes for the APIs being managed.
 
 [1]: TBD
 [2]: https://github.com/3scale/3scale-istio-adapter
