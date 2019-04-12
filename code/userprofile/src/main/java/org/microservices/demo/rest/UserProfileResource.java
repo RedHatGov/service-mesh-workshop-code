@@ -35,6 +35,7 @@ public class UserProfileResource {
     // test
     private Set<UserProfile> profiles = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
     // TODO: move service logic to service class
+    // in service class, exception handling
 
     public UserProfileResource() {
         profiles.add(new UserProfile("adtaylor", "Gbenga", "Taylor", "average SA"));

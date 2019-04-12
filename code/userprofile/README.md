@@ -24,10 +24,16 @@ Open questions/notes:
 TBD
 
 ## Developer instructions
+- JDK 8+
+- Apache Maven 3.5.3+ is required
+- Optional for native applications [GraalVM](3) 
 
 
 ### Environment variables
-* TBD
+* If building natively, set the 
+```bash
+$ GRAALVM_HOME=<GRAALVM_LOCATION>
+```
 
 ### Local installation / run / test
 ```bash
@@ -39,10 +45,14 @@ TBD
 $ ./mvnw compile quarkus:dev
 ```
 
-#### Running the app natively
+#### Running the native app locally
 ```bash
-TBD
+$ ./mvnw package -Pnative
+$ ./target/userprofile-1.0-SNAPSHOT-runner
 ```
+
+#### To view Swagger-UI locally
+http://localhost:8080/swagger-ui/
 
 ### Running on OpenShift
 ```bash
@@ -53,5 +63,8 @@ TBD
 TBD 
 
 
+
+
 [1]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/
 [2]: https://www.keycloak.org/docs/4.8/getting_started/index.html
+[3]: https://www.graalvm.org/
