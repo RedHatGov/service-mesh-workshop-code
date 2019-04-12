@@ -17,6 +17,12 @@ import java.util.Objects;
  * User Profile 
  */
 //TODO: add JSR validations
+    //TODO: 
+    // add validations for what's required or not using JSR
+    //id required
+    // first and last name
+    // about is optional
+    // make sure all passed objects are not null
 public class UserProfile {
     private String id;
     private String firstName;

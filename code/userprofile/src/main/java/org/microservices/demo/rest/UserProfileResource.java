@@ -1,5 +1,5 @@
 /**
- * User Profile Service
+ * User Profile REST Resource
  * Created by: Gbenga Taylor
  * https://github.com/gbengataylor
  * 
@@ -10,10 +10,6 @@
 package org.microservices.demo.rest;
 
 import java.util.Set;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Iterator;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,79 +22,50 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.microservices.demo.json.UserProfile;
+import org.microservices.demo.service.UserProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 
+// using JAX-RS
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserProfileResource {
 
-    // test
-    private Set<UserProfile> profiles = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
-    // TODO: move service logic to service class
-    // in service class, exception handling
+    // Using Spring-DI
+    @Autowired
+    UserProfileService userProfileService;
 
-    public UserProfileResource() {
-        profiles.add(new UserProfile("adtaylor", "Gbenga", "Taylor", "average SA"));
-        profiles.add(new UserProfile("dudash", "Jason", "Dudash", "Senior Builder SA"));
-    }
     @GET
     public Set<UserProfile> getProfiles() {
-        return profiles;
+        return userProfileService.getProfiles();
     }
 
     @POST
     public Response createProfile(UserProfile profile) {
-        // does it exist
-        if(profile != null) {
-            for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-                UserProfile existing = it.next();
-                if (existing.getId().equals(profile.getId()))
-                  return Response.status(Response.Status.BAD_REQUEST).build();
-                profile.setCreatedAt(Calendar.getInstance().getTime());
-            }
-            profiles.add(profile);
+        if(userProfileService.createProfile(profile)) {
+            return Response.status(Response.Status.CREATED).build();
         }
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }          
 
     @GET
     @Path("/{id}")
         // tODO: add not null on params
-    public UserProfile getProfile(@PathParam("id") String userid) {
-        for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-            UserProfile profile = it.next();
-            if (userid.equals(profile.getId())) 
-               return profile;
-        }
-        return null; 
+    public Response getProfile(@PathParam("id") String id) {
+        UserProfile profile = userProfileService.getProfile(id);
+        Response.Status status = (profile != null) ? Response.Status.OK : Response.Status.NOT_FOUND;
+        return Response.status(status).entity(profile).build();
     }    
 
 
     @PUT
     @Path("/{id}")
     // tODO: add not null on params
-    public Response updateProfile(UserProfile profile, @PathParam("id") String userid) {
+    public Response updateProfile(UserProfile profile, @PathParam("id") String id) {
         // does it exist
-        if(profile != null) {
-            for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-                UserProfile existing = it.next();
-                if (userid.equals(existing.getId()) && userid.equals(profile.getId())){
-                    existing.setFirstName(profile.getFirstName());
-                    existing.setLastName(profile.getLastName());
-                    existing.setAboutMe(profile.getAboutMe());
-                    existing.setEmailAddress(profile.getEmailAddress());
-                    return Response.status(Response.Status.NO_CONTENT).build();
-                }               
-            }
+        if(userProfileService.updateProfile(profile, id)) {
+            return Response.status(Response.Status.NO_CONTENT).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     } 
-
-
-    //TODO: 
-    // add validations for what's required or not using JSR
-    //id required
-    // first and last name
-    // about is optional
-    // make sure all passed objects are not null
 }

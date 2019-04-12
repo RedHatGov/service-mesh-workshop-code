@@ -26,7 +26,7 @@ TBD
 ## Developer instructions
 - JDK 8+
 - Apache Maven 3.5.3+ is required
-- Optional for native applications [GraalVM](3) 
+- Optional for native applications [GraalVM](https://www.graalvm.org/) 
 
 
 ### Environment variables
@@ -36,9 +36,6 @@ $ GRAALVM_HOME=<GRAALVM_LOCATION>
 ```
 
 ### Local installation / run / test
-```bash
-TBD
-```
 
 #### Running the app locally
 ```bash
@@ -51,7 +48,7 @@ $ ./mvnw package -Pnative
 $ ./target/userprofile-1.0-SNAPSHOT-runner
 ```
 
-#### To view Swagger-UI locally
+#### To view and test with Swagger-UI locally
 http://localhost:8080/swagger-ui/
 
 ### Running on OpenShift
@@ -61,7 +58,6 @@ TBD
 
 ### Developer tips
 TBD 
-
 
 
 
