@@ -11,6 +11,10 @@ package org.microservices.demo.service;
 
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.microservices.demo.json.UserProfile;
 
 /**
@@ -25,14 +29,14 @@ public interface UserProfileService {
      * @param profile Profile to create
      * @return true if successful, false if issues (for e.g profile already exists)
      */
-    boolean createProfile(UserProfile profile);
+    boolean createProfile(@Valid @NotNull UserProfile profile);
     /**
      * Update a profile
      * @param profile Profile to update
      * @param id ID of profile to update
      * @return true if successful, false if issues (for e.g profile doesn't exists)
      */  
-    boolean updateProfile(UserProfile profile, String id);
+    boolean updateProfile(@Valid @NotNull UserProfile profile, @NotBlank String id);
     /**
      * Return all profiles
      * @return all profiles
@@ -44,5 +48,5 @@ public interface UserProfileService {
      * @param id
      * @return the specified profile
      */
-    UserProfile getProfile(String id);
+    UserProfile getProfile(@NotBlank String id);
 }

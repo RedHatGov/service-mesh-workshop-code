@@ -11,20 +11,27 @@ package org.microservices.demo.service;
 
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.microservices.demo.json.UserProfile;
 import org.springframework.stereotype.Service;
 
+/**
+ * Persistent User Profile Service. Data is stored in a relational database
+ */
 @Service("jpa")
 public class UserProfileJPAServiceImpl implements UserProfileService {
 
     @Override
-    public boolean createProfile(UserProfile profile) {
+    public boolean createProfile(@Valid @NotNull UserProfile profile) {
         return false;
     }
 
     @Override
-    public UserProfile getProfile(String id) {
-        return null;
+    public boolean updateProfile(@Valid @NotNull UserProfile profile, @NotBlank String id) {
+        return false;
     }
 
     @Override
@@ -33,8 +40,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     }
 
     @Override
-    public boolean updateProfile(UserProfile profile, String id) {
-        return false;
+    public UserProfile getProfile(@NotBlank String id) {
+        return null;
     }
-    
 }

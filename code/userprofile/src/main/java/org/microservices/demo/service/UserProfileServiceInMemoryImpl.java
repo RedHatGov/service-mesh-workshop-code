@@ -15,25 +15,30 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.codec.binary.StringUtils;
 import org.microservices.demo.json.UserProfile;
 import org.springframework.stereotype.Service;
 
+/**
+ * In-memory User Profile Service. this is for testing purposes
+ */
 @Service("memory")
 public class UserProfileServiceInMemoryImpl implements UserProfileService {
-    
     // test
     private Set<UserProfile> profiles = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
-
-    // in service class, exception handling
 
     public UserProfileServiceInMemoryImpl() {
         profiles.add(new UserProfile("adtaylor", "Gbenga", "Taylor", "average SA"));
         profiles.add(new UserProfile("dudash", "Jason", "Dudash", "Senior Builder SA"));
+
     }
 
     @Override
-    public boolean createProfile(UserProfile profile) {
+    public boolean createProfile(@Valid @NotNull UserProfile profile) {
         // does it exist
         if(profile != null) {
             for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
@@ -48,7 +53,7 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile getProfile(String id) {
+    public UserProfile getProfile(@NotBlank String id) {
         for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
             UserProfile profile = it.next();
             if (StringUtils.equals(id, profile.getId()))
@@ -63,7 +68,7 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
     }
 
     @Override
-    public boolean updateProfile(UserProfile profile, String id) {
+    public boolean updateProfile(@Valid @NotNull UserProfile profile, @NotBlank String id) {
         if(profile != null) {
             for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
                 UserProfile existing = it.next();

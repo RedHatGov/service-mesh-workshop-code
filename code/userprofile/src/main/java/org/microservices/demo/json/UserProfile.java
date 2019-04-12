@@ -13,22 +13,29 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 /**
  * User Profile 
  */
-//TODO: add JSR validations
-    //TODO: 
-    // add validations for what's required or not using JSR
-    //id required
-    // first and last name
-    // about is optional
-    // make sure all passed objects are not null
 public class UserProfile {
+
+    @NotBlank(message="Id cannot be blank")
     private String id;
+
+    @NotBlank(message="first name cannot be blank")
     private String firstName;
+
+    @NotBlank(message="last name cannot be blank")
     private String lastName;
+
     private String aboutMe;
+
+    @Email(message="email address should be @valid")
+    @NotBlank(message="email address cannot be blank")
     private String emailAddress;
+
     private Date createdAt;
 
     public UserProfile() {

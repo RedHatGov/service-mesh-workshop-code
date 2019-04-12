@@ -55,7 +55,11 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>${spring.version}</version>
-    </dependency>      
+    </dependency>    
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>  
   </dependencies>
   <build>
     <plugins>

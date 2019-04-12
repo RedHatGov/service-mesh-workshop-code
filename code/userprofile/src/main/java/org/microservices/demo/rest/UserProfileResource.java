@@ -11,6 +11,8 @@ package org.microservices.demo.rest;
 
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -45,10 +47,11 @@ public class UserProfileResource {
     @GET
     public Set<UserProfile> getProfiles() {
         return userProfileService.getProfiles();
+        // if had return Response.ok(profiles).build(), would require @RegisterForReflection on the bean
     }
 
     @POST
-    public Response createProfile(UserProfile profile) {
+    public Response createProfile(@Valid @NotNull UserProfile profile) {
         return userProfileService.createProfile(profile) ?
                Response.status(Response.Status.CREATED).build(): 
                Response.status(Response.Status.BAD_REQUEST).build();
@@ -56,7 +59,6 @@ public class UserProfileResource {
 
     @GET
     @Path("/{id}")
-        // tODO: add not null on params
     public Response getProfile(@PathParam("id") String id) {
         UserProfile profile = userProfileService.getProfile(id);
         Response.Status status = (profile != null) ? Response.Status.OK : Response.Status.NOT_FOUND;
@@ -66,8 +68,8 @@ public class UserProfileResource {
 
     @PUT
     @Path("/{id}")
-    // tODO: add not null on params
-    public Response updateProfile(UserProfile profile, @PathParam("id") String id) {
+    public Response updateProfile(@Valid @NotNull UserProfile profile, 
+                                  @PathParam("id") String id) {
         // does it exist
         return userProfileService.updateProfile(profile, id) ?
              Response.status(Response.Status.NO_CONTENT).build() :
