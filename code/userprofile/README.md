@@ -37,6 +37,9 @@ $ GRAALVM_HOME=<GRAALVM_LOCATION>
 
 ### Local installation / run / test
 
+#### Update the application.properties to include database info
+Update the properties to point to local H2 database or a PostgreSQL database
+
 #### Running the app locally
 ```bash
 $ ./mvnw compile quarkus:dev

@@ -40,8 +40,8 @@ public class UserProfileResource {
     //TODO: figure how to make this more configurable at runtime
     // spring boot has ConditionalOnProperty that can be set on bean. can the quarkus springDI processor
     // handle this...probably not at the moment. 
-    // for now in dev mode this can be done by modifying the hardcoded value then saving the file
-    @Qualifier("memory")
+    // for now in dev mode this can be done by modifying the hardcoded value then saving the file and letting hot deploy do it's thing
+    @Qualifier("jpa")
     protected UserProfileService userProfileService;
 
     @GET
