@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  title: user-profile
+  title: userprofile
   description: User Profile
   version: 1.0.0
 paths:
