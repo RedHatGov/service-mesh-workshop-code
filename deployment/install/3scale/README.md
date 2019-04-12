@@ -2,7 +2,7 @@
 The latest official install guide can be found here:
 [TBD](1). 
 
-Note that if you are using Istio too, you can leverage the 3scale adapter[3scale adapter](https://github.com/3scale/3scale-istio-adapter) by [following instructions here](https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#appendix_A).
+Note that if you are using Istio too, you can leverage the [3scale adapter](https://github.com/3scale/3scale-istio-adapter) by [following instructions here](https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#appendix_A).
 
 The simple version is:
 1) Update the environment variables in 3scale-install.sh with the appropriate values. The OCP_ROUTE variable should be set to the wildcard domain of your cluster
