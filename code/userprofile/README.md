@@ -31,12 +31,17 @@ TBD
 
 ### Local installation / run / test
 ```bash
-$ npm install
+TBD
 ```
 
 #### Running the app locally
 ```bash
-$ npm start
+$ ./mvnw compile quarkus:dev
+```
+
+#### Running the app natively
+```bash
+TBD
 ```
 
 ### Running on OpenShift
