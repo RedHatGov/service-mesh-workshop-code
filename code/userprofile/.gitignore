@@ -1,0 +1,6 @@
+.idea/
+SMS.iml
+target/*
+.classpath
+.project
+.settings/*
