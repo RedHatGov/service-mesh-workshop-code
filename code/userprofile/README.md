@@ -2,7 +2,7 @@
 ## Store user profile details
 Stores details about the user. A user profile includes:
 * email address
-* username
+* userid
 * first_name
 * last_name
 * photo
