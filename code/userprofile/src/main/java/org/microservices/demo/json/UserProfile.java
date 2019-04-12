@@ -1,5 +1,5 @@
 /**
- * User Profile Service
+ * User Profile 
  * Created by: Gbenga Taylor
  * https://github.com/gbengataylor
  * 
@@ -9,80 +9,119 @@
 
 package org.microservices.demo.json;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
-
+/**
+ * User Profile 
+ */
+//TODO: add JSR validations
 public class UserProfile {
     private String id;
-    private String firstname;
-    private String lastname;
-    private String about;
+    private String firstName;
+    private String lastName;
+    private String aboutMe;
+    private String emailAddress;
+    private Date createdAt;
 
     public UserProfile() {
 
     }
-    public UserProfile(String id, String firstname, String lastname, String about) {
+    public UserProfile(String id, String firstname, String lastname, String aboutme) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.about = about;
+        this.firstName = firstname;
+        this.lastName = lastname;
+        this.aboutMe = aboutme;
+        this.createdAt = Calendar.getInstance().getTime();
     }
+    
+
     /**
-     * @return the userId
+     * @return the id
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @param userId the userId to set
+     * @param id the id to set
      */
-    public void setId(String userId) {
-        this.id = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
      * @return the firstName
      */
     public String getFirstName() {
-        return firstname;
+        return firstName;
     }
 
     /**
      * @param firstName the firstName to set
      */
     public void setFirstName(String firstName) {
-        this.firstname = firstName;
+        this.firstName = firstName;
     }
 
     /**
      * @return the lastName
      */
     public String getLastName() {
-        return lastname;
+        return lastName;
     }
 
     /**
      * @param lastName the lastName to set
      */
     public void setLastName(String lastName) {
-        this.lastname = lastName;
+        this.lastName = lastName;
     }
 
     /**
-     * @return the about
+     * @return the aboutMe
      */
-    public String getAbout() {
-        return about;
+    public String getAboutMe() {
+        return aboutMe;
     }
 
     /**
-     * @param about the about to set
+     * @param aboutMe the aboutMe to set
      */
-    public void setAbout(String about) {
-        this.about = about;
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 
+    /**
+     * @return the emailAddress
+     */
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    /**
+     * @param emailAddress the emailAddress to set
+     */
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    /**
+     * @return the createdAt
+     */
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * @param createdAt the createdAt to set
+     */
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+  
     @Override
     public int hashCode() {
        return Objects.hash(this.id);
@@ -99,5 +138,5 @@ public class UserProfile {
             return false;
         UserProfile other = (UserProfile) obj;
         return Objects.equals(other.id, this.id);
-    }
+    }  
 }

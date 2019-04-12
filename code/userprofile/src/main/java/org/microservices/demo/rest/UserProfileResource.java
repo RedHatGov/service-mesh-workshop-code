@@ -10,6 +10,7 @@
 package org.microservices.demo.rest;
 
 import java.util.Set;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
@@ -24,8 +25,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.annotations.Body;
-import org.jboss.resteasy.annotations.Status;
 import org.microservices.demo.json.UserProfile;
 
 @Path("/users")
@@ -54,6 +53,7 @@ public class UserProfileResource {
                 UserProfile existing = it.next();
                 if (existing.getId().equals(profile.getId()))
                   return Response.status(Response.Status.BAD_REQUEST).build();
+                profile.setCreatedAt(Calendar.getInstance().getTime());
             }
             profiles.add(profile);
         }
@@ -66,7 +66,7 @@ public class UserProfileResource {
     public UserProfile getProfile(@PathParam("id") String userid) {
         for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
             UserProfile profile = it.next();
-            if (userid.equals(profile.getId()))
+            if (userid.equals(profile.getId())) 
                return profile;
         }
         return null; 
@@ -84,7 +84,8 @@ public class UserProfileResource {
                 if (userid.equals(existing.getId()) && userid.equals(profile.getId())){
                     existing.setFirstName(profile.getFirstName());
                     existing.setLastName(profile.getLastName());
-                    existing.setAbout(profile.getAbout());
+                    existing.setAboutMe(profile.getAboutMe());
+                    existing.setEmailAddress(profile.getEmailAddress());
                     return Response.status(Response.Status.NO_CONTENT).build();
                 }               
             }

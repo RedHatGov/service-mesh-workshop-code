@@ -16,7 +16,7 @@ Open questions/notes:
 - can we just use SSO and custom user attributes for this?
 - https://www.keycloak.org/docs/4.8/server_admin/index.html#user-attributes
 - TBD PROS/CONS of each approach
-- breaking up a microservice can be be a tricky thing, for this first pass as a small system we don't want to create unnecessary network traffic and complexity without needing it. So our first pass will be to favor coupling related biz reqwuirements and refactor later if necessary. So in this case a single service for user profile AND user preferences. This could later be broken into two if needed.
+- breaking up a microservice can be be a tricky thing, for this first pass as a small system we don't want to create unnecessary network traffic and complexity without needing it. So our first pass will be to favor coupling related biz requirements and refactor later if necessary. So in this case a single service for user profile AND user preferences. This could later be broken into two if needed.
 - TBD look here for example: https://github.com/NAPS-emergency-response-project/emergency-sso
   
 
