@@ -1,5 +1,5 @@
 .idea/
-SMS.iml
+*.iml
 target/*
 .classpath
 .project

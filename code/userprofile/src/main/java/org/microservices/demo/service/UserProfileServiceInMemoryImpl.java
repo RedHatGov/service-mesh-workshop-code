@@ -17,17 +17,17 @@ import java.util.Set;
 
 import org.apache.commons.codec.binary.StringUtils;
 import org.microservices.demo.json.UserProfile;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class UserProfileServiceImpl implements UserProfileService {
+@Service("memory")
+public class UserProfileServiceInMemoryImpl implements UserProfileService {
     
     // test
     private Set<UserProfile> profiles = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
 
     // in service class, exception handling
 
-    public UserProfileServiceImpl() {
+    public UserProfileServiceInMemoryImpl() {
         profiles.add(new UserProfile("adtaylor", "Gbenga", "Taylor", "average SA"));
         profiles.add(new UserProfile("dudash", "Jason", "Dudash", "Senior Builder SA"));
     }

@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import org.microservices.demo.json.UserProfile;
 import org.microservices.demo.service.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 // using JAX-RS
 @Path("/users")
@@ -33,7 +34,13 @@ public class UserProfileResource {
 
     // Using Spring-DI
     @Autowired
-    UserProfileService userProfileService;
+    //@Qualifier("${user.profile.source}")
+    //TODO: figure how to make this more configurable at runtime
+    // spring boot has ConditionalOnProperty that can be set on bean. can the quarkus springDI processor
+    // handle this...probably not at the moment. 
+    // for now in dev mode this can be done by modifying the hardcoded value then saving the file
+    @Qualifier("memory")
+    protected UserProfileService userProfileService;
 
     @GET
     public Set<UserProfile> getProfiles() {
@@ -42,10 +49,9 @@ public class UserProfileResource {
 
     @POST
     public Response createProfile(UserProfile profile) {
-        if(userProfileService.createProfile(profile)) {
-            return Response.status(Response.Status.CREATED).build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        return userProfileService.createProfile(profile) ?
+               Response.status(Response.Status.CREATED).build(): 
+               Response.status(Response.Status.BAD_REQUEST).build();
     }          
 
     @GET
@@ -63,9 +69,8 @@ public class UserProfileResource {
     // tODO: add not null on params
     public Response updateProfile(UserProfile profile, @PathParam("id") String id) {
         // does it exist
-        if(userProfileService.updateProfile(profile, id)) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        return userProfileService.updateProfile(profile, id) ?
+             Response.status(Response.Status.NO_CONTENT).build() :
+             Response.status(Response.Status.BAD_REQUEST).build();
     } 
 }

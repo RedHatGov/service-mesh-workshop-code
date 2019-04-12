@@ -9,8 +9,6 @@
 
 package org.microservices.demo.service;
 
-import org.springframework.stereotype.Service;
-
 import java.util.Set;
 
 import org.microservices.demo.json.UserProfile;
@@ -21,7 +19,6 @@ import org.microservices.demo.json.UserProfile;
  */
 //TODO: JSR validations and exception handling 
 // TODO: validations on parameters
-@Service
 public interface UserProfileService {
     /**
      * Create a profile
