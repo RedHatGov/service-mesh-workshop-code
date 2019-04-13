@@ -16,12 +16,31 @@ produces:
 paths:
     '/{userId}/boards':
         x-swagger-router-controller: boardsController
+        get:
+            summary: List All boards
+            description: Gets a list of all `board` entities.
+            operationId: getboards
+            responses:
+                '200':
+                    description: Successful response - returns an array of `board` entities.
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/board'
         post:
             summary: Create a board
             description: Create a board for the specified user.
             operationId: createboard
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: A new `board` to be created.
+                    required: true
+                    schema:
+                        $ref: '#/definitions/board'
             responses:
-                '200':
+                '201':
                     description: 'Returns the board that was created. '
                     schema:
                         $ref: '#/definitions/board'
@@ -193,8 +212,7 @@ definitions:
         type: object
         properties:
             id:
-                format: int32
-                type: integer
+                type: string
             name:
                 type: string
             raw:
@@ -208,7 +226,7 @@ definitions:
                 type: string
         example: |-
             {
-                "id": 0,
+                "id": "PPBqWA9",
                 "name": "string",
                 "raw": "I've been around the world and I can't find my baby",
                 "type": "string",
@@ -221,8 +239,7 @@ definitions:
         type: object
         properties:
             id:
-                format: int32
-                type: integer
+                type: string
             name:
                 type: string
             description:
@@ -237,15 +254,15 @@ definitions:
                 items: {}
         example: |4-
                 {
-                    "id": 0,
+                    "id": "PPBqWA9",
                     "name": "string",
                     "description": "example board",
                     "created_at": "2014-09-08T08:02:17-05:00",
                     "owner": "dudash",
                     "items": [
-                        3,
-                        4,
-                        5,
-                        6
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ]
                 }
