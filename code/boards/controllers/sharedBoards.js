@@ -4,6 +4,8 @@
 // (C) 2019
 // Released under the terms of Apache-2.0 License
 
+const BOARDS_COLLECTION = 'boards'
+
 module.exports.sharedboards = function sharedboards (req, res, next) {
     var result = "[{blah:sharedboards}]"
     res.setHeader('Content-Type', 'application/json');

@@ -20,8 +20,8 @@ const GOOGLE_CX = process.env.GOOGLE_CX || '005627457786250373845:lwanzyzfwji'
 /* GET call to scrape using Google Custom Search */
 router.get('/custom_search', function(req, res, next) {
     var queryterm = process.env.DEBUG_FORCED_CONTEXT_VALUE || ''
-    //  filter queryterm for unallowable characters
-    
+    //  TODO: filter queryterm for unallowable characters
+
     var google_request_options = {
         method: 'GET',
         uri: GOOGLE_APIS_URL,
@@ -41,19 +41,21 @@ router.get('/custom_search', function(req, res, next) {
         if (result.hasOwnProperty('items')) {
             reduced = result.items.map(function(item) {
                 return {
-                    "link":item.link,
-                    "thumbnail": item.pagemap.cse_thumbnail,
-                    "title": item.title,
-                    "snippet": item.snippet
+                    'link':item.link,
+                    'thumbnail': item.pagemap.cse_thumbnail,
+                    'title': item.title,
+                    'snippet': item.snippet
                 }
             })
         }
-        console.log("RESPONDING with 200 + JSON")
+        req.debug('RETURNING GOOD RESULTS:')
+        req.debug(reduced)
         res.status(200).json(reduced)
     })
     .catch(function (err) {
-        console.log("RESPONDING with 500 error")
-        console.log(err)
+        req.debug('RESPONDING with error')
+        req.debug(err)
+        console.log('GOOGLE REQUEST ERROR - RETURNING 500')
         res.status(500).json({'oops': err})
     })
 })
