@@ -1,0 +1,98 @@
+---
+swagger: "2.0"
+info:
+  title: userprofile
+  description: User Profile
+  version: 1.0.0
+paths:
+  /users:
+    get:
+      summary: Retrieves All Users
+      description: Retrieves All Users
+      operationId: get-users
+      responses:
+        200:
+          description: User Profiles Retrieved
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserProfile'
+    post:
+      summary: Add a new user
+      description: Add a new user
+      operationId: add-user-profile
+      parameters:
+      - name: body
+        in: body
+        description: User Profile
+        required: true
+        schema:
+          $ref: '#/definitions/UserProfile'
+      responses:
+        201:
+          description: User Profile Created
+  /users/{id}:
+    get:
+      summary: Retrieve a specific user
+      description: Retrieve a specific user
+      operationId: get-user-profile
+      responses:
+        200:
+          description: User Retrieved
+          schema:
+            $ref: '#/definitions/UserProfile'
+    put:
+      summary: Update User Profile
+      description: Updates User Profile
+      operationId: update-user-profile
+      parameters:
+      - name: body
+        in: body
+        description: User Profile to update
+        required: true
+        schema:
+          $ref: '#/definitions/UserProfile'
+      responses:
+        204:
+          description: User Profile Updated
+    parameters:
+    - name: id
+      in: path
+      description: User ID
+      required: true
+      type: string
+definitions:
+  UserProfile:
+    title: Root Type for User
+    description: User
+    required:
+    - emailAddress
+    - firstName
+    - id
+    - lastName
+    type: object
+    properties:
+      id:
+        description: Unique UserID
+        type: string
+      firstName:
+        description: User's Firstname
+        type: string
+      lastName:
+        description: LastName
+        type: string
+      emailAddress:
+        description: Email address
+        type: string
+      aboutMe:
+        description: About Me
+        type: string
+      createdAt:
+        description: Date the User Profile was created
+    example:
+      id: userid
+      firstName: firstname
+      lastName: lastname
+      aboutMe: some info about the user
+      emailAddress: myaddress@address.com
+      createdAt: 2019-04-12T11:43:24.201Z[UTC]

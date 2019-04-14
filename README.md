@@ -1,5 +1,6 @@
 # PLEASE NOTE THIS REPO IS IN-WORK 
 ## This header will be removed when the initial version is ready for beta usage
+[![OpenShift Version][openshift-heximage]][openshift-url]
 
 # Microservices
 Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment/scaling of complex applications.
@@ -52,10 +53,11 @@ The parts in action here are:
     * dynamic storage allocation and persistent volume mapping
     * Kubernetes operators to manage middleware components (e.g. Kafka)
 * Middleware components in this example:
-    * API management and metrics (on the external facing services)
+    * API management and metrics (on the external facing APIs)
     * authorization and ingress security via SSO
-    * Kafka for user activity tracking and streaming
-    * advanced service management via a service mesh (optional)
+    * Kafka for streaming
+    * advanced service traffic management via Istio
+    * additional service observability via Istio
 
 
 ## References, useful links, good videos to check out
@@ -75,3 +77,6 @@ Apache 2.0.
 
 [1]: https://github.com/dudash/openshift-microservices/issues
 [2]: https://github.com/dudash/openshift-microservices/labels/discussion
+
+[openshift-heximage]: https://img.shields.io/badge/openshift-3.11-BB261A.svg
+[openshift-url]: https://docs.openshift.com/container-platform/3.11/welcome/index.html

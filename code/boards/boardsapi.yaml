@@ -1,0 +1,265 @@
+swagger: '2.0'
+info:
+    title: boards
+    description: An API to access shared and user boards.
+    contact:
+        name: Jason Dudash
+        url: 'https://github.com/dudash'
+    license:
+        name: Apache 2.0
+        url: 'https://www.apache.org/licenses/LICENSE-2.0'
+    version: '1.0'
+consumes:
+    - application/json
+produces:
+    - application/json
+paths:
+    '/{userId}/boards':
+        x-swagger-router-controller: boardsController
+        get:
+            summary: List All boards
+            description: Gets a list of all `board` entities.
+            operationId: getboards
+            responses:
+                '200':
+                    description: Successful response - returns an array of `board` entities.
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/board'
+        post:
+            summary: Create a board
+            description: Create a board for the specified user.
+            operationId: createboard
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: A new `board` to be created.
+                    required: true
+                    schema:
+                        $ref: '#/definitions/board'
+            responses:
+                '201':
+                    description: 'Returns the board that was created. '
+                    schema:
+                        $ref: '#/definitions/board'
+        parameters:
+            -
+                name: userId
+                in: path
+                description: A unique identifier for a user.
+                required: true
+                type: string
+    '/{userId}/boards/{boardId}':
+        x-swagger-router-controller: boardsController
+        get:
+            summary: Get a board
+            description: Gets the details of a single instance of a `board`.
+            operationId: getboard
+            responses:
+                '200':
+                    description: Successful response - returns a single `board`.
+                    schema:
+                        $ref: '#/definitions/board'
+        put:
+            summary: Update a board
+            description: Updates an existing `board`.
+            operationId: updateboard
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: Updated `board` information.
+                    required: true
+                    schema:
+                        $ref: '#/definitions/board'
+            responses:
+                '202':
+                    description: Successful response.
+        delete:
+            summary: Delete a board
+            description: Deletes an existing `board`.
+            operationId: deleteboard
+            responses:
+                '204':
+                    description: Successful response.
+        parameters:
+            -
+                name: boardId
+                in: path
+                description: A unique identifier for a `board`.
+                required: true
+                type: string
+            -
+                name: userId
+                in: path
+                description: A unique identifier for a user.
+                required: true
+                type: string
+    '/{userId}/items':
+        x-swagger-router-controller: itemsController
+        get:
+            summary: List All items
+            description: Gets a list of all `item` entities.
+            operationId: getitems
+            responses:
+                '200':
+                    description: Successful response - returns an array of `item` entities.
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/item'
+        post:
+            summary: Create a item
+            description: Creates a new instance of a `item`.
+            operationId: createitem
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: A new `item` to be created.
+                    required: true
+                    schema:
+                        $ref: '#/definitions/item'
+            responses:
+                '201':
+                    description: Successful response.
+        parameters:
+            -
+                name: userId
+                in: path
+                description: The id for a user
+                required: true
+                type: string
+    '/{userId}/items/{itemId}':
+        x-swagger-router-controller: itemsController
+        get:
+            summary: Get a item
+            description: Gets the details of a single instance of a `item`.
+            operationId: getitem
+            responses:
+                '200':
+                    description: Successful response - returns a single `item`.
+                    schema:
+                        $ref: '#/definitions/item'
+        put:
+            summary: Update a item
+            description: Updates an existing `item`.
+            operationId: updateitem
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: Updated `item` information.
+                    required: true
+                    schema:
+                        $ref: '#/definitions/item'
+            responses:
+                '202':
+                    description: Successful response.
+        delete:
+            summary: Delete a item
+            description: Deletes an existing `item`.
+            operationId: deleteitem
+            responses:
+                '204':
+                    description: Successful response.
+        parameters:
+            -
+                name: userId
+                in: path
+                description: The id for a user
+                required: true
+                type: string
+            -
+                name: itemId
+                in: path
+                description: A unique identifier for a `item`.
+                required: true
+                type: string
+    /shareditems:
+        x-swagger-router-controller: sharedItems
+        get:
+            summary: GET all the shared items
+            description: |
+                Returns all the items in the shared space
+            operationId: shareditems
+            responses:
+                '200':
+                    description: Success
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/item'
+        post:
+            summary: Create a item
+            description: Creates a new instance of a `item`.
+            operationId: createitem
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: A new `item` to be created.
+                    required: true
+                    schema:
+                        $ref: '#/definitions/item'
+            responses:
+                '201':
+                    description: Successful response.
+definitions:
+    item:
+        title: Root Type for item
+        description: An item is the content of pasted data
+        type: object
+        properties:
+            id:
+                type: string
+            name:
+                type: string
+            raw:
+                type: string
+            type:
+                type: string
+            created_at:
+                format: date-time
+                type: string
+            owner:
+                type: string
+        example: |-
+            {
+                "id": "PPBqWA9",
+                "name": "string",
+                "raw": "I've been around the world and I can't find my baby",
+                "type": "string",
+                "created_at": "2014-09-08T08:02:17-05:00",
+                "owner": "dudash"
+            }
+    board:
+        title: Root Type for board
+        description: A board is a named collection of items (owned by a specific user)
+        type: object
+        properties:
+            id:
+                type: string
+            name:
+                type: string
+            description:
+                type: string
+            created_at:
+                format: date-time
+                type: string
+            owner:
+                type: string
+            items:
+                type: array
+                items: {}
+        example: |4-
+                {
+                    "id": "PPBqWA9",
+                    "name": "worlds",
+                    "description": "where oh wheres",
+                    "created_at": "2014-09-08T08:02:17-05:00",
+                    "owner": "dudash",
+                    "items": ["PPBqWA7","PPBqWA5","PPBqWA3","PPBqWA2"]
+                }

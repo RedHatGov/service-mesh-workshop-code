@@ -1,0 +1,45 @@
+{
+  "name": "boards",
+  "version": "1.0.0",
+  "description": "An API-based service to access user boards and items",
+  "main": "svc.js",
+  "scripts": {
+    "start": "node svc.js",
+    "dev": "MONGODB_USEAUTH=false DEBUG=service,database,swagger-tools:middleware:* nodemon svc.js",
+    "test": "mocha -w",
+    "audit": "snyk test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dudash/openshift-microservices.git"
+  },
+  "keywords": [
+    "boards"
+  ],
+  "author": "dudash",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dudash/openshift-microservices/issues"
+  },
+  "homepage": "https://github.com/dudash/openshift-microservices#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
+    "express": "^4.16.4",
+    "js-yaml": "^3.13.1",
+    "moment": "^2.24.0",
+    "mongodb": "^3.2.3",
+    "monk": "^6.0.6",
+    "node-uuid": "^1.4.8",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "shortid": "^2.2.14",
+    "swagger-tools": "^0.10.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10",
+    "snyk": "^1.147.4"
+  }
+}
