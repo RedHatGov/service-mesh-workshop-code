@@ -178,7 +178,7 @@ paths:
                 description: A unique identifier for a `item`.
                 required: true
                 type: string
-    /shared/items:
+    /shareditems:
         x-swagger-router-controller: sharedItems
         get:
             summary: GET all the shared items
@@ -192,19 +192,21 @@ paths:
                         type: array
                         items:
                             $ref: '#/definitions/item'
-    /shared/boards:
-        x-swagger-router-controller: sharedBoards
-        get:
-            summary: Get all the recent boards
-            description: Returns all the boards in the shared space
-            operationId: sharedboards
-            responses:
-                '200':
-                    description: Success
+        post:
+            summary: Create a item
+            description: Creates a new instance of a `item`.
+            operationId: createitem
+            parameters:
+                -
+                    name: body
+                    in: body
+                    description: A new `item` to be created.
+                    required: true
                     schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/board'
+                        $ref: '#/definitions/item'
+            responses:
+                '201':
+                    description: Successful response.
 definitions:
     item:
         title: Root Type for item
@@ -255,14 +257,9 @@ definitions:
         example: |4-
                 {
                     "id": "PPBqWA9",
-                    "name": "string",
-                    "description": "example board",
+                    "name": "worlds",
+                    "description": "where oh wheres",
                     "created_at": "2014-09-08T08:02:17-05:00",
                     "owner": "dudash",
-                    "items": [
-                        "3",
-                        "4",
-                        "5",
-                        "6"
-                    ]
+                    "items": ["PPBqWA7","PPBqWA5","PPBqWA3","PPBqWA2"]
                 }

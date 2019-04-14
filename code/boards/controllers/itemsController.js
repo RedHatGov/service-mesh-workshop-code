@@ -4,7 +4,8 @@
 // (C) 2019
 // Released under the terms of Apache-2.0 License
 
-const shortid = require('shortid');
+var moment = require('moment')
+const shortid = require('shortid')
 const ITEMS_COLLECTION = 'items'
 
 module.exports.getitems = function getitems (req, res, next) {
@@ -21,8 +22,11 @@ module.exports.getitems = function getitems (req, res, next) {
 
 module.exports.createitem = function createitem (req, res, next) {
     var newItem = req.body
-    newItem.id = shortid.generate()
     // TODO: manual validation of the req object should go here (or let swagger handle it)
+    newItem.id = shortid.generate()
+    newItem.created_at = moment().format()
+    newItem.owner = req.swagger.params.userId.value
+    // TODO: future check requesting user can access item with arg ID
     req.db.get(ITEMS_COLLECTION).insert(newItem)
     .then((docs) => {
         // docs contains the documents inserted with added **_id** fields
@@ -54,14 +58,16 @@ module.exports.getitem = function getitem (req, res, next) {
 
 // TODO:
 // module.exports.updateitem = function updateitem (req, res, next) {
-//     var result = '[{TODO:updateitem}]'
-//     res.setHeader('Content-Type', 'application/json');
-//     res.end(JSON.stringify(result || {}, null, 2));
 // };
 
-// TODO:
-// module.exports.deleteitem = function deleteitem (req, res, next) {
-//     var result = '[{blah:deleteitem}]'
-//     res.setHeader('Content-Type', 'application/json');
-//     res.end(JSON.stringify(result || {}, null, 2));
-// };
+module.exports.deleteitem = function deleteitem (req, res, next) {
+    // TODO: future check requesting user can delete item with arg ID
+    req.db.get(ITEMS_COLLECTION).remove({'id':req.swagger.params.itemId.value})
+    .then((docs) => {
+        res.sendStatus(204)
+    }).catch((err) => {
+        req.debugdb('DEL ITEM failed')
+        req.debugdb(err)
+        res.sendStatus(500)
+    })
+};

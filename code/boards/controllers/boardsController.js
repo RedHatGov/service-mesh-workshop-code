@@ -4,7 +4,8 @@
 // (C) 2019
 // Released under the terms of Apache-2.0 License
 
-const shortid = require('shortid');
+var moment = require('moment')
+const shortid = require('shortid')
 const BOARDS_COLLECTION = 'boards'
 
 module.exports.getboards = function getboards (req, res, next) {
@@ -24,8 +25,11 @@ module.exports.getboards = function getboards (req, res, next) {
 
 module.exports.createboard = function createboard (req, res, next) {
     var newBoard = req.body
-    newBoard.id = shortid.generate()
     // TODO: manual validation of the req object should go here (or let swagger handle it)
+    newBoard.id = shortid.generate()
+    newBoard.created_at = moment().format()
+    newBoard.owner = req.swagger.params.userId.value
+    // TODO: future check requesting user can access item with arg ID
     req.db.get(BOARDS_COLLECTION).insert(newBoard)
     .then((docs) => {
         // docs contains the documents inserted with added **_id** fields
@@ -40,7 +44,6 @@ module.exports.createboard = function createboard (req, res, next) {
 };
 
 module.exports.getboard = function getboard (req, res, next) {
-    console.log(req.swagger.params.boardId.value)
     // TODO: future check requesting user can access board with arg ID
     req.db.get(BOARDS_COLLECTION).findOne({'id':req.swagger.params.boardId.value})
     .then((docs) => {
@@ -59,14 +62,16 @@ module.exports.getboard = function getboard (req, res, next) {
 
 // TODO:
 // module.exports.updateboard = function updateboard (req, res, next) {
-//     var result = "[{blah:updateboard}]"
-//     res.setHeader('Content-Type', 'application/json');
-//     res.end(JSON.stringify(result || {}, null, 2));
 // };
 
-// TODO:
-// module.exports.deleteboard = function deleteboard (req, res, next) {
-//     var result = "[{blah:deleteboard}]"
-//     res.setHeader('Content-Type', 'application/json');
-//     res.end(JSON.stringify(result || {}, null, 2));
-// };
+module.exports.deleteboard = function deleteboard (req, res, next) {
+    // TODO: future check requesting user can delete item with arg ID
+    req.db.get(BOARDS_COLLECTION).remove({'id':req.swagger.params.boardId.value})
+    .then((docs) => {
+        res.sendStatus(204)
+    }).catch((err) => {
+        req.debugdb('DEL BOARD failed')
+        req.debugdb(err)
+        res.sendStatus(500)
+    })
+};

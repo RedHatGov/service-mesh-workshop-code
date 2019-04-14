@@ -38,10 +38,6 @@ db.then(() => { debugdb('Connected correctly to database server') })
 var app = express()
 var port = process.env.PORT || '8080'
 
-// app.use(cors())
-// app.use(bodyParser.json()) // https://expressjs.com/en/resources/middleware/body-parser.html
-// app.use(cookieParser()) // https://expressjs.com/en/resources/middleware/cookie-parser.html
-
 // var propagateTrace = require('istio-tracing-headers')
 // app.use(propagateTrace())
 
