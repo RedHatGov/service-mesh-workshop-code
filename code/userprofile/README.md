@@ -70,10 +70,12 @@ $ ./mvnw compile quarkus:dev
 ```
 
 #### Running the native app locally
+Alternatively, you can build and run a native app. 
 ```bash
 $ ./mvnw package -Pnative
 $ ./target/userprofile-1.0-SNAPSHOT-runner
 ```
+Note that the build will take a few minutes, however, the app boots up a lot faster
 
 #### To view and test with Swagger-UI locally
 http://localhost:8080/swagger-ui/
