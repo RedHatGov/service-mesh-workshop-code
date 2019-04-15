@@ -51,7 +51,7 @@ $ npm install
 
 Start the service:
 ```bash
-$ npm start
+$ npm run-script dev
 ```
 In another terminal you can test with:
 ```bash
