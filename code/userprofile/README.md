@@ -60,6 +60,9 @@ If you don't want to use an H2 or PostgreSQL database, there is an in-memory imp
 //@Qualifier("jpa")
 @Qualifier("memory")
 ```
+TODO: configure this change via application.properties
+
+You may need to still need to set the datasource properties in application.properties to match the H2 settings so that the app runs
 
 #### Running the app locally
 ```bash
@@ -80,7 +83,6 @@ http://localhost:8080/swagger-ui/
 The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice 
 
 ```bash
-
 #set the repo and branch to pull the source from. Change if using forked repo and/or branch
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
 USER_PROFILE_GIT_BRANCH=master
@@ -95,10 +97,16 @@ done
 
 oc new-app quay.io/quarkus/centos-quarkus-native-s2i~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH} --context-dir=/code/userprofile --name=userprofile -lcomponent=microservice
 
-
-
 oc expose service userprofile
+
+until 
+	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"
+do
+	sleep 20
+done 
 ```
+The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete and the pod to be deployed. Please be patient.
+
 TODO 
 - remove hardcode application properties and use environment variables mapped to generated secret
 - create a template for deploying
