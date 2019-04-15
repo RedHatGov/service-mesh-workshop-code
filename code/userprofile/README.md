@@ -105,7 +105,10 @@ do
 	sleep 20
 done 
 ```
-The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete and the pod to be deployed. Please be patient.
+The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete before the pod is deployed (the pod deployment is lightning fast!!). Please be patient. To follow the build log
+```bash
+oc logs bc/userprofile -f
+```
 
 TODO 
 - remove hardcode application properties and use environment variables mapped to generated secret
