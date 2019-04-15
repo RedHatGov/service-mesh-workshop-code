@@ -116,6 +116,15 @@ TODO
 - remove hardcode application properties and use environment variables mapped to generated secret
 - create a template for deploying
 
+
+To remove the deployment from openshift
+```bash
+oc delete all -lapp=userprofile
+oc delete all -lapp=userprofile-postgresql
+oc delete secret userprofile-postgresql
+oc delete pvc userprofile-postgresql
+```
+
 ### Developer tips
 TBD 
 
