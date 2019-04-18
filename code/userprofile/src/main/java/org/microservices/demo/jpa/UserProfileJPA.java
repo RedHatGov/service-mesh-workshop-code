@@ -1,5 +1,5 @@
 /**
- * User Profile 
+ * User Profile Persistent
  * Created by: Gbenga Taylor
  * https://github.com/gbengataylor
  * 
@@ -7,10 +7,9 @@
  * Released under the terms of Apache-2.0 License
  */
 
-package org.microservices.demo.json;
+package org.microservices.demo.jpa;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.sql.Date;
 import java.util.Objects;
 
 import javax.persistence.Cacheable;
@@ -19,136 +18,82 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.QueryHint;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 /**
  * User Profile 
  */
+@Entity
+@Table(name = "user_profile")
+@NamedQuery(name = "UserProfileJPA.findAll",
+      query = "SELECT f FROM UserProfileJPA f ORDER BY f.id",
+      hints = @QueryHint(name = "org.hibernate.cacheable", value = "true") )
+@Cacheable
+public class UserProfileJPA {
 
-
-public class UserProfile {
-
-    @NotBlank(message="Id cannot be blank")
-
+    @Id
     private String id;
 
-    @NotBlank(message="first name cannot be blank")
     private String firstName;
 
-    @NotBlank(message="last name cannot be blank")
     private String lastName;
 
     private String aboutMe;
 
-    @Email(message="email address should be @valid")
-    @NotBlank(message="email address cannot be blank")
     private String emailAddress;
 
     private Date createdAt;
 
-    public UserProfile() {
-
-    }
-    public UserProfile(String id, String firstname, String lastname, String aboutme) {
-        this.id = id;
-        this.firstName = firstname;
-        this.lastName = lastname;
-        this.aboutMe = aboutme;
-        this.createdAt = Calendar.getInstance().getTime();
-    }
-    
-    /**
-     * @return the id
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     * @return the firstName
-     */
     public String getFirstName() {
         return firstName;
     }
 
-    /**
-     * @param firstName the firstName to set
-     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    /**
-     * @return the lastName
-     */
     public String getLastName() {
         return lastName;
     }
 
-    /**
-     * @param lastName the lastName to set
-     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    /**
-     * @return the aboutMe
-     */
     public String getAboutMe() {
         return aboutMe;
     }
 
-    /**
-     * @param aboutMe the aboutMe to set
-     */
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
 
-    /**
-     * @return the emailAddress
-     */
     public String getEmailAddress() {
         return emailAddress;
     }
 
-    /**
-     * @param emailAddress the emailAddress to set
-     */
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
-    /**
-     * @return the createdAt
-     */
     public Date getCreatedAt() {
         return createdAt;
     }
 
-    /**
-     * @param createdAt the createdAt to set
-     */
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-   /**
-     * @param createdAt the createdAt to set
-    */
     public void setCreatedAt(Long createdAt) {
         this.createdAt = new Date(createdAt);
     }
-
     @Override
     public int hashCode() {
        return Objects.hash(this.id);
@@ -163,19 +108,7 @@ public class UserProfile {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        UserProfile other = (UserProfile) obj;
+        UserProfileJPA other = (UserProfileJPA) obj;
         return Objects.equals(other.id, this.id);
-    }
-
-    @Override
-    public String toString() {
-        return "UserProfile{" +
-                "id='" + id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", aboutMe='" + aboutMe + '\'' +
-                ", emailAddress='" + emailAddress + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+    }  
 }
