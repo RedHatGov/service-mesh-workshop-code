@@ -5,7 +5,7 @@
   "main": "svc.js",
   "scripts": {
     "start": "node svc.js",
-    "dev": "MONGODB_USEAUTH=false DEBUG=service,database,swagger-tools:middleware:* nodemon svc.js",
+    "dev": "MONGODB_USEAUTH=false DEBUG=service,database,swagger-tools:middleware:* PORT=3001 nodemon svc.js",
     "test": "mocha -w",
     "audit": "snyk test"
   },

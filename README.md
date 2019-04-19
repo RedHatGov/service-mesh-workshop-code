@@ -16,6 +16,13 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 * extensibility
 * availability
 
+# This Repo
+This repo is an example microservices based application. It's core functionality is a paste board. It's an intentionally simple example that could be the prototype for something bigger like a [Pinterest](https://www.pinterest.com/), a [PasteBin](https://pastebin.com/), a [CodePen](https://codepen.io/pens/), or even a [Ranker](https://www.ranker.com/).
+
+## Current screenshot
+![Screenshot](design/screenshots/2019-04-19_1042.png?raw=true)
+
+
 ## Here's how it's architected:
 
 ![Diagram](design/highlevel-arch.png)
