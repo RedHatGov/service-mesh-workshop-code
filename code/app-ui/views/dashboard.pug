@@ -1,0 +1,78 @@
+extends layout-topbar
+block append stylesheets
+  link(href='/stylesheets/dashboard.css', rel='stylesheet')
+block content
+  main(role='main')
+    section.jumbotron.text-center
+      .container
+        if boards != null && boards.length != 0
+          h1.jumbotron-heading Your Boards
+            p.lead.text-muted
+              | Your boards are below, click on one to see the items.
+              br
+              | You can also create more boards using the button below.
+        else
+          h1.jumbotron-heading Look at all the empty
+            p.lead.text-muted
+              | You can create a new board by clicking the button below. Once you've created a board, you can start to paste items into it.
+        p
+          button.btn.btn-primary(type='button', data-toggle='modal', data-target='#newBoardModal', data-whatever='@getbootstrap') New Board
+          #newBoardModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='newBoardModalLabel', aria-hidden='true')
+            .modal-dialog(role='document')
+              .modal-content
+                .modal-header
+                  h5#newBoardModalLabel.modal-title New Board
+                  button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') x
+                .modal-body
+                  form
+                    .form-group
+                      label.col-form-label(for='newboard-name') Name
+                      input#recipient-name.form-control(type='text', placeholder='Some name')
+                    .form-group
+                      label.col-form-label(for='newboard-description') Description
+                      textarea#message-text.form-control(placeholder='Describe what this board is all about')
+                .modal-footer
+                  button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                  button.btn.btn-primary(type='button') Create
+    if boards != null && boards.length != 0
+      .album.py-5.bg-light
+        .container
+          .row
+            - var count = Math.min(30, boards.length)  // limit the max displayed items
+            - var iter = 0
+            while iter < count
+              if boards[iter].id != null && boards[iter].id.length > 0
+                .col-md-4
+                  .card.mb-4.shadow-sm
+                    svg.bd-placeholder-img.card-img-top(width='100%', height='100', xmlns='http://www.w3.org/2000/svg', preserveAspectRatio='xMidYMid slice', focusable='false', role='img', aria-label='Placeholder: Header')
+                      title Header
+                      rect(width='100%', height='100%', fill='#55595c')
+                      text(x='50%', y='50%', fill='#eceeef', dy='.3em') #{boards[iter].name}
+                    .card-body
+                      p.card-text
+                        | #{boards[iter].description}
+                      .d-flex.justify-content-between.align-items-center
+                        .btn-group
+                          button.btn.btn-sm.btn-outline-secondary(type='button') Click to Open
+                          //- button.btn.btn-sm.btn-outline-secondary(type='button') Delete
+                        small.text-muted #{boards[iter].items.length} items
+              else
+                .col-md-4
+                  .card.mb-4.shadow-sm
+                    svg.bd-placeholder-img.card-img-top(width='100%', height='100', xmlns='http://www.w3.org/2000/svg', preserveAspectRatio='xMidYMid slice', focusable='false', role='img', aria-label='Placeholder: Header')
+                      title Header
+                      rect(width='100%', height='100%', fill='#55595c')
+                      text(x='50%', y='50%', fill='#eceeef', dy='.3em') ?????????
+                    .card-body
+                      p.card-text
+                        | Something is wrong with this board, contact and admin if you would like to try to recover it.
+                      .d-flex.justify-content-between.align-items-center
+                        .btn-group
+                          button.btn.btn-sm.btn-outline-secondary(type='button') Click to Open
+                          //- button.btn.btn-sm.btn-outline-secondary(type='button') Delete
+                        small.text-muted ? items
+              - iter++
+
+block append javascripts
+  script(src='/javascripts/dashboard.js')

@@ -1,0 +1,67 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Shared Items
+    link(href='/stylesheets/bootstrap-4.3.1-dist/css/bootstrap.min.css', rel='stylesheet')
+    style.
+      .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      }
+      @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+      }
+      }
+  block stylesheets
+    link(href='/stylesheets/topbar.css', rel='stylesheet')
+  body.bg-light
+    nav.navbar.navbar-expand-lg.fixed-top.navbar-dark.bg-dark
+      //- a.navbar-brand.mr-auto.mr-lg-0(href='/') #{title}
+      img.mr-3(src='/images/clipboard.png', alt='', width='50', height='50')
+      button.navbar-toggler.p-0.border-0(type='button', data-toggle='offcanvas')
+        span.navbar-toggler-icon
+      #navbarsExampleDefault.navbar-collapse.offcanvas-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href='/')
+              | Dashboard 
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/shared') Shared
+          li.nav-item
+            a.nav-link(href='/profile') Profile
+          li.nav-item.dropdown
+            a#dropdown-notifications.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Notifications
+            .dropdown-menu(aria-labelledby='dropdown-notifications')
+              a.dropdown-item(href='#').disabled No new notifications
+        form.form-inline.my-2.my-lg-0
+          input.form-control.mr-sm-2(type='text', placeholder='Search', aria-label='Search')
+          button.btn.btn-outline-light.my-2.my-sm-0(type='submit') Search
+    br
+    block secondbar
+
+    block content
+
+  footer.text-muted
+    .container
+      p.float-right
+        a(href='#') Back to top
+      p 
+        | The source for this application can be 
+        a(href='https://github.com/dudash/openshift-microservices') found on github
+        | .
+      a(href='https://vecteezy.com').badge.badge-light Graphics Provided by www.Vecteezy.com
+
+  block javascripts
+    script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js', integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo', crossorigin='anonymous')
+    script.
+      window.jQuery || document.write('<script src="/javascripts/jquery-3.3.1.slim.min.js"><\\/script>')
+    script(src='/stylesheets/bootstrap-4.3.1-dist/js/bootstrap.bundle.min.js')
+    script(src='/javascripts/topbar.js')
