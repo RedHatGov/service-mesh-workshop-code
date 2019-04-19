@@ -28,14 +28,13 @@ router.get('/', function(req, res, next) {
     })
 })
 
-/* POST to add an item to shared items list */
+/* POST (form submission) to add an item to shared items list */
 router.post('/paste', function(req, res) {
     var pasteData = req.body.pastedata
     if (pasteData.length < 1) { 
         res.debug('ignoring zero length add to shared board')
         return 
     }
-    var timestamp = moment().format()
     const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'
     req.debug('POST to boards SVC at: ' + boardsURI)
     var request_options = {

@@ -1,9 +1,9 @@
 var express = require('express')
 var router = express.Router()
 
-/* GET users listing. */
+/* Show users profile page or login/create account */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource')
+  res.render('profile', { title: 'Your Profile'})
 })
 
 module.exports = router

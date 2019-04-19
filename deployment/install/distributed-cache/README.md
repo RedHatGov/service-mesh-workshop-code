@@ -1,8 +1,8 @@
-# Redis setup
+# Distributed cache setup
 
 # THIS IS CURRENTLY NOT WORKING... NEED TO DEBUG
 
-## Prerequisites (OLM and Redis Operator)
+## Prerequisites (OLM and Infinispan/Redis Operator)
 ** Note **
     In order to install an Operator from OperatorHub.io, first be sure that you have a Kubernetes cluster (v1.7 or newer) running with
     privileges to create new namespaces, ClusterRoles, ClusterRoleBindings and CustomResourceDefinitions. The Operator Lifecycle 
@@ -21,7 +21,7 @@ With OLM available (if you haven't already) install the redis operator ([referen
 More details on the [redis operator can be found here][3].
 
 ## Install
-We can create a redis cluster for this app by telling the Redis operator to do it using the config file in this folder:
+We can create a cache cluster for this app by telling an operator to do it using the config file in this folder:
 ```oc project microservices-demo```
 ```oc apply -f redis-enterprise-cluster_rhel.yaml```
 
