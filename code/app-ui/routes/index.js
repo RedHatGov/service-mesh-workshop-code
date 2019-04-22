@@ -1,34 +1,44 @@
-var express = require('express');
-var router = express.Router();
-var moment = require('moment');
-var kafka = require('../kafka-events');
-kafka.init();
+var express = require('express')
+var router = express.Router()
+var moment = require('moment')
+var request = require('request-promise')
 
-/* GET home page. */
-// get JUST the last 10 items from DB and pass into render
-// and make sure to fetch most recent first
+/* GET dashboard page. */
 router.get('/', function(req, res, next) {
-  kafka.sender.sendUserPayload(['pageload', '', '', 'someone asked for /'], function(err, data) {
-    if (err) {
-      console.log('kafka error ' + err);
-    } else {
-      console.log(data);
-    }
-  });
-  alldocs = "";
-  res.render('index', { title: 'Cut and Paste', itemsSubSet: alldocs });
-});
+  var userboards = ''
+  res.render('dashboard', { title: 'Cut and Paster', boards: userboards })
+})
 
-/* non-api POST to add an item */
-router.post('/paste', function(req, res) {
-  var pasteData = req.body.pastedata;
-  if (pasteData.length < 1) { 
-    console.log('ignoring zero length add');
-    return; 
-  } // no empty data
-  var stampit = moment().valueOf();
-  console.log(stampit + ' pasting: ' + pasteData);
-  res.redirect("/");
-});
+/* POST from form submission to create a board */
+router.post('/newboard', function(req, res) {
+  var newBoardData = req.body.newboarddata
+  var user = 'userX'
+  // TODO: validate data
+  const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards'
+  req.debug('POST to boards SVC at: ' + boardsURI)
+  var request_options = {
+      method: 'POST',
+      uri: boardsURI,
+      body: {
+        name: newBoardData.name,
+        description: newBoardData.description,
+        items: newBoardData.items
+      },
+      headers: {
+          'User-Agent': req.SERVICE_NAME
+      },
+      json: true // Automatically parses the JSON string in the response
+  }
+  request(request_options)
+  .then(function (result) {
+      // req.debug(result)
+      res.redirect("/")
+  })
+  .catch(function (err) {
+      req.debug('ERROR POSTING DATA TO CREATE NEW BOARD')
+      req.debug(err)
+      res.redirect("/")
+  })
+})
 
-module.exports = router;
+module.exports = router

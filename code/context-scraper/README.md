@@ -13,7 +13,7 @@ Unrestricted testing URL: ```http GET https://www.googleapis.com/customsearch/v1
 Restricted testing URL: ```http GET https://www.googleapis.com/customsearch/v1/siterestrict key==AIzaSyDRdgirA2Pakl4PMi7t-8LFfnnjEFHnbY4 cx==005627457786250373845:lwanzyzfwji q==microservices```
 
 ## API Documentation
-* GET /scrape/custom_search?term==YOUR_TERM_HERE
+- GET /scrape/custom_search?term==YOUR_TERM_HERE
 
 example return JSON data is an array of:
 ```
@@ -36,23 +36,22 @@ Note: thumbnail is not always included.
 ## Developer instructions
 
 ### Env Vars
-* GOOGLE_APIS_URL - URL to ping for google search (defaults to: `https://www.googleapis.com/customsearch/v1/siterestrict`)
-* GOOGLE_API_KEY - API key to use for google (defaults to mine: `AIzaSyDRdgirA2Pakl4PMi7t-8LFfnnjEFHnbY4`)
-* GOOGLE_CX - cx parameter for the google search (defaults to mine: `005627457786250373845:lwanzyzfwji`)
-* SERVICE_NAME - so you can rename the service 
-* DEBUG_STACK_TRACE - set to `true` to dump 404 and 500 error stacks
-* DEBUG_FORCED_CONTEXT_VALUE - set to force the context scraping to a fixed value
-
+- GOOGLE_APIS_URL - URL to ping for google search (defaults to: `https://www.googleapis.com/customsearch/v1/siterestrict`)
+- GOOGLE_API_KEY - API key to use for google (defaults to mine)
+- GOOGLE_CX - cx parameter for the google search (defaults to mine)
+- SERVICE_NAME - so you can rename the service 
+- DEBUG_STACK_TRACE - set to `true` to dump 404 and 500 error stacks
+- DEBUG_FORCED_CONTEXT_VALUE - set to force the context scraping to a fixed value
+- DEBUG - specify the debug loggers to print out (use a comma separated list)
 
 ### Local Installation / Run / Test
 ```bash
 $ npm install
 ```
 
-#### Running locally
 Start the service:
 ```bash
-$ npm start
+$ npm run-script dev
 ```
 In another terminal you can test with:
 ```bash

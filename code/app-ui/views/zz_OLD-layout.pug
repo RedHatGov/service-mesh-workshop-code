@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title= title
+    link(rel="stylesheet", href="/stylesheets/style.css")
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7", crossorigin="anonymous")
+    //link(rel="stylesheet", href="/stylesheets/bootstrap-4.3.1-dist/css/bootstrap.min.css")
+    //script(src="/javascripts/jquery-3.3.1.min.js")
+  body
+    nav(class='navbar navbar-inverse navbar-fixed-top')
+      div.container-fluid
+        div.navbar-header
+          a(class="navbar-brand" href="/")
+              span(id="icon" class="" aria-hidden="true") Dashboard
+        div.collapse.navbar-collapse(id="navbar-collapse-1")
+          ul.nav.navbar-nav
+            li 
+              a(href="/shared") Shared Board
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href="/users/login") Login
+
+    block content
+
+    // FOR DEBUGGING ONLY
+    //p <br/><b>USER-AGENT:</b> #{ua}
+    

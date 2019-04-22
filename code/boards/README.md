@@ -17,12 +17,24 @@ UI -<get /user345/boards/10>-> GATEWAY <-> Common(validate user 345 can access b
 ## Developer instructions
 
 ### Env Vars
-* TBD
+- MONGODB_USER - overrride the user for database access
+- MONGODB_PASSWORD - overrride the password for database access
+- MONGODB_SERVICE_HOST - override the database location
+- MONGODB_SERVICE_PORT - override the database port
+- MONGODB_DATABASE - override the database name
+- MONGODB_USEAUTH - use auth when connecting to the database, defaults to true
+- DEBUG - specify the debug loggers to print out (use a comma separated list)
 
 ### Local Installation / Run / Test
 Install the dependencies:
 ```bash
 $ npm install
+```
+
+Start a database:
+```bash
+$ mkdir -p /tmp/data
+$ mongod --dbpath=/tmp/data --port 27017
 ```
 
 Start the service:
@@ -36,8 +48,9 @@ TBD
 ```
 
 ### Developer Tips
-* API is generated via [swagger-tools, read more here][3] [and here][4].
-* MongoDB is being accessed via a thin helper library on top called monk. [Read how to use it here][2].
+- API is generated via [swagger-tools, read more here][3] [and here][4].
+- MongoDB is being accessed via a thin helper library on top called monk. [Read how to use it here][2].
+- Using DEBUG. Available debuggers are: service, database, swagger-tools:middleware:* 
 
 [1]: https://www.apicur.io/
 [2]: https://automattic.github.io/monk/

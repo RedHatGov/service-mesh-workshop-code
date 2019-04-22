@@ -1,5 +1,6 @@
 # PLEASE NOTE THIS REPO IS IN-WORK 
 ## This header will be removed when the initial version is ready for beta usage
+[![OpenShift Version][openshift-heximage]][openshift-url]
 
 # Microservices
 Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment/scaling of complex applications.
@@ -14,6 +15,13 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 * resiliency
 * extensibility
 * availability
+
+# This Repo
+This repo is an example microservices based application. It's core functionality is a paste board. It's an intentionally simple example that could be the prototype for something bigger like a [Pinterest](https://www.pinterest.com/), a [PasteBin](https://pastebin.com/), a [CodePen](https://codepen.io/pens/), or even a [Ranker](https://www.ranker.com/).
+
+## Current screenshot
+![Screenshot](design/screenshots/2019-04-19_1042.png?raw=true)
+
 
 ## Here's how it's architected:
 
@@ -76,3 +84,6 @@ Apache 2.0.
 
 [1]: https://github.com/dudash/openshift-microservices/issues
 [2]: https://github.com/dudash/openshift-microservices/labels/discussion
+
+[openshift-heximage]: https://img.shields.io/badge/openshift-3.11-BB261A.svg
+[openshift-url]: https://docs.openshift.com/container-platform/3.11/welcome/index.html

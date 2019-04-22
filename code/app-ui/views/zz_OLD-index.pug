@@ -1,0 +1,55 @@
+extends layout
+block content
+  div.page-header
+    h1
+      small
+        if ua.toLowerCase().indexOf('mac os') >= 0
+          p Input text below and click "Add" to add it to the board. Use <kbd><kbd>⌘</kbd> + <kbd>c</kbd></kbd> to copy text and <kbd><kbd>⌘</kbd> + <kbd>v</kbd></kbd> to paste it.  
+        else
+          p Input text below and click "Add" to add it to the board. Use <kbd><kbd>ctrl</kbd> + <kbd>c</kbd></kbd> to copy text and <kbd><kbd>ctrl</kbd> + <kbd>v</kbd></kbd> to paste it.
+  // FYI I put 8/4 column divides in there so it looks a little better on full website, need to check against mobile to see how it looks
+  div.row
+    form(type='form' action='/paste' method='post')
+      div.input-group.input-group-lg
+        input#inputPasteData(
+          name='pastedata'
+          type='text'
+          class='form-control'
+          placeholder='Paste your text here...'
+          autofocus
+        )
+        span.input-group-btn
+          button.btn.btn-default.btn-lg(type='submit') Add
+  br
+  div.row
+    if itemsSubSet != null && itemsSubSet.length != 0
+      - var count = Math.min(10, itemsSubSet.length)  // limit the max displayed items (the route limits this too)
+      div.panel.panel-info
+        div.panel-heading
+          h3.panel-title Last #{count} Items
+        ul.list-group
+          // loops through the last 10 items or all items if there are less than 10
+          - var iter = 0
+          while iter < count
+            if itemsSubSet[iter].raw != null && itemsSubSet[iter].raw.length > 0
+              li.list-group-item 
+                span.visible-inline #{itemsSubSet[iter].raw}
+                button.btn.btn-default.btn-xs.glyphicon.glyphicon-copy.pull-right(
+                  id='copy-button-'+i
+                  type='button',
+                  aria-hidden='true',
+                  data-clipboard-text=itemsSubSet[iter].raw
+                )
+            else
+              li.list-group-item
+                span.label.label-danger Error
+                span.visible-inline  there is no data in this item...
+            - iter++
+    else
+      div.panel.panel-warning
+        div.panel-heading
+          h3.panel-title Look at this vast nothingness
+      br
+  
+  script(src="/javascripts/clipboard.min.js")
+  script(src="/javascripts/copybuttons.js")
