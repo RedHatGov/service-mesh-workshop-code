@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 labels:
   rhsso: 7.3.1.GA
-  template: auth-sso73-x509-postgresql-persistent
+  template: auth-sso73-x509
 message: A new persistent RH-SSO service (using PostgreSQL) has been created in your
   project. The admin username/password for accessing the master realm via the RH-SSO
   console is ${SSO_ADMIN_USERNAME}/${SSO_ADMIN_PASSWORD}. The username/password for
@@ -26,7 +26,7 @@ metadata:
       TLS.
     template.openshift.io/support-url: https://access.redhat.com
     version: 7.3.1.GA
-  name: auth-sso73-x509-postgresql-persistent
+  name: auth-sso73-x509
 objects:
 - apiVersion: v1
   kind: Service
@@ -107,6 +107,8 @@ objects:
         labels:
           application: ${APPLICATION_NAME}
           deploymentConfig: ${APPLICATION_NAME}
+        annotations:
+          sidecar.istio.io/inject: "false"
         name: ${APPLICATION_NAME}
       spec:
         containers:
@@ -226,6 +228,8 @@ objects:
         labels:
           application: ${APPLICATION_NAME}
           deploymentConfig: ${APPLICATION_NAME}-postgresql
+        annotations:
+          sidecar.istio.io/inject: "false"
         name: ${APPLICATION_NAME}-postgresql
       spec:
         containers:
@@ -299,7 +303,7 @@ parameters:
   displayName: Application Name
   name: APPLICATION_NAME
   required: true
-  value: auth
+  value: auth-sso73-x509
 - description: Custom hostname for the RH-SSO server.
   displayName: Custom RH-SSO Server Hostname
   name: SSO_HOSTNAME

@@ -13,7 +13,7 @@ To get up and running you'll need to setup the platform dependencies on your clu
 
 ## Dependencies
 ### Istio
-If using Istio, `cd istio` and [follow instructions here](./istio)
+If using Istio, `cd istio` and [follow instructions here](./istio). As general rule all Deployment resources are annotated with `sidecar.istio.io/inject: "true"` which will be ignored in the case where you aren't using Istio.
 
 ### 3Scale
 [COMING SOON](./3scale)
