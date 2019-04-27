@@ -203,6 +203,9 @@ objects:
   metadata:
     application: ${APPLICATION_NAME}
     name: ${DATABASE_SERVICE_NAME}
+    labels:
+      application: ${APPLICATION_NAME}
+      app: ${APPLICATION_NAME}
   spec:
     accessModes:
     - ReadWriteOnce
@@ -212,6 +215,9 @@ objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
+    labels:
+      application: ${APPLICATION_NAME}
+      app: ${APPLICATION_NAME}
     annotations:
       template.alpha.openshift.io/wait-for-ready: "true"
     name: ${DATABASE_SERVICE_NAME}
@@ -227,9 +233,9 @@ objects:
           application: ${APPLICATION_NAME}
           app: ${APPLICATION_NAME}
           deploymentConfig: ${DATABASE_SERVICE_NAME}
+          name: ${DATABASE_SERVICE_NAME}
         annotations:
           sidecar.istio.io/inject: "true"
-        name: ${DATABASE_SERVICE_NAME}
       spec:
         containers:
         - capabilities: {}
