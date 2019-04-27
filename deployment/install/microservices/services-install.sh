@@ -6,8 +6,10 @@ oc project microservices-demo
 # For each identified service account you must update the cluster configuration to ensure they are granted 
 # access to the anyuid and privileged SCCs by executing the following commands from an account with cluster 
 # admin privileges. Replace <service account> and <namespace> with values specific to your application.
-#oc adm policy add-scc-to-user anyuid -z <service account> -n <namespace>
-#oc adm policy add-scc-to-user privileged -z <service account> -n <namespace>
+# oc adm policy add-scc-to-user anyuid -z <service account> -n <namespace>
+# oc adm policy add-scc-to-user privileged -z <service account> -n <namespace>
+# Details on why are here:
+# https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#configuring-security-constraints-for-application-service-accounts
 oc adm policy add-scc-to-user anyuid -z default -n microservices-demo
 oc adm policy add-scc-to-user privileged -z default -n microservices-demo
 

@@ -1,3 +1,10 @@
+# Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
+# Usage example:
+# oc new-app -f ./app-ui-fromsource.yaml \
+#   -p APPLICATION_NAME=app-ui \
+#   -p NODEJS_VERSION_TAG=8-RHOAR \
+#   -p GIT_BRANCH=peter-cotton-tail
+#   -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
@@ -64,7 +71,7 @@ objects:
             value: auth-sso73-x509
           - name: SSO_SVC_HOST
             value: '8443'
-          image: ${APPLICATION_IMAGE_URI}:${APP_VERSION_TAG}
+          image: ${APPLICATION_NAME}
           imagePullPolicy: Always
           name: ${APPLICATION_NAME}
           ports:
@@ -80,20 +87,89 @@ objects:
         terminationGracePeriodSeconds: 30
     test: false
     triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
     - type: ConfigChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: code/app-ui
+      git:
+        ref: ${GIT_BRANCH}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'nodejs:${NODEJS_VERSION_TAG}'
+          namespace: openshift
+      type: Source
+    triggers:
+    - generic:
+        secret: 1ee531e8754cceaa
+      type: Generic
+    - github:
+        secret: e7d3062bfd0f73e4
+      type: GitHub
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
 parameters:
 - description: The name for the application.
   displayName: Application Name
   name: APPLICATION_NAME
   required: true
   value: app-ui
-- description: The URI to pull the application container image from
-  displayName: Application image URI
-  name: APPLICATION_IMAGE_URI
-  required: true
-  value: quay.io/jasonredhat/openshift-microservices-app-ui
-- description: Version of app image to be used (e.g. 1.0.0 or latest).
-  displayName: App version tag (image)
+- description: The version to tag the app with
+  displayName: app version tag
   name: APP_VERSION_TAG
   required: true
-  value: 'latest'
+  value: '1.0.0'
+- description: The source code branch
+  displayName: git branch
+  name: GIT_BRANCH
+  required: true
+  value: master
+- description: The source code URI
+  displayName: git URI
+  name: GIT_URI
+  required: true
+  value: 'https://github.com/dudash/openshift-microservices.git'
+- description: The nodejs version tag to uses
+  displayName: Node.js version tag
+  name: NODEJS_VERSION_TAG
+  required: true
+  value: '10'

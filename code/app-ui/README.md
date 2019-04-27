@@ -20,10 +20,11 @@ $ npm run-script dev
 ### Running on OpenShift
 You can use a template to create all the build and deployment resources for OpenShift. Here's an example that overrides the defaults:
 ```bash
-oc new-app -f ../../deployment/install/microservices/openshift-configuration/app-ui.yaml \
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/app-ui-fromsource.yaml \
     -p APPLICATION_NAME=app-ui \
     -p NODEJS_VERSION_TAG=8-RHOAR \
-    -p GIT_BRANCH=development
+    -p GIT_BRANCH=peter-cotton-tail
+    -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 ```
 Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
 

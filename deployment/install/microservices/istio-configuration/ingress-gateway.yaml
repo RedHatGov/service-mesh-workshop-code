@@ -7,9 +7,9 @@
 #
 # https://istio.io/docs/reference/config/networking/v1alpha3/gateway/
 #
-# We are using * below because this is a demo environment that can hop
+# We are using hosts="*"" below because this is a demo environment that can hop
 # around from domain to domain and cluster to cluster
-# Also, OpenShift should automatically create routes for me based on this:
+# Also, OpenShift *should* automatically create routes for me based on this:
 # https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#automatic-route-creation
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -50,7 +50,7 @@ spec:
     - uri:
         prefix: /debug/boards/
     rewrite:
-      uri: "/"
+      uri: /
     route:
     - destination:
         host: boards

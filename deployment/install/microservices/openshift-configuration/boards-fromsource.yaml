@@ -1,3 +1,12 @@
+# Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
+# Usage example:
+# oc new-app -f ./boards-fromsource.yaml \
+#     -p APPLICATION_NAME=boards \
+#     -p NODEJS_VERSION_TAG=8-RHOAR \
+#     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
+#     -p GIT_BRANCH=peter-cotton-tail \
+#     -p DATABASE_SERVICE_NAME=boards-mongodb \
+#     -p MONGODB_DATABASE=boardsDevelopment
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
@@ -11,7 +20,7 @@ metadata:
   name: boards
 objects:
 # -----------------------------------------------------------------------------
-# Node.js App Section (Service, DeploymentConfig)
+# Node.js App Section
 # -----------------------------------------------------------------------------
 - apiVersion: v1
   kind: Service
@@ -88,7 +97,7 @@ objects:
             value: ${DATABASE_SERVICE_NAME}
           - name: MONGODB_SERVICE_PORT
             value: '27017'
-          image: ${APPLICATION_IMAGE_URI}:${APP_VERSION_TAG}
+          image: ${APPLICATION_NAME}
           imagePullPolicy: Always
           name: ${APPLICATION_NAME}
           ports:
@@ -104,7 +113,66 @@ objects:
         terminationGracePeriodSeconds: 30
     test: false
     triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
     - type: ConfigChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: code/boards
+      git:
+        ref: ${GIT_BRANCH}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'nodejs:${NODEJS_VERSION_TAG}'
+          namespace: openshift
+      type: Source
+    triggers:
+    - generic:
+        secret: 1ee531e8754cceaa
+      type: Generic
+    - github:
+        secret: e7d3062bfd0f73e4
+      type: GitHub
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
 # -----------------------------------------------------------------------------
 # MongoDB Section
 # -----------------------------------------------------------------------------
@@ -266,16 +334,26 @@ parameters:
   name: APPLICATION_NAME
   required: true
   value: boards
-- description: The URI to pull the application container image from
-  displayName: Application image URI
-  name: APPLICATION_IMAGE_URI
-  required: true
-  value: quay.io/jasonredhat/openshift-microservices-boards
-- description: Version of app image to be used (e.g. 1.0.0 or latest).
-  displayName: App version tag (image)
+- description: The version to tag the app with
+  displayName: app version tag
   name: APP_VERSION_TAG
   required: true
-  value: 'latest'
+  value: '1.0.0'
+- description: The source code URI
+  displayName: git URI
+  name: GIT_URI
+  required: true
+  value: 'https://github.com/dudash/openshift-microservices.git'
+- description: The source code branch
+  displayName: git branch
+  name: GIT_BRANCH
+  required: true
+  value: master
+- description: The nodejs version tag to uses
+  displayName: Node.js version tag
+  name: NODEJS_VERSION_TAG
+  required: true
+  value: '10'
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MONGODB_MEMORY_LIMIT

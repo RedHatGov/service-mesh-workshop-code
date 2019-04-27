@@ -207,7 +207,7 @@ objects:
         - ${APPLICATION_NAME}
         from:
           kind: ImageStreamTag
-          name: auth:latest
+          name: ${AUTH_IMAGE_NAME}:${AUTH_IMAGE_TAG}
           namespace: ${AUTH_IMAGE_STREAM_NAMESPACE}
       type: ImageChange
     - type: ConfigChange
@@ -369,6 +369,16 @@ parameters:
   name: AUTH_IMAGE_STREAM_NAMESPACE
   required: true
   value: microservices-demo
+- description: Name of the custom SSO auth service image
+  displayName: Auth Image Name
+  name: AUTH_IMAGE_NAME
+  required: true
+  value: auth
+- description: Tag name of the custom SSO auth service image
+  displayName: Auth Image Tag
+  name: AUTH_IMAGE_TAG
+  required: true
+  value: latest
 - description: RH-SSO Server administrator username
   displayName: RH-SSO Administrator Username
   from: '[a-zA-Z0-9]{8}'
