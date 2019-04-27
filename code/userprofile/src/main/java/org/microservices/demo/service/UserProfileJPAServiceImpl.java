@@ -129,8 +129,8 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
 
     protected Set<UserProfile> copyDbProfiles(UserProfileJPA[] dbProfiles) {
         Set<UserProfile> profiles = new HashSet<>();
-        for(int i = 0; i < dbProfiles.length; i++) {
-            profiles.add(copyDbProfile(dbProfiles[i]));
+        for(UserProfileJPA dbProfile : dbProfiles) {
+            profiles.add(copyDbProfile(dbProfile));
         }
         return profiles;
     }

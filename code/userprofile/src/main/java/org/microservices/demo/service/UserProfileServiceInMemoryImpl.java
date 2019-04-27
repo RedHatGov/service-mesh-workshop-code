@@ -41,8 +41,7 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
     public boolean createProfile(@Valid @NotNull UserProfile profile) {
         // does it exist
         if(profile != null) {
-            for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-                UserProfile existing = it.next();
+            for(UserProfile existing : profiles) {
                 if (StringUtils.equals(existing.getId(), profile.getId()))
                   return false;
             }
@@ -54,8 +53,7 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
 
     @Override
     public UserProfile getProfile(@NotBlank String id) {
-        for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-            UserProfile profile = it.next();
+        for(UserProfile profile : profiles) {
             if (StringUtils.equals(id, profile.getId()))
                return profile;
         }
@@ -70,8 +68,7 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
     @Override
     public boolean updateProfile(@Valid @NotNull UserProfile profile, @NotBlank String id) {
         if(profile != null) {
-            for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-                UserProfile existing = it.next();
+           for(UserProfile existing : profiles) {
                 if(StringUtils.equals(id, existing.getId()) &&
                     StringUtils.equals(id, profile.getId())) {
                     existing.setFirstName(profile.getFirstName());
