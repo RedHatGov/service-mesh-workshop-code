@@ -43,8 +43,15 @@ $ npm run-script dev
 ```
 
 ### Running on OpenShift
+You can use a template to create all the build and deployment resources for OpenShift. Here's an example that overrides the defaults:
 ```bash
-TBD
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/boards-fromsource.yaml \
+    -p APPLICATION_NAME=boards \
+    -p NODEJS_VERSION_TAG=8-RHOAR \
+    -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
+    -p GIT_BRANCH=peter-cotton-tail \
+    -p DATABASE_SERVICE_NAME=boards-mongodb \
+    -p MONGODB_DATABASE=boardsDevelopment
 ```
 
 ### Developer Tips

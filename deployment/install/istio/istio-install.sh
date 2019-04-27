@@ -1,3 +1,4 @@
+#!/bin/bash
 oc new-project istio-operator
 oc new-app -f istio-operator.yaml --param=OPENSHIFT_ISTIO_MASTER_PUBLIC_URL=https://yourcluster.com:443
 

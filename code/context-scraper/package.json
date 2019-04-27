@@ -5,7 +5,7 @@
   "main": "svc.js",
   "scripts": {
     "start": "node svc.js",
-    "dev": "DEBUG=* nodemon svc.js",
+    "dev": "DEBUG=* PORT=3002 nodemon svc.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "audit": "snyk test"
   },
