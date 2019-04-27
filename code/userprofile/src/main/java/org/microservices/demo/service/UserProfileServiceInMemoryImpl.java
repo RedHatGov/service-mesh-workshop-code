@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.codec.binary.StringUtils;
 import org.microservices.demo.json.UserProfile;
+import org.microservices.demo.json.UserProfilePhoto;
 import org.springframework.stereotype.Service;
 
 /**
@@ -79,6 +80,16 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
                 }               
             }
         }
+        return false;
+    }
+
+    @Override
+    public UserProfilePhoto getUserProfilePhoto(@NotBlank String id) {
+        return null;
+    }
+
+    @Override
+    public boolean saveUserProfilePhoto(@Valid UserProfilePhoto userProfilePhoto) {
         return false;
     }
 }

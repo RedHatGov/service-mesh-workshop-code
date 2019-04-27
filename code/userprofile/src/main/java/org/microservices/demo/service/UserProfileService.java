@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.microservices.demo.json.UserProfile;
+import org.microservices.demo.json.UserProfilePhoto;
 
 /**
  * User Profile Service
@@ -49,4 +50,18 @@ public interface UserProfileService {
      * @return the specified profile
      */
     UserProfile getProfile(@NotBlank String id);
+
+    /**
+     * return the photo information for a specific profile
+     * @param id
+     * @return
+     */
+    UserProfilePhoto getUserProfilePhoto(@NotBlank String id);
+
+    /**
+     * Saves user profile photo information
+     * @param userProfilePhoto
+     * @return
+     */
+    boolean saveUserProfilePhoto(@Valid UserProfilePhoto userProfilePhoto);
 }

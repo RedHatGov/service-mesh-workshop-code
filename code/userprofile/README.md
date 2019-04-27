@@ -80,6 +80,22 @@ Note that the build will take a few minutes, however, the app boots up a lot fas
 #### To view and test with Swagger-UI locally
 http://localhost:8080/swagger-ui/
 
+#### Photo/Image Testing
+This is only supported with the jpa implementation
+
+##### To test photo upload
+The requested user has to exist
+
+```bash
+curl -v -X  POST -H 'content-type: multipart/form-data' -F 'image=<filename>' http://localhost:8080/users/<userid>/photo
+```
+##### To test photo download
+The requested user has to exist
+
+```bash
+curl -v -X  GET -H 'content-type: application/octet-stream' http://localhost:8080/users/<userid>/photo
+```
+
 ### Running on OpenShift
 
 The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice 
