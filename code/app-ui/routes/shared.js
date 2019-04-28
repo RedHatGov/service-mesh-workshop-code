@@ -32,7 +32,7 @@ router.get('/', function(req, res, next) {
 router.post('/paste', function(req, res) {
     var pasteData = req.body.pastedata
     if (pasteData.length < 1) { 
-        res.debug('ignoring zero length add to shared board')
+        req.debug('ignoring zero length add to shared board')
         return 
     }
     const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'

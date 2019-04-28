@@ -16,5 +16,8 @@ oc adm policy add-scc-to-user privileged -z default -n microservices-demo
 # PULL THE CONTAINERS, CREATE THE SERVICES, PODS, ETC
 # oc apply -f ./openshift-configuration/xxx.yaml
 
+# CREATE A CUSTOM ROUTE FOR THE ISTIO NGRESS ROUTER (IF USING ISTIO)
+# TODO namespace=istio-system, something like microservices-demo.apps.YOURDOMAIN.COM (http2 no security)
+
 # APPLY ISTIO CONFIG (IF USING ISTIO)
 # oc apply -f ./istio-configuration/xxx.yaml

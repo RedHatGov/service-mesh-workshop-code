@@ -42,7 +42,7 @@ This repo utilizes a OpenShift's source-to-image (s2i) for customizing and layer
 ### Building this service
 Build requires an OpenShift cluster the new-build must point to a git repo or be pointing to a locally cloned branch. For secrets, branches and other options type `oc new-build -h`
 ```bash
-oc new-build redhat-sso-7/sso73-openshift:latest~https://github.com/dudash/openshift-microservices.git#peter-cotton-tail \
+oc new-build redhat-sso-7/sso73-openshift:latest~https://github.com/dudash/openshift-microservices.git#develop \
     --name=auth \
     -l app=auth-sso73-x509
 ```
@@ -61,7 +61,7 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/aut
  -p SSO_ADMIN_USERNAME="admin" \
  -p SSO_ADMIN_PASSWORD="password" \
  -p SSO_REALM="microservices" \
- -p AUTH_IMAGE_STREAM_NAMESPACE=YOUR_PROJECT_NAME
+ -p AUTH_IMAGE_STREAM_NAMESPACE=microservices-demo
 ```
 
 deleting services related to this app only:

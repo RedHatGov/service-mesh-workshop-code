@@ -49,7 +49,7 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/boa
     -p APPLICATION_NAME=boards \
     -p NODEJS_VERSION_TAG=8-RHOAR \
     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
-    -p GIT_BRANCH=peter-cotton-tail \
+    -p GIT_BRANCH=develop \
     -p DATABASE_SERVICE_NAME=boards-mongodb \
     -p MONGODB_DATABASE=boardsDevelopment
 ```

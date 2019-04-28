@@ -4,20 +4,20 @@
 #     -p APPLICATION_NAME=boards \
 #     -p NODEJS_VERSION_TAG=8-RHOAR \
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
-#     -p GIT_BRANCH=peter-cotton-tail \
+#     -p GIT_BRANCH=develop \
 #     -p DATABASE_SERVICE_NAME=boards-mongodb \
 #     -p MONGODB_DATABASE=boardsDevelopment
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: boards
+  template: boards-fromsource
 message: A new boards web service has been created in your project along with it's mongodb
 metadata:
   annotations:
     description: An boards application for the microservices demo
     openshift.io/display-name: boards
     template.openshift.io/long-description: This template defines the boards microservice
-  name: boards
+  name: boards-fromsource
 objects:
 # -----------------------------------------------------------------------------
 # Node.js App Section

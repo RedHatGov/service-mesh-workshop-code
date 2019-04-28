@@ -59,9 +59,16 @@ $ http GET localhost:8080/scrape/custom_search?term==YOUR_TERM_HERE
 ```
 
 ### Running on OpenShift
+You can use a template to create all the build and deployment resources for OpenShift. Here's an example that overrides the defaults:
 ```bash
-TBD
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/context-scraper-fromsource.yaml \
+    -p APPLICATION_NAME=context-scraper \
+    -p NODEJS_VERSION_TAG=8-RHOAR \
+    -p GIT_BRANCH=develop \
+    -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 ```
+Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
+
 
 ### Developer Tips
 For more info on using request-promises [check this out](https://github.com/request/request-promise)

@@ -108,7 +108,7 @@ objects:
           application: ${APPLICATION_NAME}
           deploymentConfig: ${APPLICATION_NAME}
         annotations:
-          sidecar.istio.io/inject: "false"
+          sidecar.istio.io/inject: "true"
         name: ${APPLICATION_NAME}
       spec:
         containers:
@@ -229,7 +229,7 @@ objects:
           application: ${APPLICATION_NAME}
           deploymentConfig: ${APPLICATION_NAME}-postgresql
         annotations:
-          sidecar.istio.io/inject: "false"
+          sidecar.istio.io/inject: "true"
         name: ${APPLICATION_NAME}-postgresql
       spec:
         containers:
