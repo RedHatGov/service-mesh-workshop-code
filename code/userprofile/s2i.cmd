@@ -16,6 +16,8 @@ oc new-project $USER_PROFILE_OCP_PROJECT
 # you can substitute postgresql-ephemeral if you need an ephemeral db
 oc new-app --template=postgresql-persistent --name=userprofile-postgresql --param=POSTGRESQL_USER=sarah --param=POSTGRESQL_PASSWORD=connor --param=POSTGRESQL_DATABASE=userprofiledb --param=DATABASE_SERVICE_NAME=userprofile-postgresql  -lapp=userprofile -lcomponent=db
 
+echo 'Wait for postgresql to deploy ..'
+
 until 
 	oc get pods -lapp=userprofile-postgresql | grep "userprofile-postgresql" | grep -m 1 "1/1"
 do
@@ -29,11 +31,15 @@ done
 oc new-app quay.io/quarkus/centos-quarkus-native-s2i~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH} --context-dir=/code/userprofile --name=userprofile -lcomponent=microservice
 oc expose service userprofile
 
+echo 'Wait for build to complete ..'
+
 until 
  oc get builds -lapp=userprofile | grep Complete 
 do
 	sleep 20
 done 
+
+echo 'Deploying user-profile pod ..'
 
 until 
 	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"

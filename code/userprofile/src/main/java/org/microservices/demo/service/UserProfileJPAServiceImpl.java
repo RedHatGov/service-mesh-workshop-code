@@ -85,8 +85,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     }
 
     @Override
-    @Transactional // becuase of postgresql large object and auto-commit restriction
-    //TODO: when moving image to different table, this can be removed    
+    @Transactional // becuase of postgresql large object and auto-commit restriction   
     public UserProfilePhoto getUserProfilePhoto(@NotBlank String id) {
         UserProfilePhoto userProfilePhoto =  null;
         UserProfileJPA existing = findExisting(id);

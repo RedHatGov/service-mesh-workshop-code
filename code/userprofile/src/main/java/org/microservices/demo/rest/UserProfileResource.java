@@ -162,10 +162,4 @@ public class UserProfileResource {
         }
         return id; // use id instead
     }
-
-    //TODO:
-    /*
-
-         TEST native on OCP
-    */
 }
