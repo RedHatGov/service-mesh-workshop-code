@@ -1,0 +1,99 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: app-ui
+message: A new app-ui service has been created in your project. 
+metadata:
+  annotations:
+    description: An app-ui application for the microservices demo
+    openshift.io/display-name: app-ui
+    template.openshift.io/long-description: This template defines the app-ui microservice
+  name: app-ui
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 8080
+    selector:
+      deploymentconfig: ${APPLICATION_NAME}
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${APPLICATION_NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: ${APPLICATION_NAME}
+          application: ${APPLICATION_NAME}
+          deploymentconfig: ${APPLICATION_NAME}
+          version: ${APP_VERSION_TAG}
+        annotations:
+          sidecar.istio.io/inject: "true"
+      spec:
+        containers:
+        - env:
+          - name: SSO_SVC_HOST
+            value: auth-sso73-x509
+          - name: SSO_SVC_HOST
+            value: '8443'
+          image: ${APPLICATION_IMAGE_URI}:${APP_VERSION_TAG}
+          imagePullPolicy: Always
+          name: ${APPLICATION_NAME}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+parameters:
+- description: The name for the application.
+  displayName: Application Name
+  name: APPLICATION_NAME
+  required: true
+  value: app-ui
+- description: The URI to pull the application container image from
+  displayName: Application image URI
+  name: APPLICATION_IMAGE_URI
+  required: true
+  value: quay.io/jasonredhat/openshift-microservices-app-ui
+- description: Version of app image to be used (e.g. 1.0.0 or latest).
+  displayName: App version tag (image)
+  name: APP_VERSION_TAG
+  required: true
+  value: 'latest'

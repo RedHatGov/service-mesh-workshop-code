@@ -1,0 +1,2 @@
+# Istio configuration
+The files in here configure the microservices demo app to leverage Istio capabilities as part of OpenShift. Note that OpenShift provides some additional capability beyond community Istio that might affect the config. Things like automatic route creation, this is outlined [in the docs](https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#servicemesh-istio-comparison).

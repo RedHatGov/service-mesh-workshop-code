@@ -12,12 +12,12 @@ var cors = require('cors')
 var debug = require('debug')('app')
 
 const SERVICE_NAME = process.env.SERVICE_NAME || 'app-ui'
-const BOARDS_SVC_HOST = process.env.BOARDS_SERVICE_HOST || 'localhost'
-const BOARDS_SVC_PORT = process.env.BOARDS_SERVICE_PORT || '3001'
-const PROFILE_SVC_HOST = process.env.PROFILE_SVC_HOST || 'localhost'
-const PROFILE_SVC_PORT = process.env.PROFILE_SVC_PORT || '3002'
-const SSO_SVC_HOST = process.env.SSO_SVC_HOST || 'localhost'
-const SSO_SVC_PORT = process.env.SSO_SVC_PORT || '8095'
+const BOARDS_SVC_HOST = process.env.BOARDS_SERVICE_HOST || 'boards'
+const BOARDS_SVC_PORT = process.env.BOARDS_SERVICE_PORT || '8080'
+const PROFILE_SVC_HOST = process.env.PROFILE_SVC_HOST || 'profile'
+const PROFILE_SVC_PORT = process.env.PROFILE_SVC_PORT || '8080'
+const SSO_SVC_HOST = process.env.SSO_SVC_HOST || 'auth-sso73-x509'
+const SSO_SVC_PORT = process.env.SSO_SVC_PORT || '8443'
 
 var app = express()
 app.use(cors())
