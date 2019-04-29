@@ -92,34 +92,34 @@ public class UserProfileResource {
     }
 
 // hat tip  - http://www.mastertheboss.com/jboss-frameworks/resteasy/using-rest-services-to-manage-download-and-upload-of-files
-    // @POST
-    // @Path("/{id}/photo")
-    // @Consumes(MediaType.MULTIPART_FORM_DATA)
-    // // TODO -- better IO Exception handling
-    // public Response uploadPhoto(MultipartFormDataInput input, @PathParam("id") String id)  throws IOException {
+    @POST
+    @Path("/{id}/photo")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    // TODO -- better IO Exception handling
+    public Response uploadPhoto(MultipartFormDataInput input, @PathParam("id") String id)  throws IOException {
 
-    //     Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
  
-    //     List<InputPart> inputParts = uploadForm.get("image");
-    //    // System.out.println("numer of parts " + inputParts.size());
-    //     byte[] bytes = null;
-    //     String fileName = null;
+        List<InputPart> inputParts = uploadForm.get("image");
+       // System.out.println("numer of parts " + inputParts.size());
+        byte[] bytes = null;
+        String fileName = null;
 
-    //     // extract image bytes from the stream
-    //     for (InputPart inputPart : inputParts) {
-    //             MultivaluedMap<String, String> header = inputPart.getHeaders();
-    //             fileName = getFileName(header, id);
-    //             // convert the uploaded file to inputstream
-    //             InputStream inputStream = inputPart.getBody(InputStream.class, null);
-    //            bytes = IOUtils.toByteArray(inputStream);
-    //     }
+        // extract image bytes from the stream
+        for (InputPart inputPart : inputParts) {
+                MultivaluedMap<String, String> header = inputPart.getHeaders();
+                fileName = getFileName(header, id);
+                // convert the uploaded file to inputstream
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
+               bytes = IOUtils.toByteArray(inputStream);
+        }
 
-    //     // add data structure that has the id, bytes, filename..the data structure should validated that non are null, call bytes - photo
-    //     //boolean savePhoto(id, bytes, filename); // service class .. return result based on that
-    //     return userProfileService.saveUserProfilePhoto(new UserProfilePhoto(id, bytes, fileName)) ?
-    //             Response.ok().build() :
-    //             Response.status(Response.Status.BAD_REQUEST).build();
-    // } 
+        // add data structure that has the id, bytes, filename..the data structure should validated that non are null, call bytes - photo
+        //boolean savePhoto(id, bytes, filename); // service class .. return result based on that
+        return userProfileService.saveUserProfilePhoto(new UserProfilePhoto(id, bytes, fileName)) ?
+                Response.ok().build() :
+                Response.status(Response.Status.BAD_REQUEST).build();
+    } 
 
     @GET
     @Path("/{id}/photo")
@@ -145,22 +145,22 @@ public class UserProfileResource {
 
     }
 
-    // protected String getFileName(MultivaluedMap<String, String> header, String id) {
+    protected String getFileName(MultivaluedMap<String, String> header, String id) {
 
-    //     String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
 
-    //     for (String filename : contentDisposition) {
+        for (String filename : contentDisposition) {
 
-    //         if ((filename.trim().startsWith("filename"))) {
+            if ((filename.trim().startsWith("filename"))) {
 
-    //             String[] name = filename.split("=");
+                String[] name = filename.split("=");
 
-    //             String finalFileName = name[1].trim().replaceAll("\"", "");
-    //             return finalFileName;
-    //         }
-    //     }
-    //     return id; // use id instead
-    // }
+                String finalFileName = name[1].trim().replaceAll("\"", "");
+                return finalFileName;
+            }
+        }
+        return id; // use id instead
+    }
 
 
     //TODO:
