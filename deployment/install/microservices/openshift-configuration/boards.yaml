@@ -275,7 +275,7 @@ parameters:
   displayName: App version tag (image)
   name: APP_VERSION_TAG
   required: true
-  value: 'latest'
+  value: '1.0'
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MONGODB_MEMORY_LIMIT

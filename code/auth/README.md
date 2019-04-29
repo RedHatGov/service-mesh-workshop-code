@@ -47,6 +47,13 @@ oc new-build redhat-sso-7/sso73-openshift:latest~https://github.com/dudash/opens
     -l app=auth-sso73-x509
 ```
 
+### Building a container image for this service
+As an alternative to building on OpenShift, you can use [s2i][4] to build this into a container image. For example:
+```bash
+rm -rf node_modules
+s2i build . registry.access.redhat.com/redhat-sso-7/sso73-openshift openshift-microservices-auth
+```
+
 ### Running on OpenShift
 You can use a template to create all the OpenShift resources. Optionally, set parameters:
 - AUTH_IMAGE_STREAM_NAMESPACE
@@ -88,3 +95,4 @@ oc create configmap sso-config \
 [1]: https://access.redhat.com/terms-based-registry/
 [2]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/html-single/red_hat_single_sign-on_for_openshift/
 [3]: https://www.keycloak.org/documentation.html
+[4]: https://github.com/openshift/source-to-image/releases

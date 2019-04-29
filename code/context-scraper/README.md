@@ -70,6 +70,15 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/con
 Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
 
 
+### Building a container image for this service
+You can use [s2i][5] to easily build this into a container image. For example to use the OpenShift runtimes node.js as our base:
+```bash
+rm -rf node_modules
+s2i build . registry.access.redhat.com/ubi7/nodejs-8 openshift-microservices-context-scraper --loglevel 3
+```
+Note: we remove the node_modules to avoid conflicts during the build process
+
+
 ### Developer Tips
 For more info on using request-promises [check this out](https://github.com/request/request-promise)
 

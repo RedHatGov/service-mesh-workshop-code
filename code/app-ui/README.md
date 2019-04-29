@@ -28,7 +28,16 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/app
 ```
 Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
 
+### Building a container image for this service
+You can use [s2i][2] to easily build this into a container image. For example to use the OpenShift runtimes node.js as our base:
+```bash
+rm -rf node_modules
+s2i build . registry.access.redhat.com/ubi7/nodejs-8 openshift-microservices-app-ui --loglevel 3
+```
+Note: we remove the node_modules to avoid conflicts during the build process
+
 ### Developer Tips
 Useful tool for converting HTML examples to pug files: [https://html2jade.org/][1]
 
 [1]: https://html2jade.org/
+[2]: https://github.com/openshift/source-to-image/releases

@@ -338,7 +338,7 @@ parameters:
   displayName: app version tag
   name: APP_VERSION_TAG
   required: true
-  value: '1.0.0'
+  value: '1.0'
 - description: The source code URI
   displayName: git URI
   name: GIT_URI

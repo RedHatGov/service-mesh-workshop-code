@@ -96,4 +96,4 @@ parameters:
   displayName: App version tag (image)
   name: APP_VERSION_TAG
   required: true
-  value: 'latest'
+  value: '1.0'

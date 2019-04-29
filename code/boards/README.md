@@ -54,6 +54,14 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/boa
     -p MONGODB_DATABASE=boardsDevelopment
 ```
 
+### Building a container image for this service
+You can use [s2i][5] to easily build this into a container image. For example to use the OpenShift runtimes node.js as our base:
+```bash
+rm -rf node_modules
+s2i build . registry.access.redhat.com/ubi7/nodejs-8 openshift-microservices-boards --loglevel 3
+```
+Note: we remove the node_modules to avoid conflicts during the build process
+
 ### Developer Tips
 - API is generated via [swagger-tools, read more here][3] [and here][4].
 - MongoDB is being accessed via a thin helper library on top called monk. [Read how to use it here][2].
@@ -63,3 +71,4 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/boa
 [2]: https://automattic.github.io/monk/
 [3]: https://github.com/apigee-127/swagger-tools/blob/master/docs/QuickStart.md
 [4]: https://developers.redhat.com/blog/2019/01/14/building-a-node-js-service-using-the-api-first-approach/
+[5]: https://github.com/openshift/source-to-image/releases

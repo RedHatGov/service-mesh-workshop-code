@@ -38,6 +38,8 @@ spec:
       serverCertificate: /etc/certs/cert-chain.pem
       privateKey: /etc/certs/key.pem
 ---
+# This VirtualService maps the gateway and all incoming hosts requests
+# http goes to app-ui on port 8080
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -60,10 +62,10 @@ spec:
   #     - '*'
   #   route:
   #   - destination:
-  #       host: XXXX
+  #       host: app-ui
   #       port:
   #         number: 8443
----
+# ---
 # Using this virtual service and an additional OpenShift route into
 # the istio ingressrouter so I can expose some internal services for
 # debugging - don't create this in the real demo
