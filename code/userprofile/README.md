@@ -21,7 +21,12 @@ Open questions/notes:
   
 
 ## API documentation
-see userprofile_v1_api.yaml
+The API has been visually designed via Apicurio, it's based on the OpenAPI Specification. see userprofile_v1_api.yaml
+
+If running on localhost, the APU is accessible to test and download at:
+
+http://localhost:8080/swagger-ui
+http://localhost:8080/api-docs
 
 ## Developer instructions
 - JDK 8+
