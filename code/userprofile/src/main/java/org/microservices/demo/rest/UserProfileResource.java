@@ -10,11 +10,9 @@
 package org.microservices.demo.rest;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
 import java.util.Set;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +45,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 // using JAX-RS
 @Path("/users")
-// @Produces(MediaType.APPLICATION_JSON)
-// @Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserProfileResource {
 
     // Using Spring-DI
@@ -65,8 +63,6 @@ public class UserProfileResource {
     protected UserProfileService userProfileService;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    // @Consumes(MediaType.APPLICATION_JSON)
     public Set<UserProfile> getProfiles() {
         return userProfileService.getProfiles();
         // if had return Response.ok(profiles).build(), would require
@@ -74,8 +70,6 @@ public class UserProfileResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response createProfile(@Valid @NotNull UserProfile profile) {
         return userProfileService.createProfile(profile) ? Response.status(Response.Status.CREATED).build()
                 : Response.status(Response.Status.BAD_REQUEST).build();
@@ -83,8 +77,6 @@ public class UserProfileResource {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    // @Consumes(MediaType.APPLICATION_JSON)
     public Response getProfile(@PathParam("id") String id) {
         UserProfile profile = userProfileService.getProfile(id);
         Response.Status status = (profile != null) ? Response.Status.OK : Response.Status.NOT_FOUND;
@@ -93,8 +85,6 @@ public class UserProfileResource {
 
     @PUT
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response updateProfile(@Valid @NotNull UserProfile profile, @PathParam("id") String id) {
         // does it exist
         return userProfileService.updateProfile(profile, id) ? Response.status(Response.Status.NO_CONTENT).build()
@@ -110,7 +100,8 @@ public class UserProfileResource {
 
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
  
-        // Get file data to save
+        // Get file data to save   // @Produces(MediaType.APPLICATION_JSON)
+   // @Consumes(MediaType.APPLICATION_JSON)
         List<InputPart> inputParts = uploadForm.get("image");
        // System.out.println("numer of parts " + inputParts.size());
         byte[] bytes = null;

@@ -37,8 +37,6 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     @Autowired
     ImageBase64Processor imageBase64Processor;
 
-    static Map<String, String> photos = new HashMap<>();
-
     @Override
     @Transactional
     public boolean createProfile(@Valid @NotNull UserProfile profile) {
@@ -87,6 +85,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
         UserProfilePhoto userProfilePhoto =  null;
         UserProfileJPA existing = findExisting(id);
         if(existing != null) {
+            System.out.println("found existing");
             userProfilePhoto =  populateUserProfilePhoto(existing);
         }
         return userProfilePhoto;
@@ -127,6 +126,34 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     protected UserProfileJPA findExisting(@NotBlank String id) {
         return entityManager.find(UserProfileJPA.class, id);
     }
+    // TODO: fix
+
+    /**
+     * copies the photo info to the jpa profile
+     * @param existing
+     * @param userProfilePhoto
+     */
+    protected void populateUserJPAProfilePhoto(@NotNull UserProfileJPA existing, @Valid UserProfilePhoto userProfilePhoto) {
+        existing.setImage(imageBase64Processor.encodToBase64Binary(userProfilePhoto.getImage()));
+        existing.setImageFileName(userProfilePhoto.getFileName());
+    }
+
+    /**
+     * retrieves the user profile photo information from the jpa profile
+     * @param existing
+     * @return
+     */
+    protected UserProfilePhoto populateUserProfilePhoto(@NotNull UserProfileJPA existing) {
+        UserProfilePhoto userProfilePhoto = null;
+
+        if(existing.getImage() != null) {
+            userProfilePhoto = new UserProfilePhoto(existing.getId(),
+                    imageBase64Processor.decodeBase64 (existing.getImage()),
+                    existing.getImageFileName());
+        }
+        return userProfilePhoto;
+    }
+
     /**
      * COPY METHODS
      * TODO: use something like mapstruct
@@ -153,8 +180,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
             copyProfile(profile, dbProfile);
         }
         return dbProfile;
-    }    
-
+    }
 
     protected void copyProfile(UserProfile profile, @NotNull UserProfileJPA dbProfile) {
         dbProfile.setAboutMe(profile.getAboutMe());
@@ -171,30 +197,5 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
             profiles.add(copyDbProfile(dbProfile));
         }
         return profiles;
-    }
-    // TODO: fix
-    protected void populateUserJPAProfilePhoto(UserProfileJPA existing, @Valid UserProfilePhoto userProfilePhoto) {
-        // temp test
-        String encoded = imageBase64Processor.encodToBase64Binary(userProfilePhoto.getImage());
-       // System.out.println("encoded " + encoded);
-        photos.put(existing.getId(), encoded);
-        // should be populate
-    }
-
-    // TODO: fix
-    protected UserProfilePhoto populateUserProfilePhoto(UserProfileJPA existing) {
-        UserProfilePhoto userProfilePhoto = null;
-     //   System.out.println("--------about to retrieve bytes via base 64");
-        if(existing != null) {
-        //    System.out.println("base64 " + photos.get(existing.getId()));
-
-            // TODO: add a check to make sure image is not null
-            if(photos.get(existing.getId()) != null) {
-                userProfilePhoto = new UserProfilePhoto(existing.getId(),
-                        imageBase64Processor.decodeBase64(photos.get(existing.getId())) /* this should be decode(existing.getImage))*/,
-                        existing.getId() /*this should be file name , fix later */);
-            }
-        }
-        return userProfilePhoto;
     }
 }

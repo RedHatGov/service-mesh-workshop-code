@@ -87,14 +87,19 @@ This is only supported with the jpa implementation
 The requested user has to exist
 
 ```bash
-curl -v -X  POST -H 'content-type: multipart/form-data' -F 'image=<filename>' http://localhost:8080/users/<userid>/photo
+IMAGE_FILE=<image_file>
+USER_ID=<userid>
+curl -v -X  POST -H 'content-type: multipart/form-data' -F 'image=@${IMAGE_FILE} http://localhost:8080/users/$USERID/photo
 ```
 ##### To test photo download
 The requested user has to exist
 
 ```bash
-curl -v -X  GET -H 'content-type: application/octet-stream' http://localhost:8080/users/<userid>/photo
+USER_ID=<userid>
+curl -v -X  GET -H 'content-type: application/octet-stream' http://localhost:8080/users/$USERID/photo
 ```
+
+You can redirect the output to a file
 
 ### Running on OpenShift
 
