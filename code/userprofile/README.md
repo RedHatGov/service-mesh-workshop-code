@@ -35,6 +35,8 @@ If running on localhost, the APU is accessible to test and download at:
 
 
 ### Environment variables
+
+
 * If building natively, set the 
 ```bash
 $ GRAALVM_HOME=<GRAALVM_LOCATION>
@@ -44,21 +46,24 @@ $ GRAALVM_HOME=<GRAALVM_LOCATION>
 
 #### Update the application.properties to include database info
 Update the properties to point to local H2 database or a PostgreSQL database. 
+ if using local or remote PostgreSQL database (default), set environment variables
 
-For e.g, if using H2 database, update application.properties with
+```bash
+export POSTGRESQL_USER=sarah
+export POSTGRESQL_PASSWORD=connor
+export POSTGRESQL_DATABASE=userprofiledb
+export POSTGRESQL_SERVICE_HOST=userprofile-postgresql
+```
+substitute with the appropriate values
+
+If using H2 database, update application.properties with
 ```bash
 quarkus.datasource.username=sarah
 quarkus.datasource.password=connor
 quarkus.datasource.url=jdbc:h2:file:/opt/h2/database.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 quarkus.datasource.driver=org.h2.Driver
 ```
- if using local or remote PostgreSQL database, update application.properties with
-```bash
-quarkus.datasource.username=<POSTGRESQL_USER>
-quarkus.datasource.password=<POSTGRESQL_PASSWORD>
-quarkus.datasource.url=jdbc:postgresql://<hostname>:5432/userprofiledb
-```
-substitute with the appropriate values
+
 
 If you don't want to use an H2 or PostgreSQL database, there is an in-memory implementation. You will need to update the org.microservices.demo.rest.UserProfileResource.java file and update this code
 ```java
@@ -112,6 +117,12 @@ This produces content of type 'application/octet-stream'. You can redirect the o
 The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice 
 
 ```bash
+#set the postgres env variables
+export POSTGRESQL_USER=sarah
+export POSTGRESQL_PASSWORD=connor
+export POSTGRESQL_DATABASE=userprofiledb
+export POSTGRESQL_SERVICE_HOST=userprofile-postgresql
+
 #set the repo and branch to pull the source from. Change if using forked repo and/or branch
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
 USER_PROFILE_GIT_BRANCH=master
@@ -119,7 +130,13 @@ USER_PROFILE_OCP_PROJECT=user-profile
 
 oc new-project $USER_PROFILE_OCP_PROJECT
 
-oc new-app --template=postgresql-persistent --name=userprofile-postgresql --param=POSTGRESQL_USER=sarah --param=POSTGRESQL_PASSWORD=connor --param=POSTGRESQL_DATABASE=userprofiledb --param=DATABASE_SERVICE_NAME=userprofile-postgresql  -lapp=userprofile -lcomponent=db
+oc new-app --template=postgresql-persistent --name=userprofile-postgresql \
+    --param=POSTGRESQL_USER=$POSTGRESQL_USER \
+    --param=POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \ 
+     --param=POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE \ 
+     --param=DATABASE_SERVICE_NAME=$POSTGRESQL_SERVICE_HOST \ 
+      -lapp=userprofile -luserprofile-component=db
+
 
 echo 'Wait for postgresql to deploy ..'
 until 
@@ -163,6 +180,10 @@ To remove the deployment from openshift
 oc delete all -lapp=userprofile
 oc delete all -lapp=userprofile-postgresql
 oc delete secret userprofile-postgresql
+```
+
+To remove the data from openshift
+```bash
 oc delete pvc userprofile-postgresql
 ```
 
