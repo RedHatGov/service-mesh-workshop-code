@@ -34,6 +34,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
+
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.h2.util.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -64,6 +69,10 @@ public class UserProfileResource {
     protected UserProfileService userProfileService;
 
     @GET
+   /* @APIResponse(responseCode = "200", description = "User Profile Retrieved",
+    content = @Content( 
+                        mediaType = "application/json",
+                        schema = @ArraySchema(implementation  = UserProfile.class))) */
     public Set<UserProfile> getProfiles() {
         return userProfileService.getProfiles();
         // if had return Response.ok(profiles).build(), would require
@@ -71,6 +80,8 @@ public class UserProfileResource {
     }
 
     @POST
+    @APIResponse(responseCode = "201", description = "User Profile Created") 
+    @APIResponse(responseCode = "400", description = "Bad Request")
     // comment out JSR annotations so OpenAPI schema is generated
     // submitted https://github.com/quarkusio/quarkus/issues/2262s
     public Response createProfile(/*@Valid @NotNull*/ UserProfile profile) {
@@ -80,6 +91,12 @@ public class UserProfileResource {
 
     @GET
     @Path("/{id}")
+    @APIResponse(responseCode = "200", description = "User Profile Retrieved",
+    content = @Content( 
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = UserProfile.class))) // this usually isn't necessary with the smallrye-openapi feature but once you add APIResonse, 
+                                                                            // it has to be specified
+    @APIResponse(responseCode = "404", description = "User Profile Not Found")      
     public Response getProfile(@PathParam("id") String id) {
         UserProfile profile = userProfileService.getProfile(id);
         Response.Status status = (profile != null) ? Response.Status.OK : Response.Status.NOT_FOUND;
@@ -88,6 +105,8 @@ public class UserProfileResource {
 
     @PUT
     @Path("/{id}")
+    @APIResponse(responseCode = "204", description = "User Profile Updated") 
+    @APIResponse(responseCode = "400", description = "Bad Request")    
     // comment out JSR annotations so OpenAPI schema is generated
     public Response updateProfile(/*@Valid @NotNull*/ UserProfile profile, @PathParam("id") String id) {
         // does it exist
@@ -99,6 +118,8 @@ public class UserProfileResource {
     @POST
     @Path("/{id}/photo")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @APIResponse(responseCode = "200", description = "User Profile Retrieved")
+    @APIResponse(responseCode = "404", description = "User Profile Not Found")      
     // TODO -- better IO Exception handling
     public Response uploadPhoto(MultipartFormDataInput input, @PathParam("id") String id)  throws IOException {
 
@@ -128,6 +149,11 @@ public class UserProfileResource {
     @GET
     @Path("/{id}/photo")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @APIResponse(responseCode = "200", description = "User Profile Photo Retrieved",
+    content = @Content( 
+                        mediaType = "application/octet-stream",
+                        schema = @Schema())) 
+    @APIResponse(responseCode = "404", description = "User Profile Photo Not Found")       
         // TODO -- better IO Exception handling
     public Response downloadPhoto(@PathParam("id") String id) throws IOException {
 
