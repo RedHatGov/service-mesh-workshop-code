@@ -68,6 +68,8 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
 
 
     @Override
+    @Transactional // becuase of postgresql large object and auto-commit restriction
+    //TODO: when moving image to different table, this can be removed    
     public Set<UserProfile> getProfiles() {
         return copyDbProfiles(entityManager.createNamedQuery("UserProfileJPA.findAll", UserProfileJPA.class)
                     .getResultList().toArray(new UserProfileJPA[0]));
@@ -75,12 +77,16 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
 
 
     @Override
+    @Transactional // becuase of postgresql large object and auto-commit restriction
+    //TODO: when moving image to different table, this can be removed
     public UserProfile getProfile(@NotBlank String id) {
         UserProfileJPA dbProfile = findExisting(id);
         return copyDbProfile(dbProfile);
     }
 
     @Override
+    @Transactional // becuase of postgresql large object and auto-commit restriction
+    //TODO: when moving image to different table, this can be removed    
     public UserProfilePhoto getUserProfilePhoto(@NotBlank String id) {
         UserProfilePhoto userProfilePhoto =  null;
         UserProfileJPA existing = findExisting(id);

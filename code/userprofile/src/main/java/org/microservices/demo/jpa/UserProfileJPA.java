@@ -40,6 +40,7 @@ public class UserProfileJPA {
 
     // storing image in db. in future, this can be stored in object store
     @Lob // TODO: this should ideally be in separate table or another db
+    // or at least make this transient or lazy loaded
     private String image; //base64 representation of image
 
     private String imageFileName; // file name of image

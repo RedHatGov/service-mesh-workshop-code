@@ -30,9 +30,15 @@ oc new-app quay.io/quarkus/centos-quarkus-native-s2i~${USER_PROFILE_GIT_REPO}#${
 oc expose service userprofile
 
 until 
-	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"
+ oc get builds -lapp=userprofile | grep Complete 
 do
 	sleep 20
+done 
+
+until 
+	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"
+do
+	sleep 5
 done 
 
 #openjdk - won't work

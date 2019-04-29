@@ -96,10 +96,10 @@ The requested user has to exist
 
 ```bash
 USER_ID=<userid>
-curl -v -X  GET -H 'content-type: application/octet-stream' http://localhost:8080/users/$USER_ID/photo
+curl -v -X  GET  http://localhost:8080/users/$USER_ID/photo
 ```
 
-You can redirect the output to a file
+This produces content of type 'application/octet-stream'. You can redirect the output to a file
 
 ### Running on OpenShift
 
@@ -115,6 +115,7 @@ oc new-project $USER_PROFILE_OCP_PROJECT
 
 oc new-app --template=postgresql-persistent --name=userprofile-postgresql --param=POSTGRESQL_USER=sarah --param=POSTGRESQL_PASSWORD=connor --param=POSTGRESQL_DATABASE=userprofiledb --param=DATABASE_SERVICE_NAME=userprofile-postgresql  -lapp=userprofile -lcomponent=db
 
+echo 'Wait for postgresql to deploy ..'
 until 
 	oc get pods -lapp=userprofile-postgresql | grep "userprofile-postgresql" | grep -m 1 "1/1"
 do
@@ -125,13 +126,23 @@ oc new-app quay.io/quarkus/centos-quarkus-native-s2i~${USER_PROFILE_GIT_REPO}#${
 
 oc expose service userprofile
 
+echo 'Wait for build to complete ..'
+until
+   oc get builds -lapp=userprofile | grep Complete 
+do
+    sleep 20
+done
+
+echo 'Deploying user-profile pod ..'
 until 
 	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"
 do
-	sleep 20
+	sleep 5
 done 
+
 ```
-The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete before the pod is deployed (the pod deployment is lightning fast!!). Please be patient. To follow the build log
+The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete before the pod is deployed (the pod deployment is lightning fast!!). Please be patient. To follow the build log, run this command in a different terminal
+
 ```bash
 oc logs bc/userprofile -f
 ```
