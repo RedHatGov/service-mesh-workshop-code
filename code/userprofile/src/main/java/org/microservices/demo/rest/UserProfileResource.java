@@ -124,9 +124,7 @@ public class UserProfileResource {
     public Response uploadPhoto(MultipartFormDataInput input, @PathParam("id") String id)  throws IOException {
 
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
- 
         List<InputPart> inputParts = uploadForm.get("image");
-       // System.out.println("numer of parts " + inputParts.size());
         byte[] bytes = null;
         String fileName = null;
 
@@ -139,8 +137,6 @@ public class UserProfileResource {
                bytes = IOUtils.toByteArray(inputStream);
         }
 
-        // add data structure that has the id, bytes, filename..the data structure should validated that non are null, call bytes - photo
-        //boolean savePhoto(id, bytes, filename); // service class .. return result based on that
         return userProfileService.saveUserProfilePhoto(new UserProfilePhoto(id, bytes, fileName)) ?
                 Response.ok().build() :
                 Response.status(Response.Status.BAD_REQUEST).build();
@@ -172,19 +168,14 @@ public class UserProfileResource {
             return response.build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
-
     }
 
     protected String getFileName(MultivaluedMap<String, String> header, String id) {
-
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
 
         for (String filename : contentDisposition) {
-
             if ((filename.trim().startsWith("filename"))) {
-
                 String[] name = filename.split("=");
-
                 String finalFileName = name[1].trim().replaceAll("\"", "");
                 return finalFileName;
             }
