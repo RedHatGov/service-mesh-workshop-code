@@ -47,6 +47,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+//TODO: fix generated OpenAPI spec/swagger-ui. PUT and POST examples aren't generating the proper rer to UserProfile
 public class UserProfileResource {
 
     // Using Spring-DI
@@ -162,23 +163,8 @@ public class UserProfileResource {
         return id; // use id instead
     }
 
-
     //TODO:
     /*
-         Update OpenAPI yaml
-
-        datastructure - UserProfilePhoto - id, bytes[] image, filename
-        abstract class to upload and download (or just make the method not supported in in-memory impl)
-            - abstract findUser method
-            - code to call ImageBase64Processor to encode/decode the bytes
-            - code to "save" the image..abstract method
-
-        ImageBase64Processor
-         - encode, decode to base64
-
-         Update REadme with examples on how to upload and download images
-
-         Save to database
 
          TEST native on OCP
     */

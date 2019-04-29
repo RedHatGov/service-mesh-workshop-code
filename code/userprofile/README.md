@@ -89,14 +89,14 @@ The requested user has to exist
 ```bash
 IMAGE_FILE=<image_file>
 USER_ID=<userid>
-curl -v -X  POST -H 'content-type: multipart/form-data' -F 'image=@${IMAGE_FILE} http://localhost:8080/users/$USERID/photo
+curl -v -X  POST -H 'content-type: multipart/form-data' -F image=@${IMAGE_FILE} http://localhost:8080/users/$USER_ID/photo
 ```
 ##### To test photo download
 The requested user has to exist
 
 ```bash
 USER_ID=<userid>
-curl -v -X  GET -H 'content-type: application/octet-stream' http://localhost:8080/users/$USERID/photo
+curl -v -X  GET -H 'content-type: application/octet-stream' http://localhost:8080/users/$USER_ID/photo
 ```
 
 You can redirect the output to a file
