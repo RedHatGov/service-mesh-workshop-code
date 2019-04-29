@@ -130,12 +130,7 @@ USER_PROFILE_OCP_PROJECT=user-profile
 
 oc new-project $USER_PROFILE_OCP_PROJECT
 
-oc new-app --template=postgresql-persistent --name=userprofile-postgresql \
-    --param=POSTGRESQL_USER=$POSTGRESQL_USER \
-    --param=POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \ 
-     --param=POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE \ 
-     --param=DATABASE_SERVICE_NAME=$POSTGRESQL_SERVICE_HOST \ 
-      -lapp=userprofile -luserprofile-component=db
+oc new-app --template=postgresql-persistent --name=userprofile-postgresql -lapp=userprofile -luserprofile-component=db --param=POSTGRESQL_USER=$POSTGRESQL_USER --param=POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD --param=POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE --param=DATABASE_SERVICE_NAME=$POSTGRESQL_SERVICE_HOST
 
 
 echo 'Wait for postgresql to deploy ..'
@@ -145,7 +140,12 @@ do
 	sleep 2
 done
 
-oc new-app quay.io/quarkus/centos-quarkus-native-s2i~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH} --context-dir=/code/userprofile --name=userprofile -lcomponent=microservice
+oc new-app quay.io/quarkus/centos-quarkus-native-s2i:graalvm-1.0.0-rc15~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
+ --context-dir=/code/userprofile --name=userprofile -luserprofile-component=microservice \
+ --env POSTGRESQL_USER=$POSTGRESQL_USER \
+ --env POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \
+ --env POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE \
+ --env POSTGRESQL_SERVICE_HOST=$POSTGRESQL_SERVICE_HOST
 
 oc expose service userprofile
 
