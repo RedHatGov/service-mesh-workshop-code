@@ -1,21 +1,21 @@
 # Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
 # Usage example:
-# oc new-app -f ./app-ui-fromsource.yaml \
-#   -p APPLICATION_NAME=app-ui \
+# oc new-app -f ./context-scraper-fromsource.yaml \
+#   -p APPLICATION_NAME=context-scraper \
 #   -p NODEJS_VERSION_TAG=8-RHOAR \
 #   -p GIT_BRANCH=develop \
 #   -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: app-ui-fromsource
-message: A new app-ui service has been created in your project. 
+  template: context-scraper-fromsource
+message: A new context-scraper service has been created in your project. 
 metadata:
   annotations:
-    description: An app-ui application for the microservices demo
-    openshift.io/display-name: app-ui
-    template.openshift.io/long-description: This template defines the app-ui microservice
-  name: app-ui-fromsource
+    description: An context-scraper application for the microservices demo
+    openshift.io/display-name: context-scraper
+    template.openshift.io/long-description: This template defines the context-scraper microservice
+  name: context-scraper-fromsource
 objects:
 - apiVersion: v1
   kind: Service
@@ -114,7 +114,7 @@ objects:
     resources: {}
     runPolicy: Serial
     source:
-      contextDir: code/app-ui
+      contextDir: code/context-scraper
       git:
         ref: ${GIT_BRANCH}
         uri: ${GIT_URI}
@@ -152,7 +152,7 @@ parameters:
   displayName: Application Name
   name: APPLICATION_NAME
   required: true
-  value: app-ui
+  value: context-scraper
 - description: The version to tag the app with
   displayName: app version tag
   name: APP_VERSION_TAG
