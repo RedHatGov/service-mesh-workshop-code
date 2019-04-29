@@ -80,7 +80,6 @@ Note that the build will take a few minutes, however, the app boots up a lot fas
 #### To view and test with Swagger-UI locally
 http://localhost:8080/swagger-ui/
 
-TODO: fix generated spec to include the UserProfile as a ref
 
 #### Photo/Image Testing
 This is only supported with the jpa implementation

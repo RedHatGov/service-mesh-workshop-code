@@ -71,7 +71,9 @@ public class UserProfileResource {
     }
 
     @POST
-    public Response createProfile(@Valid @NotNull UserProfile profile) {
+    // comment out JSR annotations so OpenAPI schema is generated
+    // submitted https://github.com/quarkusio/quarkus/issues/2262s
+    public Response createProfile(/*@Valid @NotNull*/ UserProfile profile) {
         return userProfileService.createProfile(profile) ? Response.status(Response.Status.CREATED).build()
                 : Response.status(Response.Status.BAD_REQUEST).build();
     }
@@ -86,7 +88,8 @@ public class UserProfileResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateProfile(@Valid @NotNull UserProfile profile, @PathParam("id") String id) {
+    // comment out JSR annotations so OpenAPI schema is generated
+    public Response updateProfile(/*@Valid @NotNull*/ UserProfile profile, @PathParam("id") String id) {
         // does it exist
         return userProfileService.updateProfile(profile, id) ? Response.status(Response.Status.NO_CONTENT).build()
                 : Response.status(Response.Status.BAD_REQUEST).build();
