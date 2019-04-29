@@ -85,7 +85,6 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
         UserProfilePhoto userProfilePhoto =  null;
         UserProfileJPA existing = findExisting(id);
         if(existing != null) {
-            System.out.println("found existing");
             userProfilePhoto =  populateUserProfilePhoto(existing);
         }
         return userProfilePhoto;

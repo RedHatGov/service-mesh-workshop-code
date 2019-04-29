@@ -9,12 +9,15 @@
 
 USER_PROFILE_GIT_REPO=https://github.com/gbengataylor/openshift-microservices
 USER_PROFILE_GIT_BRANCH=develop 
+USER_PROFILE_OCP_PROJECT=user-profile-gbenga
+
+oc new-project $USER_PROFILE_OCP_PROJECT
 
 # you can substitute postgresql-ephemeral if you need an ephemeral db
 oc new-app --template=postgresql-persistent --name=userprofile-postgresql --param=POSTGRESQL_USER=sarah --param=POSTGRESQL_PASSWORD=connor --param=POSTGRESQL_DATABASE=userprofiledb --param=DATABASE_SERVICE_NAME=userprofile-postgresql  -lapp=userprofile -lcomponent=db
 
 until 
-	oc get pods | grep "userprofile-postgresql" | grep -m 1 "1/1"
+	oc get pods -lapp=userprofile-postgresql | grep "userprofile-postgresql" | grep -m 1 "1/1"
 do
 	sleep 2
 done

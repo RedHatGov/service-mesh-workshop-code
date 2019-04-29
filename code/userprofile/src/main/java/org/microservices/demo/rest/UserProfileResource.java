@@ -100,8 +100,6 @@ public class UserProfileResource {
 
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
  
-        // Get file data to save   // @Produces(MediaType.APPLICATION_JSON)
-   // @Consumes(MediaType.APPLICATION_JSON)
         List<InputPart> inputParts = uploadForm.get("image");
        // System.out.println("numer of parts " + inputParts.size());
         byte[] bytes = null;
@@ -115,8 +113,6 @@ public class UserProfileResource {
                 InputStream inputStream = inputPart.getBody(InputStream.class, null);
                bytes = IOUtils.toByteArray(inputStream);
         }
-
-      //  System.out.println("read " + bytes.length + " bytes");
 
         // add data structure that has the id, bytes, filename..the data structure should validated that non are null, call bytes - photo
         //boolean savePhoto(id, bytes, filename); // service class .. return result based on that
@@ -136,7 +132,6 @@ public class UserProfileResource {
                 && userProfilePhoto.getImage() != null) {
             // temp local file
             String fileName = userProfilePhoto.getFileName();
-          //  System.out.println("filename " + fileName);
             File file = new File(userProfilePhoto.getFileName());
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             fileOutputStream.write(userProfilePhoto.getImage());
