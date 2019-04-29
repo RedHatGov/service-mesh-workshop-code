@@ -61,6 +61,36 @@ paths:
       description: User ID
       required: true
       type: string
+  /users/{id}/photo:
+    get:
+      summary: Retrieve User Photo
+      description: 'Returns the user photo '
+      operationId: get-photo
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: Photo retrieved
+    post:
+      summary: add a photo
+      description: Adds a photo to the user profile
+      operationId: post-photo
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: image
+        in: formData
+        description: Image to be uploaded
+        required: true
+      responses:
+        200:
+          description: Photo Uploaded
+    parameters:
+    - name: id
+      in: path
+      description: user id
+      required: true
+      type: string
 definitions:
   UserProfile:
     title: Root Type for User

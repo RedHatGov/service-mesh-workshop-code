@@ -21,7 +21,12 @@ Open questions/notes:
   
 
 ## API documentation
-TBD
+The API has been visually designed via Apicurio, it's based on the OpenAPI Specification. see userprofile_v1_api.yaml
+
+If running on localhost, the APU is accessible to test and download at:
+
+* http://localhost:8080/swagger-ui
+* http://localhost:8080/api-docs
 
 ## Developer instructions
 - JDK 8+
@@ -80,6 +85,28 @@ Note that the build will take a few minutes, however, the app boots up a lot fas
 #### To view and test with Swagger-UI locally
 http://localhost:8080/swagger-ui/
 
+
+#### Photo/Image Testing
+This is only supported with the jpa implementation
+
+##### To test photo upload
+The requested user has to exist
+
+```bash
+IMAGE_FILE=<image_file>
+USER_ID=<userid>
+curl -v -X  POST -H 'content-type: multipart/form-data' -F image=@${IMAGE_FILE} http://localhost:8080/users/$USER_ID/photo
+```
+##### To test photo download
+The requested user has to exist
+
+```bash
+USER_ID=<userid>
+curl -v -X  GET  http://localhost:8080/users/$USER_ID/photo
+```
+
+This produces content of type 'application/octet-stream'. You can redirect the output to a file
+
 ### Running on OpenShift
 
 The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice 
@@ -88,11 +115,15 @@ The OpenShift instructions will deploy a postgreSQL database and the userprofile
 #set the repo and branch to pull the source from. Change if using forked repo and/or branch
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
 USER_PROFILE_GIT_BRANCH=master
+USER_PROFILE_OCP_PROJECT=user-profile
+
+oc new-project $USER_PROFILE_OCP_PROJECT
 
 oc new-app --template=postgresql-persistent --name=userprofile-postgresql --param=POSTGRESQL_USER=sarah --param=POSTGRESQL_PASSWORD=connor --param=POSTGRESQL_DATABASE=userprofiledb --param=DATABASE_SERVICE_NAME=userprofile-postgresql  -lapp=userprofile -lcomponent=db
 
+echo 'Wait for postgresql to deploy ..'
 until 
-	oc get pods | grep "userprofile-postgresql" | grep -m 1 "1/1"
+	oc get pods -lapp=userprofile-postgresql | grep "userprofile-postgresql" | grep -m 1 "1/1"
 do
 	sleep 2
 done
@@ -101,13 +132,23 @@ oc new-app quay.io/quarkus/centos-quarkus-native-s2i~${USER_PROFILE_GIT_REPO}#${
 
 oc expose service userprofile
 
+echo 'Wait for build to complete ..'
+until
+   oc get builds -lapp=userprofile | grep Complete 
+do
+    sleep 20
+done
+
+echo 'Deploying user-profile pod ..'
 until 
 	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"
 do
-	sleep 20
+	sleep 5
 done 
+
 ```
-The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete before the pod is deployed (the pod deployment is lightning fast!!). Please be patient. To follow the build log
+The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete before the pod is deployed (the pod deployment is lightning fast!!). Please be patient. To follow the build log, run this command in a different terminal
+
 ```bash
 oc logs bc/userprofile -f
 ```

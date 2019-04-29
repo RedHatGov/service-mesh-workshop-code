@@ -9,10 +9,8 @@
 
 package org.microservices.demo.service;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -23,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.codec.binary.StringUtils;
 import org.microservices.demo.jpa.UserProfileJPA;
 import org.microservices.demo.json.UserProfile;
+import org.microservices.demo.json.UserProfilePhoto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +34,14 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     @Autowired
     EntityManager entityManager;
 
+    @Autowired
+    ImageBase64Processor imageBase64Processor;
+
     @Override
     @Transactional
     public boolean createProfile(@Valid @NotNull UserProfile profile) {
         // if it doesn't exist
-        UserProfileJPA existing = entityManager.find(UserProfileJPA.class, profile.getId());
+        UserProfileJPA existing = findExisting(profile.getId());
         if (existing == null) {
             profile.setCreatedAt(Calendar.getInstance().getTime());
             saveProfile(profile);
@@ -52,7 +54,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     @Transactional
     public boolean updateProfile(@Valid @NotNull UserProfile profile, @NotBlank String id) {
         //does it exist and do ids match
-        UserProfileJPA existing = entityManager.find(UserProfileJPA.class, id);
+        UserProfileJPA existing = findExisting(id);
         if (existing != null && StringUtils.equals(id, profile.getId())) {
             profile.setCreatedAt(existing.getCreatedAt());
             copyProfile(profile, existing);
@@ -62,8 +64,12 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
         return false;
     }
 
-  
+
+
+
     @Override
+    @Transactional // becuase of postgresql large object and auto-commit restriction
+    //TODO: when moving image to different table, this can be removed    
     public Set<UserProfile> getProfiles() {
         return copyDbProfiles(entityManager.createNamedQuery("UserProfileJPA.findAll", UserProfileJPA.class)
                     .getResultList().toArray(new UserProfileJPA[0]));
@@ -71,10 +77,37 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
 
 
     @Override
+    @Transactional // becuase of postgresql large object and auto-commit restriction
+    //TODO: when moving image to different table, this can be removed
     public UserProfile getProfile(@NotBlank String id) {
-        UserProfileJPA dbProfile = entityManager.find(UserProfileJPA.class, id);
+        UserProfileJPA dbProfile = findExisting(id);
         return copyDbProfile(dbProfile);
     }
+
+    @Override
+    @Transactional // becuase of postgresql large object and auto-commit restriction   
+    public UserProfilePhoto getUserProfilePhoto(@NotBlank String id) {
+        UserProfilePhoto userProfilePhoto =  null;
+        UserProfileJPA existing = findExisting(id);
+        if(existing != null) {
+            userProfilePhoto =  populateUserProfilePhoto(existing);
+        }
+        return userProfilePhoto;
+    }
+
+
+    @Override
+    @Transactional
+    public boolean saveUserProfilePhoto(@Valid UserProfilePhoto userProfilePhoto) {
+        UserProfileJPA existing = findExisting(userProfilePhoto.getId());
+        if(existing != null) {
+            populateUserJPAProfilePhoto(existing, userProfilePhoto);
+            saveProfile(existing);
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * saves the profile to the db
@@ -87,6 +120,42 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
      */
     protected void saveProfile(@NotNull UserProfileJPA profile) {
         entityManager.persist(profile);
+    }
+
+    /**
+     * find existing profile
+     * @param id
+     * @return
+     */
+    protected UserProfileJPA findExisting(@NotBlank String id) {
+        return entityManager.find(UserProfileJPA.class, id);
+    }
+    // TODO: fix
+
+    /**
+     * copies the photo info to the jpa profile
+     * @param existing
+     * @param userProfilePhoto
+     */
+    protected void populateUserJPAProfilePhoto(@NotNull UserProfileJPA existing, @Valid UserProfilePhoto userProfilePhoto) {
+        existing.setImage(imageBase64Processor.encodToBase64Binary(userProfilePhoto.getImage()));
+        existing.setImageFileName(userProfilePhoto.getFileName());
+    }
+
+    /**
+     * retrieves the user profile photo information from the jpa profile
+     * @param existing
+     * @return
+     */
+    protected UserProfilePhoto populateUserProfilePhoto(@NotNull UserProfileJPA existing) {
+        UserProfilePhoto userProfilePhoto = null;
+
+        if(existing.getImage() != null) {
+            userProfilePhoto = new UserProfilePhoto(existing.getId(),
+                    imageBase64Processor.decodeBase64 (existing.getImage()),
+                    existing.getImageFileName());
+        }
+        return userProfilePhoto;
     }
 
     /**
@@ -115,8 +184,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
             copyProfile(profile, dbProfile);
         }
         return dbProfile;
-    }    
-
+    }
 
     protected void copyProfile(UserProfile profile, @NotNull UserProfileJPA dbProfile) {
         dbProfile.setAboutMe(profile.getAboutMe());
@@ -129,8 +197,8 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
 
     protected Set<UserProfile> copyDbProfiles(UserProfileJPA[] dbProfiles) {
         Set<UserProfile> profiles = new HashSet<>();
-        for(int i = 0; i < dbProfiles.length; i++) {
-            profiles.add(copyDbProfile(dbProfiles[i]));
+        for(UserProfileJPA dbProfile : dbProfiles) {
+            profiles.add(copyDbProfile(dbProfile));
         }
         return profiles;
     }

@@ -12,12 +12,7 @@ package org.microservices.demo.jpa;
 import java.sql.Date;
 import java.util.Objects;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.QueryHint;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * User Profile 
@@ -42,6 +37,13 @@ public class UserProfileJPA {
     private String emailAddress;
 
     private Date createdAt;
+
+    // storing image in db. in future, this can be stored in object store
+    @Lob // TODO: this should ideally be in separate table or another db
+    // or at least make this transient or lazy loaded
+    private String image; //base64 representation of image
+
+    private String imageFileName; // file name of image
 
     public String getId() {
         return id;
@@ -94,6 +96,23 @@ public class UserProfileJPA {
     public void setCreatedAt(Long createdAt) {
         this.createdAt = new Date(createdAt);
     }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+    }
+
     @Override
     public int hashCode() {
        return Objects.hash(this.id);
