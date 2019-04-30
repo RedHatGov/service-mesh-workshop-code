@@ -118,10 +118,10 @@ The OpenShift instructions will deploy a postgreSQL database and the userprofile
 
 ```bash
 #set the postgres env variables
-export POSTGRESQL_USER=sarah
-export POSTGRESQL_PASSWORD=connor
-export POSTGRESQL_DATABASE=userprofiledb
-export POSTGRESQL_SERVICE_HOST=userprofile-postgresql
+POSTGRESQL_USER=sarah
+POSTGRESQL_PASSWORD=connor
+POSTGRESQL_DATABASE=userprofiledb
+POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 
 #set the repo and branch to pull the source from. Change if using forked repo and/or branch
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
