@@ -187,11 +187,13 @@ To remove the data from openshift
 oc delete pvc userprofile-postgresql
 ```
 
-### Developer tips
-TBD 
-
-
+### Building a container image for this service
+You can use [s2i][4] to easily build this into a container image. For example to use the Quarkus Native image as our base:
+```bash
+s2i build . quay.io/quarkus/centos-quarkus-native-s2i:graalvm-1.0.0-rc15 openshift-microservices-userprofile --loglevel 3
+```
 
 [1]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/
 [2]: https://www.keycloak.org/docs/4.8/getting_started/index.html
 [3]: https://www.graalvm.org/
+[4]: https://github.com/openshift/source-to-image/releases
