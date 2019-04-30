@@ -114,77 +114,21 @@ This produces content of type 'application/octet-stream'. You can redirect the o
 
 ### Running on OpenShift
 
-The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice 
+The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice.
 
+You can use a template to create all the build and deployment resources for OpenShift. Here's an example that overrides the defaults:
 ```bash
-#set the postgres env variables
-POSTGRESQL_USER=sarah
-POSTGRESQL_PASSWORD=connor
-POSTGRESQL_DATABASE=userprofiledb
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
-
-#set the repo and branch to pull the source from. Change if using forked repo and/or branch
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
-USER_PROFILE_GIT_BRANCH=master
-USER_PROFILE_OCP_PROJECT=user-profile
+USER_PROFILE_GIT_BRANCH=master 
+QUARKUS_VERSION_TAG=graalvm-1.0.0-rc15
 
-oc new-project $USER_PROFILE_OCP_PROJECT
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_VERSION_TAG=${QUARKUS_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}
 
-oc new-app --template=postgresql-persistent --name=userprofile-postgresql -lapp=userprofile -luserprofile-component=db --param=POSTGRESQL_USER=$POSTGRESQL_USER --param=POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD --param=POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE --param=DATABASE_SERVICE_NAME=$POSTGRESQL_SERVICE_HOST
-
-
-echo 'Wait for postgresql to deploy ..'
-until 
-	oc get pods -lapp=userprofile-postgresql | grep "userprofile-postgresql" | grep -m 1 "1/1"
-do
-	sleep 2
-done
-
-oc new-app quay.io/quarkus/centos-quarkus-native-s2i:graalvm-1.0.0-rc15~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
- --context-dir=/code/userprofile --name=userprofile -luserprofile-component=microservice \
- --env POSTGRESQL_USER=$POSTGRESQL_USER \
- --env POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \
- --env POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE \
- --env POSTGRESQL_SERVICE_HOST=$POSTGRESQL_SERVICE_HOST
-
-oc expose service userprofile
-
-echo 'Wait for build to complete ..'
-until
-   oc get builds -lapp=userprofile | grep Complete 
-do
-    sleep 20
-done
-
-echo 'Deploying user-profile pod ..'
-until 
-	oc get pods -l deploymentconfig=userprofile | grep -m 1 "1/1"
-do
-	sleep 5
-done 
-
-```
-The OpenShift S2I build is performing a native build, so it may take a few minutes for the build to complete before the pod is deployed (the pod deployment is lightning fast!!). Please be patient. To follow the build log, run this command in a different terminal
-
-```bash
-oc logs bc/userprofile -f
-```
-
-TODO 
-- remove hardcode application properties and use environment variables mapped to generated secret
-- create a template for deploying
-
-
-To remove the deployment from openshift
-```bash
-oc delete all -lapp=userprofile
-oc delete all -lapp=userprofile-postgresql
-oc delete secret userprofile-postgresql
-```
-
-To remove the data from openshift
-```bash
-oc delete pvc userprofile-postgresql
+#To delete everything
+# oc delete all,secrets,pvc -lapp=userprofile
+# delete everything but data
+# oc delete all,secrets -lapp=userprofile
 ```
 
 ### Building a container image for this service

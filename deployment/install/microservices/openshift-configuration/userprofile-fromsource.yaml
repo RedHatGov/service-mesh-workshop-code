@@ -5,7 +5,7 @@
 #     -p QUARKUS_IMAGE_TAG=graalvm-1.0.0-rc15 \
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
 #     -p GIT_BRANCH=develop \
-#     -p DATABASE_SERVICE_NAME=$POSTGRESQL_SERVICE_HOST
+#     -p DATABASE_SERVICE_NAME=userprofile-postgresql
 
 apiVersion: template.openshift.io/v1
 kind: Template
@@ -19,6 +19,199 @@ metadata:
     template.openshift.io/long-description: This template defines the userprofile microservice
   name: userprofile-fromsource
 objects:
+# -----------------------------------------------------------------------------
+# Quarkus App Section
+# -----------------------------------------------------------------------------   
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+      application: ${APPLICATION_NAME}
+      component: ${APPLICATION_NAME}-microservice       
+    name: ${APPLICATION_NAME}
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: ${APPLICATION_NAME}
+#    type: ClusterIP
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+      application: ${APPLICATION_NAME}
+      component: ${APPLICATION_NAME}-microservice    
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${APPLICATION_NAME} 
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          deploymentconfig: ${APPLICATION_NAME}
+          app: ${APPLICATION_NAME}
+          version: ${APP_VERSION_TAG}
+          application: ${APPLICATION_NAME}
+          component: ${APPLICATION_NAME}-microservice  
+        #annotations:
+         # sidecar.istio.io/inject: "true"        
+      spec:
+        containers:
+        - env:
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: ${DATABASE_SERVICE_NAME}
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: ${DATABASE_SERVICE_NAME}
+          - name: POSTGRESQL_SERVICE_HOST
+            value: ${DATABASE_SERVICE_NAME}
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: ${DATABASE_SERVICE_NAME}
+          - name: POSTGRESQL_SERVICE_PORT
+            value: '5432'
+          image: ${APPLICATION_NAME}
+          imagePullPolicy: Always
+          name: ${APPLICATION_NAME}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      deploymentconfig: ${APPLICATION_NAME}
+      userprofile-component: ${APPLICATION_NAME}-microservice 
+      version: ${APP_VERSION_TAG}      
+    name: ${APPLICATION_NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: /code/userprofile
+      git:
+        ref: ${GIT_BRANCH}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${QUARKUS_S2I_IMAGE}:${QUARKUS_VERSION_TAG}
+      type: Source
+    triggers:
+    - github:
+        secret: hQl_Gp1l1syRc2mHuKh3
+      type: GitHub
+    - generic:
+        secret: hPM0ezNga5Khwvxbn3C2
+      type: Generic
+    - type: ConfigChange
+    - imageChange:
+      type: ImageChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      deploymentconfig: ${APPLICATION_NAME}
+      userprofile-component: ${APPLICATION_NAME}-microservice
+    name: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      userprofile-component: ${APPLICATION_NAME}-microservice
+    name: ${QUARKUS_S2I_IMAGE}
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+      - annotations:
+          openshift.io/imported-from: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_VERSION_TAG}'
+        from:
+          kind: DockerImage
+          name: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_VERSION_TAG}'
+        generation: 2
+        importPolicy: {}
+        name: ${QUARKUS_VERSION_TAG}
+        referencePolicy:
+          type: Source      
+#Route?
+# - apiVersion: route.openshift.io/v1
+#   kind: Route
+#   metadata:
+#     labels:
+#       app: ${APPLICATION_NAME}
+#       application: ${APPLICATION_NAME} 
+#       deploymentconfig: ${APPLICATION_NAME}
+#       userprofile-component: ${APPLICATION_NAME}-microservice
+#     name: ${APPLICATION_NAME}
+#   spec:
+#     port:
+#       targetPort: 8080-tcp
+#     to:
+#       kind: Service
+#       name: ${APPLICATION_NAME}
+#       weight: 100
+#     wildcardPolicy: None     
+#     selector:
+#       deploymentconfig: ${APPLICATION_NAME}     
 # -----------------------------------------------------------------------------
 # PostGresql Section
 # ----------------------------------------------------------------------------- 
@@ -193,7 +386,7 @@ parameters:
   value: master  
 - description: The Quarkus s2i image Sto use
   displayName: Quarkus s2i image
-  name: QUARKUS_s2i_IMAGE
+  name: QUARKUS_S2I_IMAGE
   required: true
   value: 'centos-quarkus-native-s2i'    
 - description: The Quarkus version tag to use
@@ -242,3 +435,9 @@ parameters:
   name: POSTGRESQL_VERSION
   required: true
   value: '9.6'
+# - description: 'PosgreSQL port'
+#   displayName: PosgreSQL port
+#   name: POSTGRESQL_SERVICE_PORT
+#   required: true
+#   value: '5432'
+  

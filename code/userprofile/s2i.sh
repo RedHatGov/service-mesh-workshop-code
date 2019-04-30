@@ -55,7 +55,7 @@ done
 
 # delete
 # oc delete all -lapp=userprofile
-# oc delete all -lapp=userprofile-postgresql
-# oc delete secret userprofile-postgresql
+# oc delete all,secret -lapp=userprofile-postgresql
+
 #clean pvc
 # oc delete pvc userprofile-postgresql
