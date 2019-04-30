@@ -49,10 +49,10 @@ Update the properties to point to local H2 database or a PostgreSQL database.
  if using local or remote PostgreSQL database (default), set environment variables
 
 ```bash
-export POSTGRESQL_USER=sarah
-export POSTGRESQL_PASSWORD=connor
-export POSTGRESQL_DATABASE=userprofiledb
-export POSTGRESQL_SERVICE_HOST=userprofile-postgresql
+POSTGRESQL_USER=sarah
+POSTGRESQL_PASSWORD=connor
+POSTGRESQL_DATABASE=userprofiledb
+POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 ```
 substitute with the appropriate values
 
