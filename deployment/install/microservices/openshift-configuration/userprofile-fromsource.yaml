@@ -71,8 +71,8 @@ objects:
           version: ${APP_VERSION_TAG}
           application: ${APPLICATION_NAME}
           component: ${APPLICATION_NAME}-microservice  
-        #annotations:
-         # sidecar.istio.io/inject: "true"        
+        annotations:
+         sidecar.istio.io/inject: "true"        
       spec:
         containers:
         - env:
