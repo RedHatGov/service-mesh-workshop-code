@@ -1,18 +1,32 @@
+# A Circuit breaker implementation that tracks the status of each individual
+# host in the upstream service. Applicable to both HTTP and TCP services. 
+# For HTTP services, hosts that continually return 5xx errors for API calls 
+# are ejected from the pool for a pre-defined period of time. For TCP services,
+# connection timeouts or connection failures to a given host counts as an error
+# when measuring the consecutive errors metric. See Envoy’s outlier detection
+# for more details.
+#
+# The following rule sets a connection pool size of 2 connections and 5 
+# concurrent HTTP2 requests, with no more than 2 req/connection to "boards" 
+# service. In addition, it configures upstream hosts to be scanned every 5 mins, 
+# such that any host that fails 2 consecutive times with 5XX error code will be
+# ejected for 15 minutes.
+# 
+# Note: we are making these numbers a bit small for demo purposes
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: circuitbreak-boards
+  name: boards
 spec:
   host: boards
   trafficPolicy:
     connectionPool:
       tcp:
-        maxConnections: 1
+        maxConnections: 2
       http:
-        http1MaxPendingRequests: 1
-        maxRequestsPerConnection: 1
+        http2MaxRequests: 5
+        maxRequestsPerConnection: 2
     outlierDetection:
-      consecutiveErrors: 1
-      interval: 1s
-      baseEjectionTime: 3m
-      maxEjectionPercent: 100
+      consecutiveErrors: 2
+      interval: 10s
+      baseEjectionTime: 5m

@@ -12,7 +12,9 @@ Or you can manually install the services by using `oc apply -f FILE`.
 
 
 ## Once it's up an running your application view should look like this
-TODO screenshot
+<img src="./screenshot-ocp-overview.png" width="400">
+
+(This is the basic minimal deployment of the application - you might have more services if you install everything)
 
 
 ## Verify the services are healthy
