@@ -134,7 +134,8 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/use
 ### Building a container image for this service
 You can use [s2i][4] to easily build this into a container image. For example to use the Quarkus Native image as our base:
 ```bash
-s2i build . quay.io/quarkus/centos-quarkus-native-s2i:graalvm-1.0.0-rc15 openshift-microservices-userprofile --loglevel 3
+QUARKUS_VERSION_TAG=graalvm-1.0.0-rc15
+s2i build . quay.io/quarkus/centos-quarkus-native-s2i:$QUARKUS_VERSION_TAG openshift-microservices-userprofile --loglevel 3
 ```
 
 [1]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/
