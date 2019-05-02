@@ -31,7 +31,7 @@ If running on localhost, the APU is accessible to test and download at:
 ## Developer instructions
 - JDK 8+
 - Apache Maven 3.5.3+ is required
-- Optional for native applications [GraalVM](https://www.graalvm.org/) 
+- Optional for native applications [GraalVM](https://www.graalvm.org/) . At least version 1.0.0-rc15 required
 
 
 ### Environment variables
