@@ -16,17 +16,17 @@ Bulkheads in ships create watertight compartments that can contain water in the 
 ## Demo Steps
 This demo shows how Istio can be used to add circuit breaking and connection bulkheading capabilities to the services of our app.
 
-### Verify we aren't circuit breaking
-We can use OpenShift to pull a container image containing the fortio load test tool and run it.
+### 1. Put some load on the app
+We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how this app would respond at scale. Try running a few commands like the one below to put load on our app.
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
+`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app_ui:8080/shareditems`
 
 The result should look like:
 ```
 TODO
 ```
 
-### Configure the service to use circuit breaking and bulkheading
+### 2. Configure the service to use circuit breaking and bulkheading
 Run the following to apply a dynamic update to the DestinationRule for the boards service:
 `oc apply -f circuitbreaker-boards.yaml`
 
@@ -48,29 +48,36 @@ trafficPolicy:
       baseEjectionTime: 5m
 ```
 
-### Fill the bulkhead
+### 3. Fill the bulkhead
 Now that we applied the pattern, let's run the same command as before and fill up a connection pool (bulkhead):
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
+`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app_ui:8080/shareditems`
 
 The result should look like:
 ```
 TODO
 ```
 
-### Trip the breaker
-Now let's try to trip the circuit breaker by temporarily faking an error into the boards service.
+### 4. Break the app and Trip the breaker
+Now let's try to trip the circuit breaker by temporarily faking an error into the boards service. Run this to stop the database:
+`oc scale --replicas=0 dc boards-mongodb`
 
--- ? rsh into the container and kill the node.js process to trigger a container restart?
+Now if you went to the main website for the app and tried to view the shared boards you would see:
+![Screenshot](./spinspin.gif?raw=true)
 
-And now run the same load test as before to see that Istio immediately returns 5xx on the tripped circuit breaker
+And for each user request incoming the app-ui service will timeout eventually with an error like this:
+![Screenshot](./timeout.png?raw=true)
+
+So now run the same load test as before to see that Istio immediately returns 5xx on the tripped circuit breaker vs. waiting for each call to fail after waiting for a long timeout on the database.
+
+`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app_ui:8080/shareditems`
 
 The result should look like:
 ```
 TODO
 ```
 
-## Summary
+## That's it!
 The basic circuit breaker and bulkhead patterns can be useful when operating a microservices based application. Istio has the basic capability for both of these patterns. It's language independent and you can configure the capability at runtime without any code changes.
 
 Read more about these capabilities in Istio [here][3] and check out the [configuration reference here][4].

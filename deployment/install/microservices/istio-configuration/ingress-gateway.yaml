@@ -65,22 +65,3 @@ spec:
   #       host: app-ui
   #       port:
   #         number: 8443
----
-# Using this virtual service and an additional OpenShift route into
-# the istio ingressrouter so I can expose some internal services for
-# debugging - don't create this in the real demo
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: microservices-demo-debug
-spec:
-  hosts:
-  - debug-microservices.apps.sulu.nub3s.io
-  gateways:
-  - microservices-demo-gateway
-  http:
-  - route:
-    - destination:
-        host: boards
-        port:
-          number: 8080

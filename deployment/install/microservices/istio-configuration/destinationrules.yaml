@@ -7,13 +7,6 @@ metadata:
   name: app-ui
 spec:
   host: app-ui
-  subsets:
-  - name: v1.0
-    labels:
-      version: '1.0'
-  - name: v1.1
-    labels:
-      version: '1.1'
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -21,6 +14,13 @@ metadata:
   name: boards
 spec:
   host: boards
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards-mongodb
+spec:
+  host: boards-mongodb
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
