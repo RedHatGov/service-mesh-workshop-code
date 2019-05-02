@@ -19,12 +19,44 @@ This demo shows how Istio can be used to add circuit breaking and connection bul
 ### 1. Put some load on the app
 We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how this app would respond at scale. Try running a few commands like the one below to put load on our app.
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app_ui:8080/shareditems`
+`oc run --rm --attach web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app-ui:8080/shared`
 
 The result should look like:
 ```
-TODO
+02:09:17 I logger.go:97> Log level is now 3 Warning (was 2 Info)
+Fortio 1.3.2-pre running at 0 queries per second, 2->2 procs, for 100 calls: http://app-ui:8080/shared
+Starting at max qps with 3 thread(s) [gomax 2] for exactly 100 calls (33 per thread + 1)
+Ended after 622.620001ms : 100 calls. qps=160.61
+Aggregated Function Time : count 100 avg 0.018515704 +/- 0.006904 min 0.007205997 max 0.045108242 sum 1.85157038
+# range, mid point, percentile, count
+>= 0.007206 <= 0.008 , 0.007603 , 1.00, 1
+> 0.009 <= 0.01 , 0.0095 , 5.00, 4
+> 0.011 <= 0.012 , 0.0115 , 10.00, 5
+> 0.012 <= 0.014 , 0.013 , 27.00, 17
+> 0.014 <= 0.016 , 0.015 , 39.00, 12
+> 0.016 <= 0.018 , 0.017 , 55.00, 16
+> 0.018 <= 0.02 , 0.019 , 69.00, 14
+> 0.02 <= 0.025 , 0.0225 , 89.00, 20
+> 0.025 <= 0.03 , 0.0275 , 95.00, 6
+> 0.035 <= 0.04 , 0.0375 , 97.00, 2
+> 0.04 <= 0.045 , 0.0425 , 99.00, 2
+> 0.045 <= 0.0451082 , 0.0450541 , 100.00, 1
+# target 50% 0.017375
+# target 75% 0.0215
+# target 90% 0.0258333
+# target 99% 0.045
+# target 99.9% 0.0450974
+Sockets used: 3 (for perfect keepalive, would be 3)
+Jitter: false
+Code 200 : 100 (100.0 %)
+Response Header Sizes : count 100 avg 353.84 +/- 0.3666 min 353 max 354 sum 35384
+Response Body/Total Sizes : count 100 avg 5066.84 +/- 0.3666 min 5066 max 5067 sum 506684
+All done 100 calls (plus 0 warmup) 18.516 ms avg, 160.6 qps
 ```
+
+cleanup: `oc delete dc web-load`
+
+----
 
 ### 2. Configure the service to use circuit breaking and bulkheading
 Run the following to apply a dynamic update to the DestinationRule for the boards service:
@@ -48,15 +80,21 @@ trafficPolicy:
       baseEjectionTime: 5m
 ```
 
+----
+
 ### 3. Fill the bulkhead
 Now that we applied the pattern, let's run the same command as before and fill up a connection pool (bulkhead):
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app_ui:8080/shareditems`
+`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app-ui:8080/shared`
 
 The result should look like:
 ```
 TODO
 ```
+
+cleanup: `oc delete dc web-load`
+
+----
 
 ### 4. Break the app and Trip the breaker
 Now let's try to trip the circuit breaker by temporarily faking an error into the boards service. Run this to stop the database:
@@ -70,12 +108,16 @@ And for each user request incoming the app-ui service will timeout eventually wi
 
 So now run the same load test as before to see that Istio immediately returns 5xx on the tripped circuit breaker vs. waiting for each call to fail after waiting for a long timeout on the database.
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app_ui:8080/shareditems`
+`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://app-ui:8080/shared`
 
 The result should look like:
 ```
 TODO
 ```
+
+cleanup: `oc delete dc web-load`
+
+----
 
 ## That's it!
 The basic circuit breaker and bulkhead patterns can be useful when operating a microservices based application. Istio has the basic capability for both of these patterns. It's language independent and you can configure the capability at runtime without any code changes.

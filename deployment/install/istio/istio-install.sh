@@ -11,12 +11,6 @@ oc create -n istio-system -f ./istio-resources.yaml
 
 # CHECK THE INSTALL COMPLETED
 # oc get controlplane/istio-demo -n istio-system --template='{{range .status.conditions}}{{printf "%s=%s, reason=%s, message=%s\n\n" .type .status .reason .message}}{{end}}'
-# until 
-# 	oc get pods -n istio-system | grep "openshift-ansible-istio" | grep -m 1 "Completed"
-# do
-# 	oc get pods -n istio-system | grep "openshift-ansible-istio"
-# 	sleep 2
-# done
 
 # IF YOU NEED TO REMOVE AN ISTIO INSTALL AND COMPONENTS
 #oc delete -n istio-system controlplane istio-demo

@@ -24,7 +24,7 @@ spec:
       tcp:
         maxConnections: 2
       http:
-        http2MaxRequests: 5
+        http2MaxRequests: 1
         maxRequestsPerConnection: 2
     outlierDetection:
       consecutiveErrors: 2

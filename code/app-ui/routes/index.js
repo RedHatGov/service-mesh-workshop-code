@@ -25,7 +25,7 @@ router.post('/newboard', function(req, res) {
         items: newBoardData.items
       },
       headers: {
-          'User-Agent': req.SERVICE_NAME,
+          'user-agent': req.header('user-agent'),
           'x-request-id': req.header('x-request-id'),
           'x-b3-traceid': req.header('x-b3-traceid'),
           'x-b3-spanid': req.header('x-b3-spanid'),
