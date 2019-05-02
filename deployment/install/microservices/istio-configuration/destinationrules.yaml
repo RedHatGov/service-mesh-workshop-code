@@ -1,19 +1,11 @@
 # These are a set of destination rules that can be used
 # as a simple base for more advanced demos to build upon
-# we define v1 for each service pointing to a 1.0.0 tag
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: app-ui
 spec:
   host: app-ui
-  subsets:
-  - name: v1.0
-    labels:
-      version: '1.0'
-  - name: v1.1
-    labels:
-      version: '1.1'
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -21,6 +13,13 @@ metadata:
   name: boards
 spec:
   host: boards
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards-mongodb
+spec:
+  host: boards-mongodb
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule

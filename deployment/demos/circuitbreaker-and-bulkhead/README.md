@@ -16,21 +16,60 @@ Bulkheads in ships create watertight compartments that can contain water in the 
 ## Demo Steps
 This demo shows how Istio can be used to add circuit breaking and connection bulkheading capabilities to the services of our app.
 
-### Verify we aren't circuit breaking
-We can use OpenShift to pull a container image containing the fortio load test tool and run it.
+### 1. Put some load on the app
+We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how this app would respond at scale. Try running a few commands like the one below to put load on our app.
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
+`oc run web-load --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
 The result should look like:
 ```
-TODO
+03:32:49 I logger.go:97> Log level is now 3 Warning (was 2 Info)
+Fortio 1.3.2-pre running at 0 queries per second, 2->2 procs, for 100 calls: http://boards:8080/shareditems 
+Starting at max qps with 5 thread(s) [gomax 2] for exactly 100 calls (20 per thread + 0)
+Ended after 198.75734ms : 100 calls. qps=503.13
+Aggregated Function Time : count 100 avg 0.0096226747 +/- 0.008179 min 0.002403803 max 0.050231693 sum 0.962267469
+# range, mid point, percentile, count
+>= 0.0024038 <= 0.003 , 0.0027019 , 4.00, 4
+> 0.003 <= 0.004 , 0.0035 , 8.00, 4
+> 0.004 <= 0.005 , 0.0045 , 25.00, 17
+> 0.005 <= 0.006 , 0.0055 , 33.00, 8
+> 0.006 <= 0.007 , 0.0065 , 49.00, 16
+> 0.007 <= 0.008 , 0.0075 , 59.00, 10
+> 0.008 <= 0.009 , 0.0085 , 67.00, 8
+> 0.009 <= 0.01 , 0.0095 , 75.00, 8
+> 0.01 <= 0.011 , 0.0105 , 76.00, 1
+> 0.011 <= 0.012 , 0.0115 , 77.00, 1
+> 0.012 <= 0.014 , 0.013 , 84.00, 7
+> 0.014 <= 0.016 , 0.015 , 89.00, 5
+> 0.016 <= 0.018 , 0.017 , 90.00, 1
+> 0.018 <= 0.02 , 0.019 , 94.00, 4
+> 0.02 <= 0.025 , 0.0225 , 95.00, 1
+> 0.025 <= 0.03 , 0.0275 , 97.00, 2
+> 0.04 <= 0.045 , 0.0425 , 98.00, 1
+> 0.045 <= 0.05 , 0.0475 , 99.00, 1
+> 0.05 <= 0.0502317 , 0.0501158 , 100.00, 1
+# target 50% 0.0071
+# target 75% 0.01
+# target 90% 0.018
+# target 99% 0.05
+# target 99.9% 0.0502085
+Sockets used: 5 (for perfect keepalive, would be 5)
+Jitter: false
+Code 200 : 100 (100.0 %)
+Response Header Sizes : count 100 avg 266.16 +/- 0.3666 min 266 max 267 sum 26616
+Response Body/Total Sizes : count 100 avg 268.16 +/- 0.3666 min 268 max 269 sum 26816
+All done 100 calls (plus 0 warmup) 9.623 ms avg, 503.1 qps
 ```
 
-### Configure the service to use circuit breaking and bulkheading
+cleanup: `oc delete dc web-load`
+
+----
+
+### 2. Configure the service to use circuit breaking and bulkheading
 Run the following to apply a dynamic update to the DestinationRule for the boards service:
 `oc apply -f circuitbreaker-boards.yaml`
 
-The following rule sets a TCP/HTTP connection pool size of 2 connections and allows 5 concurrent HTTP2 requests, with no more than 2 req/connection to each boards service instance.
+The following rule sets a TCP/HTTP connection pool size of 2 connections and allows 1 concurrent HTTP requests, with no more than 2 req/connection to each boards service instance.
 
 It also configures boards service instances to be scanned every 10 seconds. And any instance that fails 2 consecutive times with 5XX error code will be ejected from the load balanced pool for 5 minutes.
 
@@ -40,7 +79,8 @@ trafficPolicy:
       tcp:
         maxConnections: 2
       http:
-        http2MaxRequests: 5
+        http2MaxRequests: 3
+        http1MaxPendingRequests: 3
         maxRequestsPerConnection: 2
     outlierDetection:
       consecutiveErrors: 2
@@ -48,29 +88,104 @@ trafficPolicy:
       baseEjectionTime: 5m
 ```
 
-### Fill the bulkhead
+----
+
+### 3. Fill the bulkhead
 Now that we applied the pattern, let's run the same command as before and fill up a connection pool (bulkhead):
 
 `oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
 The result should look like:
 ```
-TODO
+03:31:34 I logger.go:97> Log level is now 3 Warning (was 2 Info)
+Fortio 1.3.2-pre running at 0 queries per second, 2->2 procs, for 100 calls: http://boards:8080/shareditems 
+Starting at max qps with 5 thread(s) [gomax 2] for exactly 100 calls (20 per thread + 0)
+03:31:34 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:34 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:34 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:34 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+03:31:35 W http_client.go:695> Parsed non ok code 503 (HTTP/1.1 503)
+Ended after 441.694225ms : 100 calls. qps=226.4
+Aggregated Function Time : count 100 avg 0.017947649 +/- 0.01656 min 0.000551304 max 0.062214398 sum 1.79476485
+# range, mid point, percentile, count
+>= 0.000551304 <= 0.001 , 0.000775652 , 2.00, 2
+> 0.001 <= 0.002 , 0.0015 , 16.00, 14
+> 0.002 <= 0.003 , 0.0025 , 17.00, 1
+> 0.003 <= 0.004 , 0.0035 , 19.00, 2
+> 0.005 <= 0.006 , 0.0055 , 24.00, 5
+> 0.006 <= 0.007 , 0.0065 , 31.00, 7
+> 0.007 <= 0.008 , 0.0075 , 34.00, 3
+> 0.008 <= 0.009 , 0.0085 , 42.00, 8
+> 0.009 <= 0.01 , 0.0095 , 43.00, 1
+> 0.01 <= 0.011 , 0.0105 , 44.00, 1
+> 0.011 <= 0.012 , 0.0115 , 46.00, 2
+> 0.012 <= 0.014 , 0.013 , 54.00, 8
+> 0.014 <= 0.016 , 0.015 , 61.00, 7
+> 0.016 <= 0.018 , 0.017 , 63.00, 2
+> 0.018 <= 0.02 , 0.019 , 67.00, 4
+> 0.02 <= 0.025 , 0.0225 , 76.00, 9
+> 0.025 <= 0.03 , 0.0275 , 80.00, 4
+> 0.03 <= 0.035 , 0.0325 , 85.00, 5
+> 0.035 <= 0.04 , 0.0375 , 87.00, 2
+> 0.045 <= 0.05 , 0.0475 , 92.00, 5
+> 0.05 <= 0.06 , 0.055 , 98.00, 6
+> 0.06 <= 0.0622144 , 0.0611072 , 100.00, 2
+# target 50% 0.013
+# target 75% 0.0244444
+# target 90% 0.048
+# target 99% 0.0611072
+# target 99.9% 0.0621037
+Sockets used: 19 (for perfect keepalive, would be 5)
+Jitter: false
+Code 200 : 86 (86.0 %)
+Code 503 : 14 (14.0 %)
+Response Header Sizes : count 100 avg 229.26 +/- 92.5 min 0 max 267 sum 22926
+Response Body/Total Sizes : count 100 avg 273.54 +/- 12.3 min 268 max 304 sum 27354
+All done 100 calls (plus 0 warmup) 17.948 ms avg, 226.4 qps
 ```
 
-### Trip the breaker
-Now let's try to trip the circuit breaker by temporarily faking an error into the boards service.
+**See that Istio immediately returns 503 on the filled bulkhead**
 
--- ? rsh into the container and kill the node.js process to trigger a container restart?
+cleanup: `oc delete dc web-load`
 
-And now run the same load test as before to see that Istio immediately returns 5xx on the tripped circuit breaker
+----
+
+### 4. Break the app and Trip the breaker
+Now let's try to trip the circuit breaker by temporarily faking some errors into the boards service. Run this:
+`oc apply -f faulty-boards-service.yaml`
+
+So now run a load test without the concurrency (so as not to fill the bulkhead) but instead to try to trip the circuit breaker.
+
+`oc run web-load --image=istio/fortio -- load -c 1 -qps 0 -n 100 -loglevel Warning http://app-ui:8080/shared`
 
 The result should look like:
 ```
 TODO
 ```
+**See that Istio immediately returns 503 on the tripped breaker vs. waiting for each call to fail after waiting for a long timeout**
 
-## Summary
+cleanup: `oc delete dc web-load`
+
+<!-- should we show how to deal with this?
+If the data base died we'd see Code -1 and TCP errors...
+Now if you went to the main website for the app and tried to view the shared boards you would see:
+![Screenshot](./spinspin.gif?raw=true)
+
+And for each user request incoming the app-ui service will timeout eventually with an error like this:
+![Screenshot](./timeout.png?raw=true) -->
+
+----
+
+## That's it!
 The basic circuit breaker and bulkhead patterns can be useful when operating a microservices based application. Istio has the basic capability for both of these patterns. It's language independent and you can configure the capability at runtime without any code changes.
 
 Read more about these capabilities in Istio [here][3] and check out the [configuration reference here][4].

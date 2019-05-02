@@ -1,1 +1,13 @@
-# TODO
+# These are a set of virtual service routes that can be used
+# as a simple base for more advanced demos to build upon
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: boards
+spec:
+  hosts:
+  - boards
+  http:
+  - route:
+    - destination:
+        host: boards

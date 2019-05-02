@@ -1,21 +1,21 @@
 #!/bin/bash
 oc new-project istio-operator
-oc new-app -f istio-operator.yaml --param=OPENSHIFT_ISTIO_MASTER_PUBLIC_URL=https://yourcluster.com:443
+oc new-project istio-system
+oc apply -n istio-operator -f ./istio-operator.yaml
 
 # CHECK OPERATOR WAS INSTALLED
-oc logs -n istio-operator $(oc -n istio-operator get pods -l name=istio-operator --output=jsonpath={.items..metadata.name})
+oc get pods -n istio-operator -l name=istio-operator
 
-# DEPLOY THE CONTROL PLANE
-oc create -f istio-resources.yaml -n istio-operator
+# DEPLOY THE ISTIO CONTROL PLANE AND COMPONENTS
+oc create -n istio-system -f ./istio-resources.yaml
 
 # CHECK THE INSTALL COMPLETED
-until 
-	oc get pods -n istio-system | grep "openshift-ansible-istio" | grep -m 1 "Completed"
-do
-	oc get pods -n istio-system | grep "openshift-ansible-istio"
-	sleep 2
-done
+# oc get controlplane/istio-demo -n istio-system --template='{{range .status.conditions}}{{printf "%s=%s, reason=%s, message=%s\n\n" .type .status .reason .message}}{{end}}'
 
-# IF YOU NEED TO REMOVE ISTIO AND COMPONENTS
-# oc delete -n istio-operator installation istio-installation
-# oc process -f istio-operator.yaml | oc delete -f -
+# IF YOU NEED TO REMOVE AN ISTIO INSTALL AND COMPONENTS
+#oc delete -n istio-system controlplane istio-demo
+
+# IF YOU WANT TO DELETE THE ISTIO OPERATOR TOO
+#oc delete -n istio-operator -f ./istio-operator.yaml
+#oc delete project istio-system
+#oc delete project istio-operator

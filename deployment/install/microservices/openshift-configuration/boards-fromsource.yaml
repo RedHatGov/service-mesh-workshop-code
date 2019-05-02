@@ -34,6 +34,7 @@ objects:
     ports:
     - port: 8080
       targetPort: 8080
+      name: http
     selector:
       deploymentconfig: ${APPLICATION_NAME}
   status:
@@ -200,6 +201,7 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME}
+      version: ${MONGODB_VERSION}
     name: ${DATABASE_SERVICE_NAME}
   spec:
     ports:
@@ -234,6 +236,7 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME}
+      version: ${MONGODB_VERSION}
     annotations:
       template.alpha.openshift.io/wait-for-ready: "true"
     name: ${DATABASE_SERVICE_NAME}
@@ -250,6 +253,7 @@ objects:
           app: ${APPLICATION_NAME}
           deploymentConfig: ${DATABASE_SERVICE_NAME}
           name: ${DATABASE_SERVICE_NAME}
+          version: ${MONGODB_VERSION}
         annotations:
           sidecar.istio.io/inject: "true"
       spec:

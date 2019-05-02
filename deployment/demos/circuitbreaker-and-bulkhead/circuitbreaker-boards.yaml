@@ -6,7 +6,7 @@
 # when measuring the consecutive errors metric. See Envoy’s outlier detection
 # for more details.
 #
-# The following rule sets a connection pool size of 2 connections and 5 
+# The following rule sets a connection pool size of 2 connections and 3 
 # concurrent HTTP2 requests, with no more than 2 req/connection to "boards" 
 # service. In addition, it configures upstream hosts to be scanned every 5 mins, 
 # such that any host that fails 2 consecutive times with 5XX error code will be
@@ -24,7 +24,8 @@ spec:
       tcp:
         maxConnections: 2
       http:
-        http2MaxRequests: 5
+        http2MaxRequests: 3
+        http1MaxPendingRequests: 3
         maxRequestsPerConnection: 2
     outlierDetection:
       consecutiveErrors: 2

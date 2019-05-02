@@ -31,7 +31,15 @@ router.get('/custom_search', function(req, res, next) {
             'q': req.query.term
         },
         headers: {
-            'User-Agent': req.SERVICE_NAME
+            'user-agent': req.header('user-agent'),
+            'x-request-id': req.header('x-request-id'),
+            'x-b3-traceid': req.header('x-b3-traceid'),
+            'x-b3-spanid': req.header('x-b3-spanid'),
+            'x-b3-parentspanid': req.header('x-b3-parentspanid'),
+            'x-b3-sampled': req.header('x-b3-sampled'),
+            'x-b3-flags': req.header('x-b3-flags'),
+            'x-ot-span-context': req.header('x-ot-span-context'),
+            'b3': req.header('b3')
         },
         json: true // Automatically parses the JSON string in the response
     }
