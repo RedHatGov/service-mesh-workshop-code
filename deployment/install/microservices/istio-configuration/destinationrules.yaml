@@ -1,6 +1,5 @@
 # These are a set of destination rules that can be used
 # as a simple base for more advanced demos to build upon
-# we define v1 for each service pointing to a 1.0.0 tag
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
