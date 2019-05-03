@@ -1,14 +1,14 @@
 # Secure Traffic
-Let's take a look at how you can meet stricter security requirements with this application. Imagine a scenario where you are deploying this at a gov't agency or are expecting a lot of PII environment. In that scenario there's probably all sorts of security requirements to adhere to. One big requirement that could cause a lot of consternation on the development/operations team is to encrypt all network communications. In this demo we will show how Istio can help with that without requiring code changes, without complicated network updates, and without installing new tools or servers.
+Let's take a look at how you can meet stricter security requirements with this application. Imagine a scenario where you are deploying this at a gov't agency or are expecting a lot of PII environment. In that scenario there's probably all sorts of security requirements to adhere to. One big requirement that could cause a lot of consternation on the development/operations team is to encrypt all service communications. In this demo we will show how Istio can help with that without requiring code changes, without complicated network updates, and without installing new tools or servers.
 
-# Turn on mTLS
+# Turn on mutual TLS for service-to-service authentication
 Run the following Istio configuration updates:
 
 `oc apply -f ./policy-default-enablemtls.yaml`
 
 `oc apply -f ./destinationrules-mtls.yaml`
 
-The first file applys the following [policy][5] update to tell the mesh to strictly enforce mutual TLS (encryption) for our services. We are effectively saying that all services will ONLY accept encrypted requests.
+The first file applies the following [policy][5] update to tell the mesh to strictly enforce mutual TLS (encryption) for our services. We are effectively saying that all services will ONLY accept encrypted requests.
 ```yaml
 apiVersion: authentication.istio.io/v1alpha1
 kind: Policy
@@ -35,7 +35,7 @@ As a quick test to show that Istio is enforcing our desired configuration let's 
 
 Run the following to try to pull data from the boards service:
 
-`oc run web-load --attach --rm --restart=Never --image=appropriate/curl --timeout=10s -- http://boards:8080/shareditems`
+`oc run curl-boards --attach --rm --restart=Never --image=appropriate/curl --timeout=10s -- http://boards:8080/shareditems`
 
 You should see a failure like this:
 ```
@@ -54,7 +54,8 @@ pod microservices-demo/web-load terminated (Error)
 `oc apply -f  ../../../deployment/install/microservices/istio-configuration/destinationrules.yaml`
 
 and then:
-`oc run web-load --attach --rm --restart=Never --image=appropriate/curl --timeout=10s -- http://boards:8080/shareditems`
+
+`oc run curl-boards --attach --rm --restart=Never --image=appropriate/curl --timeout=10s -- http://boards:8080/shareditems`
 
 You should see success with like this printing out your shared items (if you have any):
 ```
@@ -84,7 +85,13 @@ You should see success with like this printing out your shared items (if you hav
 ```
 
 # Summary
-You can see that by running your services on top of Istio as a platform, advanced management of traffic security can be dynamically updated and mutual TLS encryption can easily be added into our application. The architecture to make all this work is somewhat complicated. If you want to dig into the details, the best place to start is on [this Security Overview page][3].
+You can see that by running your services on top of Istio as a platform, advanced management of traffic security can be dynamically updated and mutual TLS encryption can easily be added into our application. The platform 
+* Provides each service with a strong identity representing its role to enable interoperability across clusters and clouds
+* Secures service-to-service communication and end-user-to-service communication
+* Provides a key management system to automate key and certificate generation, distribution, and rotation
+* Provides end-user authentication via JSON Web Tokens (JWT)
+
+The architecture to make all this work is somewhat complicated. If you want to dig into the details, the best place to start is on [this Security Overview page][3].
 
 [1]: https://istio.io/docs/tasks/security/mtls-migration/
 [2]: https://istio.io/docs/tasks/security/mutual-tls/

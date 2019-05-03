@@ -5,11 +5,8 @@ metadata:
   name: context-scraper-egress
 spec:
   hosts:
-  - googleapis.com
+  - www.googleapis.com
   ports:
-  - number: 80
-    name: http
-    protocol: HTTP
   - number: 443
     name: https
     protocol: HTTPS

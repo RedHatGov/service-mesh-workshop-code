@@ -19,9 +19,7 @@ This demo shows how Istio can be used to add circuit breaking and connection bul
 ### 1. Put some load on the app
 We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how individual services will respond at scale. Try running a few commands like the one below to put out some load.
 
-`oc run web-load --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
-
-You can see the output in the OpenShift web console pod logs or print it via the CLI (`oc logs -f web-load-1-xxxxx`)
+`oc run web-load --attach --rm --restart=Never --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
 The result should look like:
 ```
@@ -63,8 +61,6 @@ Response Body/Total Sizes : count 100 avg 268.16 +/- 0.3666 min 268 max 269 sum 
 All done 100 calls (plus 0 warmup) 9.623 ms avg, 503.1 qps
 ```
 
-cleanup: `oc delete dc web-load`
-
 ----
 
 ### 2. Configure the service to use circuit breaking and bulkheading
@@ -84,7 +80,7 @@ connectionPool:
     maxRequestsPerConnection: 2
 ```
 
-We also configured another rule on the `app-ui` service instances to be scanned every 30 seconds. And any request that fails 1 consecutive times with 5XX error code will be ejected from the load balanced pool for 5 minutes.
+We also configured another rule to scan every 30 seconds. And any request that fails 1 consecutive times with 5XX error code will force the faulty host pod to be ejected from the load balancer pool for 5 minutes.
 
 ```yaml
 outlierDetection:
@@ -98,7 +94,7 @@ outlierDetection:
 ### 3. Fill the bulkhead
 Now that we applied the pattern, let's run the same command as before and fill up a connection pool (bulkhead):
 
-`oc run web-load --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
+`oc run web-load --attach --rm --restart=Never --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
 The result should look like:
 ```
@@ -162,14 +158,14 @@ All done 100 calls (plus 0 warmup) 17.948 ms avg, 226.4 qps
 
 *Note, that if you scaled up the boards service by a couple more pods the bulkhead wouldn't fill - it's per pod.*
 
-cleanup: `oc delete dc web-load`
-
 ----
 
 ### 4. Break the app and Trip the breaker
 Now let's try to trip the circuit breaker by temporarily faking some errors into the boards service. Run this:
 
 `oc apply -f faulty-boards-service.yaml`
+
+Istio is now creating some faults for us to help test delays and fake some service failures.
 
 TODO - Steps to showcase demo of outlier detection for circuit breaking...
 
