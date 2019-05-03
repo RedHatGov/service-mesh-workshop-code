@@ -4,6 +4,7 @@
 // (C) 2019
 // Released under the terms of Apache-2.0 License
 
+var createError = require('http-errors')
 var express = require('express')
 var cors = require('cors')
 var bodyParser = require('body-parser')
@@ -12,6 +13,8 @@ var debug = require('debug')('service')
 var debugdb = require('debug')('database')
 
 const SERVICE_NAME = process.env.SERVICE_NAME || 'boards'
+
+var breakme = process.env.BREAKME || 'false'
 
 // database setup
 var user = process.env.MONGODB_USER || 'dummy'
@@ -40,6 +43,9 @@ var port = process.env.PORT || '8080'
 
 // var propagateTrace = require('istio-tracing-headers')
 // app.use(propagateTrace())
+
+// DEMO ONLY
+if (breakme === 'true') { app.use(function(req, res, next) {next(createError(503))})}
 
 // SwaggerRouter
 var swaggerTools = require('swagger-tools');
