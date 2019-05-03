@@ -1,6 +1,5 @@
-# Temporarily disable mTLS on the services so that health checks will work
+# Disable mTLS on the services
 # this resource is required if the meshpolicy is set to "spec:peers:mtls:{}"
-# TODO: fix config to allow healths and mTLS
 # Read more here: https://istio.io/docs/reference/config/istio.authentication.v1alpha1/
 # https://istio.io/docs/concepts/security/#target-selectors
 # https://itnext.io/musings-about-istio-with-mtls-c64b551fe104

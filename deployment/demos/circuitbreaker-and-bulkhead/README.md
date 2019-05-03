@@ -17,12 +17,11 @@ Bulkheads in ships create watertight compartments that can contain water in the 
 This demo shows how Istio can be used to add circuit breaking and connection bulkheading capabilities to the services of our app.
 
 ### 1. Put some load on the app
-We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how this app would respond at scale. Try running a few commands like the one below to put load on our app.
+We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how individual services will respond at scale. Try running a few commands like the one below to put out some load.
 
 `oc run web-load --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
-You can see the output in the OpenShift web console pod logs or print it via the CLI
-(`oc logs -f web-load-1-xxxxx`)
+You can see the output in the OpenShift web console pod logs or print it via the CLI (`oc logs -f web-load-1-xxxxx`)
 
 The result should look like:
 ```
@@ -70,6 +69,7 @@ cleanup: `oc delete dc web-load`
 
 ### 2. Configure the service to use circuit breaking and bulkheading
 Run the following to apply a dynamic update to our DestinationRules:
+
 `oc apply -f circuitbreaker-boards.yaml`
 
 The following rule sets a TCP/HTTP connection pool size of 2 connections and allows 1 concurrent HTTP requests, with no more than 2 req/connection to each `boards` service instance.
@@ -84,12 +84,12 @@ connectionPool:
     maxRequestsPerConnection: 2
 ```
 
-We also configured another rule on the `app-ui` service instances to be scanned every 10 seconds. And any request that fails 2 consecutive times with 5XX error code will be ejected from the load balanced pool for 5 minutes.
+We also configured another rule on the `app-ui` service instances to be scanned every 30 seconds. And any request that fails 1 consecutive times with 5XX error code will be ejected from the load balanced pool for 5 minutes.
 
 ```yaml
 outlierDetection:
-  consecutiveErrors: 2
-  interval: 10s
+  consecutiveErrors: 1
+  interval: 30s
   baseEjectionTime: 5m
   maxEjectionPercent: 100
 ```
@@ -168,15 +168,16 @@ cleanup: `oc delete dc web-load`
 
 ### 4. Break the app and Trip the breaker
 Now let's try to trip the circuit breaker by temporarily faking some errors into the boards service. Run this:
+
 `oc apply -f faulty-boards-service.yaml`
 
-So now let's pull the main share UI page a few times and see what happens.
+TODO - Steps to showcase demo of outlier detection for circuit breaking...
 
 The result should look like:
 ```
 TODO
 ```
-**See that Istio immediately returns 503 on the tripped breaker vs. waiting for each call to fail after waiting for a long timeout**c
+**See that Istio immediately returns 503 on the tripped breaker vs. waiting for each call to fail after waiting for a long timeout**
 
 ----
 

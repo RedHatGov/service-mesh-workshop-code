@@ -1,0 +1,41 @@
+# These are a set of destination rules that turn on 
+# mutual TLS encryption for our services
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: app-ui
+spec:
+  host: app-ui
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards
+spec:
+  host: boards
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards-mongodb
+spec:
+  host: boards-mongodb
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: context-scraper
+spec:
+  host: context-scraper
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

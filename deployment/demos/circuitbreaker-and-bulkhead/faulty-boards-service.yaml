@@ -13,7 +13,7 @@ spec:
           value: 100
       abort:
         httpStatus: 503
-        percent: 100
+        percent: 0
     route:
     - destination:
         host: boards
