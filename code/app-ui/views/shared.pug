@@ -47,10 +47,20 @@ block append content
               strong.d-block.text-gray-dark #{owner}
               | #{itemText}
               p
-                button.btn.btn-outline-secondary.btn-sm(type='submit') Copy Me
+                button.btn.btn-outline-secondary.btn-sm(data-clipboard-text=''+itemText) Copy Me
           - iter++
         small.d-block.text-right.mt-3
           a(href='#') All recent
+  //- enable to copy paste using the clipboardjs lib
+  script.
+    var btns = document.querySelectorAll('button');
+    var clipboard = new ClipboardJS(btns);
+    clipboard.on('success', function(e) {
+      console.log(e);
+    });
+    clipboard.on('error', function(e) {
+      console.log(e);
+    });
     //- TODO We could have another section here
     //- .my-3.p-3.bg-white.rounded.shadow-sm
     //-   h6.border-bottom.border-gray.pb-2.mb-0 Most Popular
@@ -66,3 +76,13 @@ block append content
     //-       span.d-block @username
     //-   small.d-block.text-right.mt-3
     //-     a(href='#') Load More
+block append javascripts
+  script.
+    var btns = document.querySelectorAll('button');
+    var clipboard = new ClipboardJS(btns);
+    clipboard.on('success', function(e) {
+    console.log(e);
+    });
+    clipboard.on('error', function(e) {
+    console.log(e);
+    });
