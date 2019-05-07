@@ -16,7 +16,7 @@ block content
             p.lead.text-muted
               | You can create a new board by clicking the button below. Once you've created a board, you can start to paste items into it.
         p
-          button.btn.btn-primary(type='button', data-toggle='modal', data-target='#newBoardModal', data-whatever='@getbootstrap') New Board
+          button.btn.btn-primary(type='button', data-toggle='modal', data-target='#newBoardModal') New Board
           #newBoardModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='newBoardModalLabel', aria-hidden='true')
             .modal-dialog(role='document')
               .modal-content
@@ -26,12 +26,15 @@ block content
                     span(aria-hidden='true') x
                 .modal-body
                   form
-                    .form-group
-                      label.col-form-label(for='newboard-name') Name
-                      input#recipient-name.form-control(type='text', placeholder='Some name')
-                    .form-group
-                      label.col-form-label(for='newboard-description') Description
-                      textarea#message-text.form-control(placeholder='Describe what this board is all about')
+                    .form-group.row
+                      label.col-form-label.col-sm-2(for='newboardName') Name
+                      div.col-sm-10
+                        input#newboardName.form-control(type='text', placeholder='Some name')
+                    .form-group.row
+                      label.col-form-label.col-sm-2(for='newboardDescription') Description
+                      div.col-sm-10
+                        textarea#newboardDescription.form-control(placeholder='Describe what this board is all about')
+                      //- TODO COLOR PICKER AND ICON IMAGE
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                   button.btn.btn-primary(type='button') Create
