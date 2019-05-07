@@ -3,19 +3,19 @@
 # oc new-app -f ./app-ui-fromsource.yaml \
 #   -p APPLICATION_NAME=app-ui \
 #   -p NODEJS_VERSION_TAG=8-RHOAR \
-#   -p GIT_BRANCH=peter-cotton-tail
+#   -p GIT_BRANCH=develop \
 #   -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: app-ui
+  template: app-ui-fromsource
 message: A new app-ui service has been created in your project. 
 metadata:
   annotations:
     description: An app-ui application for the microservices demo
     openshift.io/display-name: app-ui
     template.openshift.io/long-description: This template defines the app-ui microservice
-  name: app-ui
+  name: app-ui-fromsource
 objects:
 - apiVersion: v1
   kind: Service
@@ -29,6 +29,7 @@ objects:
     ports:
     - port: 8080
       targetPort: 8080
+      name: http
     selector:
       deploymentconfig: ${APPLICATION_NAME}
   status:
@@ -157,7 +158,7 @@ parameters:
   displayName: app version tag
   name: APP_VERSION_TAG
   required: true
-  value: '1.0.0'
+  value: 'latest'
 - description: The source code branch
   displayName: git branch
   name: GIT_BRANCH

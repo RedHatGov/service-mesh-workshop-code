@@ -3,7 +3,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
-    title Shared Items
+    title Paste Board
     link(href='/stylesheets/bootstrap-4.3.1-dist/css/bootstrap.min.css', rel='stylesheet')
     style.
       .bd-placeholder-img {
@@ -53,11 +53,17 @@ html(lang='en')
     .container
       p.float-right
         a(href='#') Back to top
-      p 
+      p.badge.badge-light
+        br
+        br
         | The source for this application can be 
         a(href='https://github.com/dudash/openshift-microservices') found on github
-        | .
-      a(href='https://vecteezy.com').badge.badge-light Graphics Provided by www.Vecteezy.com
+      a(href='https://vecteezy.com').badge.badge-light - graphics provided by www.Vecteezy.com
+      br
+      br
+      p(align='center')
+        | Made with ❤️ at 
+        img(src='./images/Logo-RedHat-A-Color-RGB.png' width='100')
 
   block javascripts
     script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js', integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo', crossorigin='anonymous')

@@ -4,20 +4,20 @@
 #     -p APPLICATION_NAME=boards \
 #     -p NODEJS_VERSION_TAG=8-RHOAR \
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
-#     -p GIT_BRANCH=peter-cotton-tail \
+#     -p GIT_BRANCH=develop \
 #     -p DATABASE_SERVICE_NAME=boards-mongodb \
 #     -p MONGODB_DATABASE=boardsDevelopment
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: boards
+  template: boards-fromsource
 message: A new boards web service has been created in your project along with it's mongodb
 metadata:
   annotations:
     description: An boards application for the microservices demo
     openshift.io/display-name: boards
     template.openshift.io/long-description: This template defines the boards microservice
-  name: boards
+  name: boards-fromsource
 objects:
 # -----------------------------------------------------------------------------
 # Node.js App Section
@@ -34,6 +34,7 @@ objects:
     ports:
     - port: 8080
       targetPort: 8080
+      name: http
     selector:
       deploymentconfig: ${APPLICATION_NAME}
   status:
@@ -200,6 +201,7 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME}
+      version: ${MONGODB_VERSION}
     name: ${DATABASE_SERVICE_NAME}
   spec:
     ports:
@@ -234,6 +236,7 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME}
+      version: ${MONGODB_VERSION}
     annotations:
       template.alpha.openshift.io/wait-for-ready: "true"
     name: ${DATABASE_SERVICE_NAME}
@@ -250,6 +253,7 @@ objects:
           app: ${APPLICATION_NAME}
           deploymentConfig: ${DATABASE_SERVICE_NAME}
           name: ${DATABASE_SERVICE_NAME}
+          version: ${MONGODB_VERSION}
         annotations:
           sidecar.istio.io/inject: "true"
       spec:
@@ -338,7 +342,7 @@ parameters:
   displayName: app version tag
   name: APP_VERSION_TAG
   required: true
-  value: '1.0.0'
+  value: 'latest'
 - description: The source code URI
   displayName: git URI
   name: GIT_URI

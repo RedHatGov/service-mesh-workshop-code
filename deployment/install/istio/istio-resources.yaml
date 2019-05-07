@@ -1,47 +1,85 @@
-apiVersion: "istio.openshift.com/v1alpha1"
-kind: "Installation"
+apiVersion: istio.openshift.com/v1alpha3
+kind: ControlPlane
 metadata:
-  name: "istio-installation"
+  name: istio-demo
 spec:
-  deployment_type: openshift
-  istio:
-    authentication: true
-    community: false
-    prefix: openshift-istio-tech-preview/
-    version: 0.8.0
-  jaeger:
-    prefix: distributed-tracing-tech-preview/
-    version: 1.9.0
-    elasticsearch_memory: 1Gi
-  kiali:
-    username: username
-    password: password
-    prefix: openshift-istio-tech-preview/
-    version: 0.14.0
   launcher:
-    openshift:
-      user: user
-      password: password
-    github:
-      username: username
-      token: token
-    catalog:
-      filter: booster.mission.metadata.istio
-      branch: v85
-      repo: https://github.com/fabric8-launcher/launcher-booster-catalog.git
+    enabled: false
+    # specify the url to master, e.g. https://master.some.domain.com:443
+    LAUNCHER_MISSIONCONTROL_OPENSHIFT_CONSOLE_URL: https://xxx.xxx.com
+    # Your GitHub username
+    LAUNCHER_MISSIONCONTROL_GITHUB_USERNAME: x
+    # Your GitHub Mission Control access token
+    LAUNCHER_MISSIONCONTROL_GITHUB_TOKEN: x
+
   threeScale:
     enabled: false
-    prefix: openshift-istio-tech-preview/
-    version: 0.3.0
-    adapter:
-      listenAddr: 3333
-      logLevel: info
-      logJSON: true
-      reportMetrics: true
-      metricsPort: 8080
-      cacheTTLSeconds: 300
-      cacheRefreshSeconds: 180
-      cacheEntriesMax: 1000
-      cacheRefreshRetries: 1
-      allowInsecureConn: false
-      clientTimeoutSeconds: 10
+    PARAM_THREESCALE_LISTEN_ADDR: 3333
+    PARAM_THREESCALE_LOG_LEVEL: info
+    PARAM_THREESCALE_LOG_JSON: true
+    PARAM_THREESCALE_REPORT_METRICS: true
+    PARAM_THREESCALE_METRICS_PORT: 8080
+    PARAM_THREESCALE_CACHE_TTL_SECONDS: 300
+    PARAM_THREESCALE_CACHE_REFRESH_SECONDS: 180
+    PARAM_THREESCALE_CACHE_ENTRIES_MAX: 1000
+    PARAM_THREESCALE_CACHE_REFRESH_RETRIES: 1
+    PARAM_THREESCALE_ALLOW_INSECURE_CONN: false
+    PARAM_THREESCALE_CLIENT_TIMEOUT_SECONDS: 10
+
+  istio:
+    global:
+      hub: openshift-istio-tech-preview
+      tag: 0.10.0
+      proxy:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 128Mi
+      mtls: true
+      disablePolicyChecks: true
+      policyCheckFailOpen: false
+      # imagePullSecrets:
+      #   - MyPullSecret
+
+    gateways:
+      istio-egressgateway:
+        autoscaleEnabled: false
+        autoscaleMin: 1
+        autoscaleMax: 5
+      istio-ingressgateway:
+        autoscaleEnabled: false
+        autoscaleMin: 1
+        autoscaleMax: 5
+        ior_enabled: false
+
+    mixer:
+      policy:
+        autoscaleEnabled: false
+
+      telemetry:
+        autoscaleEnabled: false
+        resources:
+          requests:
+            cpu: 100m
+            memory: 1G
+          limits:
+            cpu: 500m
+            memory: 4G
+
+    pilot:
+      autoscaleEnabled: false
+      traceSampling: 100.0
+
+    kiali:
+      enabled: true
+      hub: kiali
+      tag: v0.16.2
+      dashboard:
+        user: admin
+        passphrase: admin
+
+    tracing:
+      enabled: true

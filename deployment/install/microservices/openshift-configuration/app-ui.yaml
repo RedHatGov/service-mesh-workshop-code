@@ -22,6 +22,7 @@ objects:
     ports:
     - port: 8080
       targetPort: 8080
+      name: http
     selector:
       deploymentconfig: ${APPLICATION_NAME}
   status:
@@ -96,4 +97,4 @@ parameters:
   displayName: App version tag (image)
   name: APP_VERSION_TAG
   required: true
-  value: 'latest'
+  value: '1.0'

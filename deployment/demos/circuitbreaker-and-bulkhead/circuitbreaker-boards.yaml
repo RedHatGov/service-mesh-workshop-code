@@ -1,0 +1,55 @@
+# A Circuit breaker implementation that tracks the status of each individual
+# host in the upstream service. Applicable to both HTTP and TCP services. 
+# For HTTP services, hosts that continually return 5xx errors for API calls 
+# are ejected from the pool for a pre-defined period of time. For TCP services,
+# connection timeouts or connection failures to a given host counts as an error
+# when measuring the consecutive errors metric. See Envoy’s outlier detection
+# for more details.
+#
+# The following rule sets a connection pool size of X connections and X 
+# concurrent HTTP2 requests, with no more than X req/connection to "boards" 
+# service.
+# 
+# The following rule configures hosts to be scanned every 30 seconds, so that any host that 
+# fails X consecutive times with an error code will be ejected for X minutes.
+# Number of errors before a host is ejected from the connection pool. When the 
+# upstream host is accessed over HTTP, a 502, 503 or 504 return code qualifies as an error.
+# When the upstream host is accessed over an opaque TCP connection, connect timeouts and 
+# connection error/failure events qualify as an error.
+#
+# Note: we are making these numbers a bit small for demo purposes
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards
+spec:
+  host: boards
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 2
+      http:
+        http2MaxRequests: 3
+        http1MaxPendingRequests: 3
+        maxRequestsPerConnection: 2
+    outlierDetection:
+      consecutiveErrors: 1
+      interval: 30s
+      baseEjectionTime: 5m
+      maxEjectionPercent: 100
+---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: DestinationRule
+# metadata:
+#   name: app-ui
+# spec:
+#   host: app-ui
+#   trafficPolicy:
+#     connectionPool:
+#         http: {}
+#         tcp: {}
+#     outlierDetection:
+#       consecutiveErrors: 1
+#       interval: 30s
+#       baseEjectionTime: 5m
+#       maxEjectionPercent: 100

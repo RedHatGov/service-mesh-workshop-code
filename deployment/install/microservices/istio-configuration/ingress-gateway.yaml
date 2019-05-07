@@ -7,8 +7,10 @@
 #
 # https://istio.io/docs/reference/config/networking/v1alpha3/gateway/
 #
-# We are using hosts="*"" below because this is a demo environment that can hop
-# around from domain to domain and cluster to cluster
+# We are using hosts='* below because this is a demo environment that can hop
+# around from domain to domain and cluster to cluster. You can easily scope it
+# to run with custom ingress by adding one or more explicit hosts in place of '*'.
+#
 # Also, OpenShift *should* automatically create routes for me based on this:
 # https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#automatic-route-creation
 apiVersion: networking.istio.io/v1alpha3
@@ -20,7 +22,7 @@ spec:
     istio: ingressgateway
   servers:
   - hosts:
-    - "*"
+    - '*'
     port:
       number: 80
       name: http
@@ -36,38 +38,30 @@ spec:
       serverCertificate: /etc/certs/cert-chain.pem
       privateKey: /etc/certs/key.pem
 ---
+# This VirtualService maps the gateway and all incoming hosts requests
+# http goes to app-ui on port 8080
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: microservices-demo
 spec:
   hosts:
-  - "*"
+  - '*'
   gateways:
   - microservices-demo-gateway
   http:
-  - match:
-    - uri:
-        prefix: /debug/boards/
-    rewrite:
-      uri: /
-    route:
-    - destination:
-        host: boards
-        port:
-          number: 8080
   - route:
     - destination:
         host: app-ui
         port:
           number: 8080
-  tls:
-  - match:
-    - port: 443
-      sniHosts:
-      - "*"
-    route:
-    - destination:
-        host: auth-sso73-x509
-        port:
-          number: 8443
+  # tls:
+  # - match:
+  #   - port: 443
+  #     sniHosts:
+  #     - '*'
+  #   route:
+  #   - destination:
+  #       host: app-ui
+  #       port:
+  #         number: 8443

@@ -4,7 +4,7 @@ The latest guide can be found here:
 
 The simple version is:
 1) Make sure each node in your cluster has enough [virtual mem for Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html) --> `sysctl -w vm.max_map_count=262144`
-2) Tweak the config files in this folder to add your user/pass info and set the cluster URL
+2) Tweak the config files in this folder to add your user/pass info and set any other preferences
    1) `istio-resources.yaml`
    2) `istio-install.sh`
 3) Make sure you are `oc login`-ed as a cluster admin

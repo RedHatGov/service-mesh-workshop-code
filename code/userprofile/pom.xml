@@ -7,7 +7,8 @@
   <version>1.0-SNAPSHOT</version>
   <properties>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
-    <quarkus.version>0.13.1</quarkus.version>
+    <quarkus.version>0.13.1</quarkus.version> 
+     <!--<quarkus.version>0.14.0</quarkus.version> --> <!--upgrade-->
     <spring.version>5.1.4.RELEASE</spring.version>    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -29,6 +30,12 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
+    <!-- multipart support-->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+    </dependency>    
+     <!-- multipart support end-->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -72,16 +79,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-h2
-
-
-
-
-
-
-
-        
-      </artifactId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
     </dependency>    
   </dependencies>
   <build>
@@ -107,6 +105,20 @@
           </systemProperties>
         </configuration>
       </plugin>
+      <!--jandex maven plug in to create Jandex Index in Quarkus for classes in a external module-->
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>1.0.5</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>      
     </plugins>
   </build>
   <profiles>

@@ -24,8 +24,14 @@ block append content
         h6.mb-0.text-white.lh-100 Recently Created Items
         small Here are the most recent items
     .my-3.p-3.bg-white.rounded.shadow-sm
-      if items == null || items.length < 0
-        // TODO: error/notification
+      if errorWithItems == true
+       .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+          strong Error with getting the items!
+          |  You should try refreshing the page to see if that fixes this
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') ×
+      if !errorWithItems && (items == null || items.length < 0)
+        //- Empty items message could go here
       else
         - var count = Math.min(50, items.length)  // limit the max displayed items
         - var iter = 0
@@ -41,10 +47,20 @@ block append content
               strong.d-block.text-gray-dark #{owner}
               | #{itemText}
               p
-                button.btn.btn-outline-secondary.btn-sm(type='submit') Copy Me
+                button.btn.btn-outline-secondary.btn-sm(data-clipboard-text=''+itemText) Copy Me
           - iter++
         small.d-block.text-right.mt-3
           a(href='#') All recent
+  //- enable to copy paste using the clipboardjs lib
+  script.
+    var btns = document.querySelectorAll('button');
+    var clipboard = new ClipboardJS(btns);
+    clipboard.on('success', function(e) {
+      console.log(e);
+    });
+    clipboard.on('error', function(e) {
+      console.log(e);
+    });
     //- TODO We could have another section here
     //- .my-3.p-3.bg-white.rounded.shadow-sm
     //-   h6.border-bottom.border-gray.pb-2.mb-0 Most Popular
@@ -60,3 +76,13 @@ block append content
     //-       span.d-block @username
     //-   small.d-block.text-right.mt-3
     //-     a(href='#') Load More
+block append javascripts
+  script.
+    var btns = document.querySelectorAll('button');
+    var clipboard = new ClipboardJS(btns);
+    clipboard.on('success', function(e) {
+      console.log(e);
+    });
+      clipboard.on('error', function(e) {
+      console.log(e);
+    });

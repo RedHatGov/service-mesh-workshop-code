@@ -24,6 +24,7 @@ UI -<get /user345/boards/10>-> GATEWAY <-> Common(validate user 345 can access b
 - MONGODB_DATABASE - override the database name
 - MONGODB_USEAUTH - use auth when connecting to the database, defaults to true
 - DEBUG - specify the debug loggers to print out (use a comma separated list)
+- BREAKME - set to `true` to force the service to spit out 503 errors
 
 ### Local Installation / Run / Test
 Install the dependencies:
@@ -49,10 +50,18 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/boa
     -p APPLICATION_NAME=boards \
     -p NODEJS_VERSION_TAG=8-RHOAR \
     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
-    -p GIT_BRANCH=peter-cotton-tail \
+    -p GIT_BRANCH=develop \
     -p DATABASE_SERVICE_NAME=boards-mongodb \
     -p MONGODB_DATABASE=boardsDevelopment
 ```
+
+### Building a container image for this service
+You can use [s2i][5] to easily build this into a container image. For example to use the OpenShift runtimes node.js as our base:
+```bash
+rm -rf node_modules
+s2i build . registry.access.redhat.com/ubi7/nodejs-8 openshift-microservices-boards --loglevel 3
+```
+Note: we remove the node_modules to avoid conflicts during the build process
 
 ### Developer Tips
 - API is generated via [swagger-tools, read more here][3] [and here][4].
@@ -63,3 +72,4 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/boa
 [2]: https://automattic.github.io/monk/
 [3]: https://github.com/apigee-127/swagger-tools/blob/master/docs/QuickStart.md
 [4]: https://developers.redhat.com/blog/2019/01/14/building-a-node-js-service-using-the-api-first-approach/
+[5]: https://github.com/openshift/source-to-image/releases

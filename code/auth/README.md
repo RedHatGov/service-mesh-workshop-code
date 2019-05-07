@@ -42,9 +42,16 @@ This repo utilizes a OpenShift's source-to-image (s2i) for customizing and layer
 ### Building this service
 Build requires an OpenShift cluster the new-build must point to a git repo or be pointing to a locally cloned branch. For secrets, branches and other options type `oc new-build -h`
 ```bash
-oc new-build redhat-sso-7/sso73-openshift:latest~https://github.com/dudash/openshift-microservices.git#peter-cotton-tail \
+oc new-build redhat-sso-7/sso73-openshift:latest~https://github.com/dudash/openshift-microservices.git#develop \
     --name=auth \
     -l app=auth-sso73-x509
+```
+
+### Building a container image for this service
+As an alternative to building on OpenShift, you can use [s2i][4] to build this into a container image. For example:
+```bash
+rm -rf node_modules
+s2i build . registry.access.redhat.com/redhat-sso-7/sso73-openshift openshift-microservices-auth
 ```
 
 ### Running on OpenShift
@@ -61,7 +68,7 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/aut
  -p SSO_ADMIN_USERNAME="admin" \
  -p SSO_ADMIN_PASSWORD="password" \
  -p SSO_REALM="microservices" \
- -p AUTH_IMAGE_STREAM_NAMESPACE=YOUR_PROJECT_NAME
+ -p AUTH_IMAGE_STREAM_NAMESPACE=microservices-demo
 ```
 
 deleting services related to this app only:
@@ -88,3 +95,4 @@ oc create configmap sso-config \
 [1]: https://access.redhat.com/terms-based-registry/
 [2]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/html-single/red_hat_single_sign-on_for_openshift/
 [3]: https://www.keycloak.org/documentation.html
+[4]: https://github.com/openshift/source-to-image/releases

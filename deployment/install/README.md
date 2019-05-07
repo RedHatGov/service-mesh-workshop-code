@@ -25,4 +25,8 @@ If using Istio, `cd istio` and [follow instructions here](./istio). As general r
 [FUTURE](./distributed-cache)
 
 ## The Application
-`./microservices/services-install.sh` or `./microservices/services-install.sh --no-istio`
+`./microservices/services-install.sh`
+
+
+
+[1]: https://quay.io/user/jasonredhat

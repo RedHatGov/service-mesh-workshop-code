@@ -11,7 +11,15 @@ router.get('/', function(req, res, next) {
         method: 'GET',
         uri: boardsURI,
         headers: {
-            'User-Agent': req.SERVICE_NAME
+            'user-agent': req.header('user-agent'),
+            'x-request-id': req.header('x-request-id'),
+            'x-b3-traceid': req.header('x-b3-traceid'),
+            'x-b3-spanid': req.header('x-b3-spanid'),
+            'x-b3-parentspanid': req.header('x-b3-parentspanid'),
+            'x-b3-sampled': req.header('x-b3-sampled'),
+            'x-b3-flags': req.header('x-b3-flags'),
+            'x-ot-span-context': req.header('x-ot-span-context'),
+            'b3': req.header('b3')
         },
         json: true // Automatically parses the JSON string in the response
     }
@@ -32,7 +40,7 @@ router.get('/', function(req, res, next) {
 router.post('/paste', function(req, res) {
     var pasteData = req.body.pastedata
     if (pasteData.length < 1) { 
-        res.debug('ignoring zero length add to shared board')
+        req.debug('ignoring zero length add to shared board')
         return 
     }
     const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'
@@ -41,13 +49,21 @@ router.post('/paste', function(req, res) {
         method: 'POST',
         uri: boardsURI,
         body: {
-            owner: 'userX',
+            owner: 'userX', // TODO replace this with actual owner
             type: 'string',
             raw: pasteData,
             name: ''
         },
         headers: {
-            'User-Agent': req.SERVICE_NAME
+            'User-Agent': req.SERVICE_NAME,
+            'x-request-id': req.header('x-request-id'),
+            'x-b3-traceid': req.header('x-b3-traceid'),
+            'x-b3-spanid': req.header('x-b3-spanid'),
+            'x-b3-parentspanid': req.header('x-b3-parentspanid'),
+            'x-b3-sampled': req.header('x-b3-sampled'),
+            'x-b3-flags': req.header('x-b3-flags'),
+            'x-ot-span-context': req.header('x-ot-span-context'),
+            'b3': req.header('b3')
         },
         json: true // Automatically parses the JSON string in the response
     }
