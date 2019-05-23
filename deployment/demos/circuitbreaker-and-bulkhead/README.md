@@ -17,9 +17,9 @@ Bulkheads in ships create watertight compartments that can contain water in the 
 This demo shows how Istio can be used to add circuit breaking and connection bulkheading capabilities to the services of our app.
 
 ### 1. Put some load on the app
-We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how this app would respond at scale. Try running a few commands like the one below to put load on our app.
+We can use OpenShift to pull a container image containing the fortio load test tool and run it (from inside the mesh) to see how individual services will respond at scale. Try running a few commands like the one below to put out some load.
 
-`oc run web-load --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
+`oc run web-load --attach --rm --restart=Never --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
 The result should look like:
 ```
@@ -61,39 +61,40 @@ Response Body/Total Sizes : count 100 avg 268.16 +/- 0.3666 min 268 max 269 sum 
 All done 100 calls (plus 0 warmup) 9.623 ms avg, 503.1 qps
 ```
 
-cleanup: `oc delete dc web-load`
-
 ----
 
 ### 2. Configure the service to use circuit breaking and bulkheading
-Run the following to apply a dynamic update to the DestinationRule for the boards service:
+Run the following to apply a dynamic update to our DestinationRules:
+
 `oc apply -f circuitbreaker-boards.yaml`
 
-The following rule sets a TCP/HTTP connection pool size of 2 connections and allows 1 concurrent HTTP requests, with no more than 2 req/connection to each boards service instance.
-
-It also configures boards service instances to be scanned every 10 seconds. And any instance that fails 2 consecutive times with 5XX error code will be ejected from the load balanced pool for 5 minutes.
+The following rule sets a TCP/HTTP connection pool size of 2 connections and allows 1 concurrent HTTP requests, with no more than 2 req/connection to each `boards` service instance.
 
 ```yaml
-trafficPolicy:
-    connectionPool:
-      tcp:
-        maxConnections: 2
-      http:
-        http2MaxRequests: 3
-        http1MaxPendingRequests: 3
-        maxRequestsPerConnection: 2
-    outlierDetection:
-      consecutiveErrors: 2
-      interval: 10s
-      baseEjectionTime: 5m
+connectionPool:
+  tcp:
+    maxConnections: 2
+  http:
+    http2MaxRequests: 3
+    http1MaxPendingRequests: 3
+    maxRequestsPerConnection: 2
 ```
 
+We also configured another rule to scan every 30 seconds. And any request that fails 1 consecutive times with 5XX error code will force the faulty host pod to be ejected from the load balancer pool for 5 minutes.
+
+```yaml
+outlierDetection:
+  consecutiveErrors: 1
+  interval: 30s
+  baseEjectionTime: 5m
+  maxEjectionPercent: 100
+```
 ----
 
 ### 3. Fill the bulkhead
 Now that we applied the pattern, let's run the same command as before and fill up a connection pool (bulkhead):
 
-`oc run web-load --image=istio/fortio -- load -c 3 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
+`oc run web-load --attach --rm --restart=Never --image=istio/fortio -- load -c 5 -qps 0 -n 100 -loglevel Warning http://boards:8080/shareditems`
 
 The result should look like:
 ```
@@ -155,33 +156,24 @@ All done 100 calls (plus 0 warmup) 17.948 ms avg, 226.4 qps
 
 **See that Istio immediately returns 503 on the filled bulkhead**
 
-cleanup: `oc delete dc web-load`
+*Note, that if you scaled up the boards service by a couple more pods the bulkhead wouldn't fill - it's per pod.*
 
 ----
 
 ### 4. Break the app and Trip the breaker
 Now let's try to trip the circuit breaker by temporarily faking some errors into the boards service. Run this:
+
 `oc apply -f faulty-boards-service.yaml`
 
-So now run a load test without the concurrency (so as not to fill the bulkhead) but instead to try to trip the circuit breaker.
+Istio is now creating some faults for us to help test delays and fake some service failures.
 
-`oc run web-load --image=istio/fortio -- load -c 1 -qps 0 -n 100 -loglevel Warning http://app-ui:8080/shared`
+TODO - Steps to showcase demo of outlier detection for circuit breaking...
 
 The result should look like:
 ```
 TODO
 ```
 **See that Istio immediately returns 503 on the tripped breaker vs. waiting for each call to fail after waiting for a long timeout**
-
-cleanup: `oc delete dc web-load`
-
-<!-- should we show how to deal with this?
-If the data base died we'd see Code -1 and TCP errors...
-Now if you went to the main website for the app and tried to view the shared boards you would see:
-![Screenshot](./spinspin.gif?raw=true)
-
-And for each user request incoming the app-ui service will timeout eventually with an error like this:
-![Screenshot](./timeout.png?raw=true) -->
 
 ----
 

@@ -24,6 +24,7 @@ UI -<get /user345/boards/10>-> GATEWAY <-> Common(validate user 345 can access b
 - MONGODB_DATABASE - override the database name
 - MONGODB_USEAUTH - use auth when connecting to the database, defaults to true
 - DEBUG - specify the debug loggers to print out (use a comma separated list)
+- BREAKME - set to `true` to force the service to spit out 503 errors
 
 ### Local Installation / Run / Test
 Install the dependencies:

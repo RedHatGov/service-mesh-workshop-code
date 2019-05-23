@@ -1,4 +1,8 @@
 # PLEASE NOTE THIS REPO IS IN-WORK 
+We are still building out the core capabilities. Current status:
+- Working services: app-ui, boards, context-scraper, and profile service
+- Coming soon: Auth via SSO
+- Working platform components integrated: Istio
 ## This header will be removed when the initial version is ready for beta usage
 [![OpenShift Version][openshift-heximage]][openshift-url]
 
@@ -23,7 +27,7 @@ This repo is an example microservices based application. It's core functionality
 ![Screenshot](design/screenshots/2019-04-19_1042.png?raw=true)
 
 
-## Here's how it's architected:
+## Here's the planned architecture:
 
 ![Diagram](design/highlevel-arch.png)
 *In the above diagram web app users are accessing the APP UI service which has all it's calls to the application managed via 3scale. Access to the services from mobile apps also go through the 3scale API management capability. 3scale APIs are secured via a single sign on capability (keycloak in this example). The Istio service mesh is shown as an optional component because some of the demos in this repo depend upon it. All of this is running on top of an OpenShift cluster. (Additional service interactions and deployment details are in other diagrams).*
@@ -37,16 +41,15 @@ This repo is an example microservices based application. It's core functionality
 First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? That's OK, download the CDK (or minishift) for free here: https://developers.redhat.com/products/cdk/overview/. You will need a fairly beefy machine to run *everything* on the same machine via CDK, so I'd recommend you expose extra CPUs and Mem to the CDK when you start your cluster.
 
 You will also need to install/configure the additional dependencies you plan to leverage. We assume you want to run these in the cluster, so you might need to tweak the install scripts to move things outside or to use already existing shared services in different namespaces.
-   - [3Scale](./install/3scale)
-   - [Single Sign On](./install/sso)
-   - [Kafka](./install/kafka)
-   - [Istio](./install/istio)
+   - [Istio](./deployment/install/istio)
+   - [3Scale](./deployment/install/3scale) - COMING SOON
+   - [Kafka](./deployment/install/kafka) - COMING SOON
 
-Once you're logged into the cluster with oc...
- - TBD steps to run
+To install the microservices demo, you can choose to do that from source or from pre-built container images. 
+- [The script to install for is located here](./deployment/install/microservices)
+- You will need to tweak if you want to install from source [read this](./deployment/install/)
 
-
-Now that you have the basic app up and running, how about trying out [some demos](./deployment/demos)
+Once you have the basic app up and running, how about trying out [some demos](./deployment/demos)
 
 
 ## About the code / software architecture
@@ -59,12 +62,12 @@ The parts in action here are:
     * service health checks and recovery
     * dynamic storage allocation and persistent volume mapping
     * Kubernetes operators to manage middleware components (e.g. Kafka)
-* Middleware components in this example:
-    * API management and metrics (on the external facing APIs)
-    * authorization and ingress security via SSO
-    * Kafka for streaming
     * advanced service traffic management via Istio
     * additional service observability via Istio
+* Middleware components in this example:
+    * API management and metrics (on the external facing APIs)
+    * authorization and application security via SSO
+    * Kafka for scalable messaging
 
 
 ## References, useful links, good videos to check out

@@ -158,7 +158,7 @@ parameters:
   displayName: app version tag
   name: APP_VERSION_TAG
   required: true
-  value: '1.0'
+  value: 'latest'
 - description: The source code branch
   displayName: git branch
   name: GIT_BRANCH

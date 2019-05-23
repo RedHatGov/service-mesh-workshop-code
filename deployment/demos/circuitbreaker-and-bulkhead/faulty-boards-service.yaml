@@ -7,9 +7,13 @@ spec:
   - boards
   http:
   - fault:
+      delay:
+        fixedDelay: 5s
+        percentage:
+          value: 100
       abort:
-        httpStatus: 500
-        percent: 50
+        httpStatus: 503
+        percent: 0
     route:
     - destination:
         host: boards

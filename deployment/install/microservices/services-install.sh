@@ -48,7 +48,7 @@ oc apply -f ./istio-configuration/virtual-services.yaml
 #   http:
 #   - route:
 #     - destination:
-#         host: boards
+#         host: context-scraper
 #         port:
 #           number: 8080
 # EOF
