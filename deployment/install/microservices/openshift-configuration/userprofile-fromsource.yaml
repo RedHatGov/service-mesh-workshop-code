@@ -2,7 +2,7 @@
 # Usage example:
 # oc new-app -f ./userprofile-fromsource.yaml \
 #     -p APPLICATION_NAME=userprofile \
-#     -p QUARKUS_IMAGE_TAG=graalvm-1.0.0-rc15 \
+#     -p QUARKUS_IMAGE_TAG=graalvm-1.0.0-rc16 \
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
 #     -p GIT_BRANCH=develop \
 #     -p DATABASE_SERVICE_NAME=userprofile-postgresql
@@ -393,7 +393,7 @@ parameters:
   displayName: Quarkus version tag
   name: QUARKUS_VERSION_TAG
   required: true
-  value: 'graalvm-1.0.0-rc15'  
+  value: 'graalvm-1.0.0-rc16'  
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MEMORY_LIMIT
