@@ -148,7 +148,7 @@ objects:
           - name: SSO_ADMIN_PASSWORD
             value: ${SSO_ADMIN_PASSWORD}
           - name: SSO_REALM
-            value: ${SSO_REALM}
+            value: ${SSO_REALM}        
           - name: SSO_SERVICE_USERNAME
             value: ${SSO_SERVICE_USERNAME}
           - name: SSO_SERVICE_PASSWORD
@@ -192,6 +192,9 @@ objects:
           - mountPath: /etc/x509/jgroups
             name: sso-x509-jgroups-volume
             readOnly: true
+          - mountPath: /opt/eap/standalone/configuration/import-realm.json  
+            name: sso-import-realm-volume
+            subPath: import-realm.json           
         terminationGracePeriodSeconds: 75
         volumes:
         - name: sso-x509-https-volume
@@ -200,6 +203,12 @@ objects:
         - name: sso-x509-jgroups-volume
           secret:
             secretName: sso-x509-jgroups-secret
+        - name: sso-import-realm-volume
+          configMap:
+            name: sso-realm
+            items: 
+            - key: import-realm.json
+              path: import-realm.json
     triggers:
     - imageChangeParams:
         automatic: true
@@ -250,9 +259,13 @@ objects:
           imagePullPolicy: Always
           livenessProbe:
             initialDelaySeconds: 30
-            tcpSocket:
-              port: 5432
-            timeoutSeconds: 1
+            exec:
+              command:
+                - /usr/libexec/check-container
+                - '--live'            
+            # tcpSocket:
+            #   port: 5432
+            # timeoutSeconds: 1
           name: ${APPLICATION_NAME}-postgresql
           ports:
           - containerPort: 5432
@@ -260,11 +273,13 @@ objects:
           readinessProbe:
             exec:
               command:
-              - /bin/sh
-              - -i
-              - -c
-              - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
-                'SELECT 1'
+              # - /bin/sh
+              # - -i
+              # - -c
+              # - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+              #   'SELECT 1'
+              #   'SELECT 1'
+                - /usr/libexec/check-container              
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:

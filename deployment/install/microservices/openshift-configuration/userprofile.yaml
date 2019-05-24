@@ -7,14 +7,14 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: userprofile-fromsource
+  template: userprofile
 message: A User Profile service has been created in your project along with it's PostgreSQL
 metadata:
   annotations:
     description: An user profile application for the microservices demo
     openshift.io/display-name: userprofile
     template.openshift.io/long-description: This template defines the userprofile microservice
-  name: userprofile-fromsource
+  name: userprofile
 objects:
 # -----------------------------------------------------------------------------
 # Quarkus App Section
