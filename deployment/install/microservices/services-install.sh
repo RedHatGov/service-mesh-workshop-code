@@ -17,6 +17,8 @@ oc adm policy add-scc-to-user privileged -z default -n microservices-demo
 oc new-app -f ./openshift-configuration/boards.yaml
 oc new-app -f ./openshift-configuration/context-scraper.yaml
 oc new-app -f ./openshift-configuration/app-ui.yaml
+#oc create configmap sso-realm --from-file=./openshift-configuration/import-realm.json
+#TODO : need to make sure the auth image is built before applying. Should this be pulled from quay like the others?
 #oc new-app -f ./openshift-configuration/auth-sso73-x509.yaml
 #oc new-app -f ./openshift-configuration/userprofile.yaml
 
