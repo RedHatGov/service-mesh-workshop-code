@@ -47,7 +47,7 @@ module.exports.getboard = function getboard (req, res, next) {
     // TODO: future check requesting user can access board with arg ID
     req.db.get(BOARDS_COLLECTION).findOne({'id':req.swagger.params.boardId.value})
     .then((docs) => {
-        console.log(docs)
+        // req.debugdb(docs)
         if (docs == null) {res.sendStatus(404)}
         else {
             res.setHeader('Content-Type', 'application/json');
@@ -60,9 +60,19 @@ module.exports.getboard = function getboard (req, res, next) {
     })
 };
 
-// TODO:
-// module.exports.updateboard = function updateboard (req, res, next) {
-// };
+module.exports.updateboard = function updateboard (req, res, next) {
+    // TODO: future check requesting user can access board with arg ID
+    var boardUpdates = req.body
+    req.db.get(BOARDS_COLLECTION).findOneAndUpdate({'id':req.swagger.params.boardId.value}, boardUpdates)
+    .then((updatedDoc) => {
+        if (updatedDoc == null) {res.sendStatus(404)}
+        else {res.status(202).send('Updated ' + updatedDoc.id)}
+    }).catch((err) => {
+        req.debugdb('UPDATE BOARD failed')
+        req.debugdb(err)
+        res.sendStatus(500)
+    })
+};
 
 module.exports.deleteboard = function deleteboard (req, res, next) {
     // TODO: future check requesting user can delete item with arg ID

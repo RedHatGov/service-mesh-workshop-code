@@ -49,13 +49,13 @@ router.post('/paste', function(req, res) {
         method: 'POST',
         uri: boardsURI,
         body: {
-            owner: 'userX', // TODO replace this with actual owner
+            owner: res.locals.user,
             type: 'string',
             raw: pasteData,
             name: ''
         },
         headers: {
-            'User-Agent': req.SERVICE_NAME,
+            'User-Agent': req.header('user-agent'),
             'x-request-id': req.header('x-request-id'),
             'x-b3-traceid': req.header('x-b3-traceid'),
             'x-b3-spanid': req.header('x-b3-spanid'),

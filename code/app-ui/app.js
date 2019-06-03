@@ -40,12 +40,21 @@ app.use(function(req,res,next) {
   next()
 })
 
+// TODO: we need to do real auth
+app.use(function (req, res, next) {
+  res.locals.user = 'anonymous'
+  res.locals.authenticated = false
+  next()
+})
+
 var indexRouter = require('./routes/index')
 var profileRouter = require('./routes/profile')
 var sharedRouter = require('./routes/shared')
+var boardRouter = require('./routes/board')
 app.use('/', indexRouter)
 app.use('/profile', profileRouter)
 app.use('/shared', sharedRouter)
+app.use('/:user/board', boardRouter)
 app.use(function(req, res, next) {
   next(createError(404)) // catch 404 and forward to error handler
 })
