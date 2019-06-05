@@ -33,7 +33,7 @@ block append content
       if !errorWithItems && (items == null || items.length < 0)
         //- Empty items message could go here
       else
-        - var count = Math.min(50, items.length)  // limit the max displayed items
+        - var count = Math.min(150, items.length)  // TODO: limit the max displayed items, pagination? scroll loader?
         - var iter = 0
         while iter < count
           - var owner = 'unknown'

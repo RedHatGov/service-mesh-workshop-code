@@ -41,13 +41,13 @@ This repo is an example microservices based application. It's core functionality
 First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? That's OK, download the CDK (or minishift) for free here: https://developers.redhat.com/products/cdk/overview/. You will need a fairly beefy machine to run *everything* on the same machine via CDK, so I'd recommend you expose extra CPUs and Mem to the CDK when you start your cluster.
 
 You will also need to install/configure the additional dependencies you plan to leverage. We assume you want to run these in the cluster, so you might need to tweak the install scripts to move things outside or to use already existing shared services in different namespaces.
-   - [Istio](./deployment/install/istio)
-   - [3Scale](./deployment/install/3scale) - COMING SOON
-   - [Kafka](./deployment/install/kafka) - COMING SOON
+   - Istio
+   - 3Scale - COMING SOON
+   - Kafka - COMING SOON
+   - Caching - COMING SOON
 
-To install the microservices demo, you can choose to do that from source or from pre-built container images. 
-- [The script to install for is located here](./deployment/install/microservices)
-- You will need to tweak if you want to install from source [read this](./deployment/install/)
+To install everything:
+- [Follow instructions here](./deployment/install/)
 
 Once you have the basic app up and running, how about trying out [some demos](./deployment/demos)
 
@@ -71,10 +71,18 @@ The parts in action here are:
 
 
 ## References, useful links, good videos to check out
+### Microservices
+* [Microservices at Spotify Talk](https://www.youtube.com/watch?v=7LGPeBgNFuU)
+* [Microservices at Uber Talk](https://www.youtube.com/watch?v=kb-m2fasdDY)
 * [Mastering Chaos Netflix Talk](https://youtu.be/CZ3wIuvmHeM)
 * [Red Hat Developer's Learning - Microservices](https://developers.redhat.com/learn/microservices/)
+### Istio Service Mesh
 * [What is Istio?](https://istio.io/docs/concepts/what-is-istio/)
+* [Red Hat Developer's Istio Free Book](https://developers.redhat.com/books/introducing-istio-service-mesh-microservices/)
+* [Free Hands-on with Istio](https://learn.openshift.com/servicemesh)
+### Single Sign On
 * [Keycloak SSO](https://www.keycloak.org/)
+
 
 ## Contributing
 [See guidelines here](./CONTRIBUTING.md). But in general I would love for help with 2 things.
