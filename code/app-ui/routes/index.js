@@ -7,7 +7,7 @@ var request = require('request-promise')
 router.get('/', function(req, res, next) {
   var userboards = ''
   var user = res.locals.user
-  const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards'
+  const boardsURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards'
   req.debug('GET from boards SVC at: ' + boardsURI)
   var request_options = {
       method: 'GET',
@@ -51,7 +51,7 @@ router.post('/newboard', function(req, res) {
   var newBoardIsPrivate = req.body.newboardprivate
   var user = res.locals.user
   // TODO: validate data
-  const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards'
+  const boardsURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards'
   req.debug('POST to boards SVC at: ' + boardsURI)
   var request_options = {
       method: 'POST',
