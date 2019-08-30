@@ -6,7 +6,16 @@ This microservice provides the main user interface into the application.
 
 ### Env Vars
 - PORT, port to run the service (defaults to 8080 in PROD, 3000 in DEV)
-- 
+- HTTP_PROTOCOL, default='http://'
+- SERVICE_NAME, default='app-ui'
+- BOARDS_SVC_HOST, default='boards'
+- BOARDS_SVC_PORT, default='8080'
+- PROFILE_SVC_HOST, default='profile'
+- PROFILE_SVC_PORT, default='8080'
+- SSO_SVC_HOST, default='auth-sso73-x509'
+- SSO_SVC_PORT, default='8443'
+- SESSION_SECRET, default='pleasechangeme'
+
 ### Local Installation / Run / Test
 ```bash
 $ npm install

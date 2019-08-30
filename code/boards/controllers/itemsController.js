@@ -44,6 +44,7 @@ module.exports.getitem = function getitem (req, res, next) {
     // TODO: future check requesting user can access item with arg ID
     req.db.get(ITEMS_COLLECTION).findOne({'id':req.swagger.params.itemId.value})
     .then((docs) => {
+        req.debugdb(docs)
         if (docs == null) {res.sendStatus(404)}
         else {
             res.setHeader('Content-Type', 'application/json');

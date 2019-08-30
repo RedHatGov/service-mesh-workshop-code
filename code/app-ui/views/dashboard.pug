@@ -2,6 +2,13 @@ extends layout-topbar
 block append stylesheets
   link(href='/stylesheets/dashboard.css', rel='stylesheet')
 block content
+  if errorAlert == true
+    .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+      strong Yikes! Something went wrong... Please try again. 
+      br 
+      | The details: #{errorAlertText}
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') ×
   main(role='main')
     section.jumbotron.text-center
       .container
@@ -20,29 +27,36 @@ block content
           #newBoardModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='newBoardModalLabel', aria-hidden='true')
             .modal-dialog(role='document')
               .modal-content
-                .modal-header
-                  h5#newBoardModalLabel.modal-title New Board
-                  button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') x
-                .modal-body
-                  form
+                form(type='form' action='/newboard' method='post')#newBoardForm
+                  .modal-header
+                    h5#newBoardModalLabel.modal-title New Board
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') x
+                  .modal-body
+                      .form-group.row
+                        label.col-form-label.col-sm-3(for='newboardName') Name 
+                        div.col-sm-9
+                          input#newboardName.form-control(name='newboardname' type='text', placeholder='Like \"Linux Commands\" or \"Good Quotes\"')
+                      .form-group.row
+                        label.col-form-label.col-sm-3(for='newboardDescription') Description 
+                        div.col-sm-9
+                          textarea#newboardDescription.form-control(name='newboarddesc' placeholder='Describe what this board is all about')
+                      .form-group.row
+                        label.col-form-label.col-sm-3(for='newboardPrivate') Make Private
+                        div.col-sm-9
+                          input#newboardPrivate.form-control(name='newboardprivate' type="checkbox" data-toggle="tooltip" data-placement="bottom" title="Keep this board secret")
+                        //- TODO COLOR PICKER AND ICON IMAGE
+                  .modal-footer
                     .form-group.row
-                      label.col-form-label.col-sm-2(for='newboardName') Name
-                      div.col-sm-10
-                        input#newboardName.form-control(type='text', placeholder='Some name')
-                    .form-group.row
-                      label.col-form-label.col-sm-2(for='newboardDescription') Description
-                      div.col-sm-10
-                        textarea#newboardDescription.form-control(placeholder='Describe what this board is all about')
-                      //- TODO COLOR PICKER AND ICON IMAGE
-                .modal-footer
-                  button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                  button.btn.btn-primary(type='button') Create
+                      div.col-sm-5
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                      div.col-sm-5
+                        button#newboardSubmitButton.btn.btn-primary(type='submit') Create
     if boards != null && boards.length != 0
       .album.py-5.bg-light
         .container
           .row
-            - var count = Math.min(30, boards.length)  // limit the max displayed items
+            - var count = Math.min(50, boards.length)  // limit the max displayed boards
             - var iter = 0
             while iter < count
               if boards[iter].id != null && boards[iter].id.length > 0
@@ -57,8 +71,8 @@ block content
                         | #{boards[iter].description}
                       .d-flex.justify-content-between.align-items-center
                         .btn-group
-                          button.btn.btn-sm.btn-outline-secondary(type='button') Click to Open
-                          //- button.btn.btn-sm.btn-outline-secondary(type='button') Delete
+                          a.button.btn.btn-sm.btn-outline-secondary(href='/'+user+'/board/'+boards[iter].id, type='button') Click to Open
+                          //- button.btn.btn-sm.btn-outline-secondary.btn-warning(type='button') Delete
                         small.text-muted #{boards[iter].items.length} items
               else
                 .col-md-4
@@ -72,8 +86,8 @@ block content
                         | Something is wrong with this board, contact and admin if you would like to try to recover it.
                       .d-flex.justify-content-between.align-items-center
                         .btn-group
-                          button.btn.btn-sm.btn-outline-secondary(type='button') Click to Open
-                          //- button.btn.btn-sm.btn-outline-secondary(type='button') Delete
+                          button.btn.btn-sm.btn-outline-secondary(type='button') Cannot Open
+                          //- button.btn.btn-sm.btn-outline-secondary.btn-warning(type='button') Delete
                         small.text-muted ? items
               - iter++
 

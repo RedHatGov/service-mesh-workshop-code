@@ -32,7 +32,7 @@ oc get is redhat-sso73-openshift -o json | sed "s/registry.redhat.io/registry.ac
 ## API documentation
 N/A
 - Admin can login at: https://auth-microservices-demo.apps.YOURCLUSTER.COM/
-- Users will login at: https://auth-microservices-demo.apps.YOURCLUSTER.COM/auth/realms/microservices/protocol/openid-connect
+- Users will login at: https://auth-microservices-demo.apps.YOURCLUSTER.COM/auth/realms/microservices/account
 
 ## Developer instructions
 This repo utilizes a OpenShift's source-to-image (s2i) for customizing and layering extra configuration into the Red Hat official SSO container. You can see the code in the following folders:
@@ -42,15 +42,15 @@ This repo utilizes a OpenShift's source-to-image (s2i) for customizing and layer
 ### Building this service
 Build requires an OpenShift cluster the new-build must point to a git repo or be pointing to a locally cloned branch. For secrets, branches and other options type `oc new-build -h`
 ```bash
-oc new-build redhat-sso-7/sso73-openshift:latest~https://github.com/dudash/openshift-microservices.git#develop \
+oc new-build redhat-sso73-openshift:latest~https://github.com/dudash/openshift-microservices.git#develop \
     --name=auth \
-    -l app=auth-sso73-x509
+    -l app=auth-sso73-x509 \
+    --context-dir=/code/auth
 ```
 
 ### Building a container image for this service
 As an alternative to building on OpenShift, you can use [s2i][4] to build this into a container image. For example:
 ```bash
-rm -rf node_modules
 s2i build . registry.access.redhat.com/redhat-sso-7/sso73-openshift openshift-microservices-auth
 ```
 
@@ -61,29 +61,25 @@ You can use a template to create all the OpenShift resources. Optionally, set pa
 - SSO_ADMIN_PASSWORD
 - SSO_REALM
 - APPLICATION_NAME
+- POSTGRESQL_IMAGE_STREAM_TAG
 
 For example:
 ```bash
+ oc create configmap sso-realm \
+ --from-file=../../deployment/install/microservices/openshift-configuration/import-realm.json
+
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/auth-sso73-x509.yaml \
  -p SSO_ADMIN_USERNAME="admin" \
  -p SSO_ADMIN_PASSWORD="password" \
  -p SSO_REALM="microservices" \
- -p AUTH_IMAGE_STREAM_NAMESPACE=microservices-demo
+ -p AUTH_IMAGE_STREAM_NAMESPACE=microservices-demo \
+ -p POSTGRESQL_IMAGE_STREAM_TAG='9.6'
 ```
 
 deleting services related to this app only:
 ```bash
 oc delete all -l app=auth-sso73-x509
-```
-
-### Environment variables
-A configmap must be created in order for clients to connect to the SSO service. Details are TBD.
-```bash
-route_name=$(oc get routes -l app=auth | { read line1 ; read line2 ; echo "$line2" ; } | awk '{print $2;}')
-oc create configmap sso-config \
-    --from-literal=AUTH_URL=https:\/\/${route_name}/auth \
-    --from-literal=KEYCLOAK=true \
-    --from-literal=PUBLIC_KEY=MANUALLY_GET_THIS_FROM_AUTH_SERVICE_AND_UPDATE_ME
+oc delete configmap sso-realm
 ```
 
 ### Common Issues

@@ -2,7 +2,7 @@
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 USER_PROFILE_GIT_REPO=https://github.com/gbengataylor/openshift-microservices
 USER_PROFILE_GIT_BRANCH=develop 
-QUARKUS_VERSION_TAG=graalvm-1.0.0-rc15
+QUARKUS_VERSION_TAG=graalvm-1.0.0-rc16
 APPLICATION_IMAGE_URI=quay.io/gbengataylor/openshift-microservices-userprofile
 
 #s2i -- build and deploy from source
