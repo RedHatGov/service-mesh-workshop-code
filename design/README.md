@@ -13,5 +13,5 @@ The [features slick sheet is here](./FEATURES.md). We should update it as new ca
 The initial design for all this happened slowly whenever I had a free 30 min or during some daydreaming in a boring meeting. I've put some of that chicken-scribble [in this folder](./sketches) if you care to peek into the void - or don't...
 
 
-[1]: https://github.com/dudash/openshift-microservices/labels/design
+[1]: https://github.com/dudash/openshift-microservices/issues/new?assignees=&labels=discussion&template=disscussion.md&title=
 [2]: https://github.com/dudash/openshift-microservices/compare

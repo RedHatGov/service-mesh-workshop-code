@@ -6,7 +6,7 @@ var request = require('request-promise')
 /* GET board's page. */
 router.get('/:boardId', function(req, res, next) {
     var user = res.locals.user
-    const boardsGetURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards/' + req.params.boardId
+    const boardsGetURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards/' + req.params.boardId
     req.debug('GET from boards SVC at: ' + boardsGetURI)
     var request_get_options = {
         method: 'GET',
@@ -31,7 +31,6 @@ router.get('/:boardId', function(req, res, next) {
         var itemsData = []
         var itemListPromises = getresult.items.map(function(itemId) { return getItemRequest(req, user, itemId, itemsData)});
         Promise.all(itemListPromises).then(function(itemsData) {
-            req.debug(itemsData)
             res.render('board', { title: 'Cut and Paster', board: getresult, items: itemsData, errorWithItems: false })
         })
         .catch(function (err) {
@@ -48,7 +47,7 @@ router.get('/:boardId', function(req, res, next) {
 })
 
 function getItemRequest(req, user, itemId, itemsData) {
-    const boardsGetItemURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/items/' + itemId
+    const boardsGetItemURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/items/' + itemId
     req.debug('GET from boards SVC at: ' + boardsGetItemURI)
     var request_getitem_options = {
         method: 'GET',
@@ -78,16 +77,16 @@ function getItemRequest(req, user, itemId, itemsData) {
     })
 }
 
-/* POST (form submission) to add an item to shared items list */
+/* POST (form submission) to add an item to board items list */
 router.post('/:boardId/paste', function(req, res) {
     var pasteData = req.body.pastedata
     if (pasteData.length < 1) { 
-        req.debug('ignoring zero length add to shared board')
+        req.debug('ignoring zero length add to user board')
         return 
     }
     var user = res.locals.user
     var board = JSON.parse(req.body.board)
-    const boardsNewItemURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/items'
+    const boardsNewItemURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/items'
     req.debug('POST to boards SVC at: ' + boardsNewItemURI)
     var request_post_options = {
         method: 'POST',
@@ -123,7 +122,7 @@ router.post('/:boardId/paste', function(req, res) {
             board.items.push(itemId)
         }
         // req.debug(board)
-        const boardsUpdateURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards/' + req.params.boardId
+        const boardsUpdateURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/boards/' + req.params.boardId
         req.debug('PUT to boards SVC at: ' + boardsUpdateURI)
         var request_put_options = {
             method: 'PUT',

@@ -32,7 +32,7 @@ oc get is redhat-sso73-openshift -o json | sed "s/registry.redhat.io/registry.ac
 ## API documentation
 N/A
 - Admin can login at: https://auth-microservices-demo.apps.YOURCLUSTER.COM/
-- Users will login at: https://auth-microservices-demo.apps.YOURCLUSTER.COM/auth/realms/microservices/protocol/openid-connect
+- Users will login at: https://auth-microservices-demo.apps.YOURCLUSTER.COM/auth/realms/microservices/account
 
 ## Developer instructions
 This repo utilizes a OpenShift's source-to-image (s2i) for customizing and layering extra configuration into the Red Hat official SSO container. You can see the code in the following folders:
@@ -80,16 +80,6 @@ deleting services related to this app only:
 ```bash
 oc delete all -l app=auth-sso73-x509
 oc delete configmap sso-realm
-```
-
-### Environment variables
-A configmap must be created in order for clients to connect to the SSO service. Details are TBD.
-```bash
-route_name=$(oc get routes -l app=auth | { read line1 ; read line2 ; echo "$line2" ; } | awk '{print $2;}')
-oc create configmap sso-config \
-    --from-literal=AUTH_URL=https:\/\/${route_name}/auth \
-    --from-literal=KEYCLOAK=true \
-    --from-literal=PUBLIC_KEY=MANUALLY_GET_THIS_FROM_AUTH_SERVICE_AND_UPDATE_ME
 ```
 
 ### Common Issues

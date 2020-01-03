@@ -5,7 +5,7 @@ var request = require('request-promise')
 
 /* GET shared page. */
 router.get('/', function(req, res, next) {
-    const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'
+    const boardsURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'
     req.debug('GET from boards SVC at: ' + boardsURI)
     var request_options = {
         method: 'GET',
@@ -43,7 +43,7 @@ router.post('/paste', function(req, res) {
         req.debug('ignoring zero length add to shared board')
         return 
     }
-    const boardsURI = 'http://' + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'
+    const boardsURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/shareditems'
     req.debug('POST to boards SVC at: ' + boardsURI)
     var request_options = {
         method: 'POST',

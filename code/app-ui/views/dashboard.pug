@@ -56,7 +56,7 @@ block content
       .album.py-5.bg-light
         .container
           .row
-            - var count = Math.min(30, boards.length)  // limit the max displayed items
+            - var count = Math.min(50, boards.length)  // limit the max displayed boards
             - var iter = 0
             while iter < count
               if boards[iter].id != null && boards[iter].id.length > 0
