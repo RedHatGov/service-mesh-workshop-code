@@ -37,7 +37,7 @@ If running on localhost, the APU is accessible to test and download at:
 ### Environment variables
 
 
-* If building natively, set the 
+If building natively, set the location of GRAAVLM_HOME
 ```bash
 $ GRAALVM_HOME=<GRAALVM_LOCATION>
 ```
@@ -47,7 +47,7 @@ $ GRAALVM_HOME=<GRAALVM_LOCATION>
 #### Database settings
  H2 Database (for debugging) or Postgresql is supported
 
- if using PostgreSQL database (default), set the environment variables when testing locally
+ if using PostgreSQL database (default), set the environment variables when testing locally and substitute with the appropriate values
 
 ```bash
 POSTGRESQL_USER=sarah
@@ -55,8 +55,6 @@ POSTGRESQL_PASSWORD=connor
 POSTGRESQL_DATABASE=userprofiledb
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 ```
-substitute with the appropriate values
-
 
 #### Running the app with H2
 ```bash
@@ -77,7 +75,7 @@ Note that the build will take a few minutes longer, however, the app boots up a 
  ./target/userprofile-1.0-SNAPSHOT-runner
 ```
 
-#### To view and test with Swagger-UI locally
+#### To view and test with Swagger-UI locally (jvm mode only)
 http://localhost:8080/swagger-ui/
 
 
@@ -129,11 +127,12 @@ oc new-app registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~${US
  --env POSTGRESQL_SERVICE_HOST=$POSTGRESQL_SERVICE_HOST 
 ```
 
-#To delete everything
+# To Cleanup OpenShift Deployment
 ```bash
-# oc delete all,secrets,pvc -lapp=userprofile
-# delete everything but data
-# oc delete all,secrets -lapp=userprofile
+#delete everything
+oc delete all,secrets,pvc -lapp=userprofile
+#delete everything but data
+oc delete all,secrets -lapp=userprofile
 ```
 
 ### Building a container image for this service
@@ -150,7 +149,7 @@ s2i build . quay.io/quarkus/ubi-quarkus-native-s2i:$QUARKUS_NATIVE_IMAGE_VERSION
 s2i build . registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift openshift-microservices-userprofile-jvm --loglevel 3
 ```
 
-If you prefer to use docker -
+If you prefer to use docker/buildah -
 
 #### To build native image  
 ```bash
