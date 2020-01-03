@@ -49,8 +49,6 @@ do
 	sleep 5
 done 
 
-#openjdk - won't work
-#oc new-app java~https://github.com/gbengataylor/openshift-microservices#develop --context-dir=/code/userprofile --name=userprofile-jdk
 
 # delete
 # oc delete all -lapp=userprofile

@@ -113,18 +113,11 @@ QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
 ```
 #### Deploying native container (slower build, extra-fast startup time)
 ```bash
-oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} -p APPLICATION_NAME=openshift-microservices-userprofile
 ```
 #### Atternate deployment - Deploying jvm-based container (faster build, regular startup time)
-TODO - change to use deployment file ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml
-
 ```bash
-oc new-app registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
- --context-dir=/code/userprofile --name=userprofile-jvm -luserprofile-component=microservice \
- --env POSTGRESQL_USER=$POSTGRESQL_USER \
- --env POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \
- --env POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE \
- --env POSTGRESQL_SERVICE_HOST=$POSTGRESQL_SERVICE_HOST 
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} 
 ```
 
 # To Cleanup OpenShift Deployment
@@ -146,7 +139,7 @@ s2i build . quay.io/quarkus/ubi-quarkus-native-s2i:$QUARKUS_NATIVE_IMAGE_VERSION
 
 #### JVM image
 ```bash
-s2i build . registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift openshift-microservices-userprofile-jvm --loglevel 3
+s2i build . fabric8/java-alpine-openjdk8-jre:1.6.5 openshift-microservices-userprofile-jvm --loglevel 3
 ```
 
 If you prefer to use docker/buildah -
