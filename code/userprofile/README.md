@@ -31,7 +31,7 @@ If running on localhost, the APU is accessible to test and download at:
 ## Developer instructions
 - JDK 8+
 - Apache Maven 3.5.3+ is required
-- Optional for native applications [GraalVM](https://www.graalvm.org/) . At least version 1.0.0-rc15 required
+- Optional for native applications [GraalVM](https://www.graalvm.org/) . At least version 19.2.1 required
 
 
 ### Environment variables
@@ -121,9 +121,9 @@ You can use a template to create all the build and deployment resources for Open
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
 USER_PROFILE_GIT_BRANCH=master 
-QUARKUS_VERSION_TAG=graalvm-1.0.0-rc16
+QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
 
-oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_VERSION_TAG=${QUARKUS_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}
 
 #To delete everything
 # oc delete all,secrets,pvc -lapp=userprofile
@@ -134,8 +134,8 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/use
 ### Building a container image for this service
 You can use [s2i][4] to easily build this into a container image. For example to use the Quarkus Native image as our base:
 ```bash
-QUARKUS_VERSION_TAG=graalvm-1.0.0-rc16
-s2i build . quay.io/quarkus/centos-quarkus-native-s2i:$QUARKUS_VERSION_TAG openshift-microservices-userprofile --loglevel 3
+QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
+s2i build . quay.io/quarkus/ubi-quarkus-native-s2i:$QUARKUS_NATIVE_IMAGE_VERSION_TAG openshift-microservices-userprofile --loglevel 3
 ```
 
 [1]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/
