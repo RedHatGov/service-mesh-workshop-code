@@ -44,9 +44,10 @@ $ GRAALVM_HOME=<GRAALVM_LOCATION>
 
 ### Local installation / run / test
 
-#### Update the application.properties to include database info
-Update the properties to point to local H2 database or a PostgreSQL database. 
- if using local or remote PostgreSQL database (default), set environment variables
+#### Database settings
+ H2 Database (for debugging) or Postgresql is supported
+
+ if using PostgreSQL database (default), set the environment variables when testing locally
 
 ```bash
 POSTGRESQL_USER=sarah
@@ -56,35 +57,31 @@ POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 ```
 substitute with the appropriate values
 
-If using H2 database, update application.properties with
+
+#### Running the app with H2
 ```bash
-quarkus.datasource.username=sarah
-quarkus.datasource.password=connor
-quarkus.datasource.url=jdbc:h2:file:/opt/h2/database.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-quarkus.datasource.driver=org.h2.Driver
+$ mvn compile quarkus:dev -Dquarkus.profile=local
 ```
 
-
-If you don't want to use an H2 or PostgreSQL database, there is an in-memory implementation. You will need to update the org.microservices.demo.rest.UserProfileResource.java file and update this code
-```java
-//@Qualifier("jpa")
-@Qualifier("memory")
-```
-TODO: configure this change via application.properties
-
-You may need to still need to set the datasource properties in application.properties to match the H2 settings so that the app runs
-
-#### Running the app locally
+#### Running the app with Postgres database
 ```bash
-$ ./mvnw compile quarkus:dev
+$ mvn compile quarkus:dev  
 ```
 
-#### Running the native app locally
+#### Running the native app with H2
 Alternatively, you can build and run a native app. 
 ```bash
-$ ./mvnw package -Pnative
+$ mvn package -Pnative -Dquarkus.profile=local
 $ ./target/userprofile-1.0-SNAPSHOT-runner
 ```
+
+#### Running the native app with Postgres database
+Alternatively, you can build and run a native app. 
+```bash
+$ mvn package -Pnative
+$ ./target/userprofile-1.0-SNAPSHOT-runner
+```
+
 Note that the build will take a few minutes, however, the app boots up a lot faster
 
 #### To view and test with Swagger-UI locally

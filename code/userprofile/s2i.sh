@@ -25,7 +25,8 @@ done
 #  
 #using specific version of s2i as latest (rc16 wasn't working)
 # this can be improved to use the generated secret from postgressql deploy. for now just use env variable
-oc new-app quay.io/quarkus/centos-quarkus-native-s2i:graalvm-1.0.0-rc16~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
+QUARKUS_NATIVE_IMAGE_VERSION=19.2.1
+oc new-app quay.io/quarkus/ubi-quarkus-native-s2i:${QUARKUS_NATIVE_IMAGE_VERSION}~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
  --context-dir=/code/userprofile --name=userprofile -luserprofile-component=microservice \
  --env POSTGRESQL_USER=$POSTGRESQL_USER \
  --env POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \

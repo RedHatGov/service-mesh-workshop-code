@@ -148,7 +148,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: ${QUARKUS_S2I_IMAGE}:${QUARKUS_VERSION_TAG}
+          name: ${QUARKUS_S2I_IMAGE}:${QUARKUS_NATIVE_IMAGE_VERSION_TAG}
       type: Source
     triggers:
     - github:
@@ -183,13 +183,13 @@ objects:
       local: false
     tags:
       - annotations:
-          openshift.io/imported-from: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_VERSION_TAG}'
+          openshift.io/imported-from: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_NATIVE_IMAGE_VERSION_TAG}'
         from:
           kind: DockerImage
-          name: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_VERSION_TAG}'
+          name: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_NATIVE_IMAGE_VERSION_TAG}'
         generation: 2
         importPolicy: {}
-        name: ${QUARKUS_VERSION_TAG}
+        name: ${QUARKUS_NATIVE_IMAGE_VERSION_TAG}
         referencePolicy:
           type: Source      
 #Route?
@@ -384,16 +384,16 @@ parameters:
   name: GIT_BRANCH
   required: true
   value: master  
-- description: The Quarkus s2i image Sto use
+- description: The Quarkus s2i image to use
   displayName: Quarkus s2i image
   name: QUARKUS_S2I_IMAGE
   required: true
-  value: 'centos-quarkus-native-s2i'    
+  value: 'ubi-quarkus-native-s2i'    
 - description: The Quarkus version tag to use
   displayName: Quarkus version tag
-  name: QUARKUS_VERSION_TAG
+  name: QUARKUS_NATIVE_IMAGE_VERSION_TAG
   required: true
-  value: 'graalvm-1.0.0-rc16'  
+  value: '19.2.1'  
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MEMORY_LIMIT
