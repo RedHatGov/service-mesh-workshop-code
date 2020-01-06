@@ -36,7 +36,7 @@ oc expose service userprofile-jvm
 echo 'Wait for build to complete ..'
 
 until 
- oc get builds -lapp=userprofile | grep Complete 
+ oc get builds -lapp=userprofile-jvm | grep Complete 
 do
 	sleep 20
 done 
@@ -51,8 +51,9 @@ done
 
 
 # delete
-# oc delete all -lapp=userprofile
+# oc delete all -lapp=userprofile-jvm
 # oc delete all,secret -lapp=userprofile-postgresql
 
-#clean pvc
+#clean pvc, secret
 # oc delete pvc userprofile-postgresql
+# oc delete secret userprofile-postgresql

@@ -50,9 +50,11 @@ do
 	sleep 5
 done 
 
+
 # delete
 # oc delete all -lapp=userprofile
 # oc delete all,secret -lapp=userprofile-postgresql
 
-#clean pvc
+#clean pvc, secret
 # oc delete pvc userprofile-postgresql
+# oc delete secret userprofile-postgresql

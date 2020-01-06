@@ -110,22 +110,23 @@ POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
 USER_PROFILE_GIT_BRANCH=master 
 QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
+APPLICATION_NAME=openshift-microservices-userprofile
 ```
 #### Deploying native container (slower build, extra-fast startup time)
 ```bash
-oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} -p APPLICATION_NAME=openshift-microservices-userprofile
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} -p APPLICATION_NAME=$APPLICATION_NAME
 ```
 #### Atternate deployment - Deploying jvm-based container (faster build, regular startup time)
 ```bash
-oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} 
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}  -p APPLICATION_NAME=$APPLICATION_NAME
 ```
 
 # To Cleanup OpenShift Deployment
 ```bash
 #delete everything
-oc delete all,secrets,pvc -lapp=userprofile
+oc delete all,secrets,pvc -lapp=$APPLICATION_NAME
 #delete everything but data
-oc delete all,secrets -lapp=userprofile
+oc delete all,secrets -lapp=$APPLICATION_NAME
 ```
 
 ### Building a container image for this service

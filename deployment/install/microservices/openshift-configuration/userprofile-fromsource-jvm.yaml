@@ -47,7 +47,8 @@ objects:
       app: ${APPLICATION_NAME}
       version: ${APP_VERSION_TAG}
       application: ${APPLICATION_NAME}
-      component: ${APPLICATION_NAME}-microservice    
+      component: ${APPLICATION_NAME}-microservice  
+      app.kubernetes.io/part-of: ${APPLICATION_NAME}  
     name: ${APPLICATION_NAME}
   spec:
     replicas: 1
@@ -275,7 +276,8 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME} 
-      component: ${APPLICATION_NAME}-postgresql     
+      component: ${APPLICATION_NAME}-postgresql    
+      app.kubernetes.io/part-of: ${APPLICATION_NAME} 
     annotations:
       template.alpha.openshift.io/wait-for-ready: 'true'
     name: '${DATABASE_SERVICE_NAME}'
