@@ -137,7 +137,10 @@ objects:
         kind: ImageStreamTag
         name: ${APPLICATION_NAME}:latest
     postCommit: {}
-    resources: {}
+    resources:
+      limits:
+        cpu: '2'
+        memory: 6Gi
     runPolicy: Serial
     source:
       contextDir: /code/userprofile

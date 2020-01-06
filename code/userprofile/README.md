@@ -116,6 +116,9 @@ APPLICATION_NAME=openshift-microservices-userprofile
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} -p APPLICATION_NAME=$APPLICATION_NAME
 ```
+
+*For the native build to be successful in an OpenShift cluster with Pod and container resource limits, you may need to increase the cpu and memory resource limits for the container and pods within the OpenShift project.*
+
 #### Atternate deployment - Deploying jvm-based container (faster build, regular startup time)
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}  -p APPLICATION_NAME=$APPLICATION_NAME
