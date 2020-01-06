@@ -124,12 +124,12 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/use
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}  -p APPLICATION_NAME=$APPLICATION_NAME
 ```
 
-# To Cleanup OpenShift Deployment
+#### To Cleanup OpenShift Deployment
 ```bash
+#delete everything but data (ie saved profiles)
+oc delete all,secrets -lapp=$APPLICATION_NAME
 #delete everything
 oc delete all,secrets,pvc -lapp=$APPLICATION_NAME
-#delete everything but data
-oc delete all,secrets -lapp=$APPLICATION_NAME
 ```
 
 ### Building a container image for this service
