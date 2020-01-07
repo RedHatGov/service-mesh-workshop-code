@@ -31,22 +31,23 @@ If running on localhost, the APU is accessible to test and download at:
 ## Developer instructions
 - JDK 8+
 - Apache Maven 3.5.3+ is required
-- Optional for native applications [GraalVM](https://www.graalvm.org/) . At least version 1.0.0-rc15 required
+- Optional for native applications [GraalVM](https://www.graalvm.org/) . At least version 19.2.1 required
 
 
 ### Environment variables
 
 
-* If building natively, set the 
+If building natively, set the location of GRAAVLM_HOME
 ```bash
 $ GRAALVM_HOME=<GRAALVM_LOCATION>
 ```
 
 ### Local installation / run / test
 
-#### Update the application.properties to include database info
-Update the properties to point to local H2 database or a PostgreSQL database. 
- if using local or remote PostgreSQL database (default), set environment variables
+#### Database settings
+ H2 Database (for debugging) or Postgresql is supported
+
+ if using PostgreSQL database (default), set the environment variables when testing locally and substitute with the appropriate values
 
 ```bash
 POSTGRESQL_USER=sarah
@@ -54,45 +55,32 @@ POSTGRESQL_PASSWORD=connor
 POSTGRESQL_DATABASE=userprofiledb
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 ```
-substitute with the appropriate values
 
-If using H2 database, update application.properties with
+#### Running the app with H2
 ```bash
-quarkus.datasource.username=sarah
-quarkus.datasource.password=connor
-quarkus.datasource.url=jdbc:h2:file:/opt/h2/database.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-quarkus.datasource.driver=org.h2.Driver
+ mvn compile quarkus:dev -Dquarkus.profile=local
 ```
 
-
-If you don't want to use an H2 or PostgreSQL database, there is an in-memory implementation. You will need to update the org.microservices.demo.rest.UserProfileResource.java file and update this code
-```java
-//@Qualifier("jpa")
-@Qualifier("memory")
-```
-TODO: configure this change via application.properties
-
-You may need to still need to set the datasource properties in application.properties to match the H2 settings so that the app runs
-
-#### Running the app locally
+#### Running the app with Postgres database
 ```bash
-$ ./mvnw compile quarkus:dev
+ mvn compile quarkus:dev  
 ```
 
-#### Running the native app locally
-Alternatively, you can build and run a native app. 
+#### Running the native app (only Postgres support)
+Alternatively, you can build and run a native app.
+Note that the build will take a few minutes longer, however, the app boots up a lot faster
+
 ```bash
-$ ./mvnw package -Pnative
-$ ./target/userprofile-1.0-SNAPSHOT-runner
+ mvn package -Pnative
+ ./target/userprofile-1.0-SNAPSHOT-runner
 ```
-Note that the build will take a few minutes, however, the app boots up a lot faster
 
-#### To view and test with Swagger-UI locally
+#### To view and test with Swagger-UI locally (jvm mode only)
 http://localhost:8080/swagger-ui/
 
 
 #### Photo/Image Testing
-This is only supported with the jpa implementation
+Users have the ability to upload a profile picture 
 
 ##### To test photo upload
 The requested user has to exist
@@ -120,22 +108,56 @@ You can use a template to create all the build and deployment resources for Open
 ```bash
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
-USER_PROFILE_GIT_BRANCH=master 
-QUARKUS_VERSION_TAG=graalvm-1.0.0-rc16
+USER_PROFILE_GIT_BRANCH=master
+QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
+APPLICATION_NAME=openshift-microservices-userprofile
+```
+#### Deploying native container (slower build, extra-fast startup time)
+```bash
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=${QUARKUS_NATIVE_IMAGE_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST} -p APPLICATION_NAME=$APPLICATION_NAME
+```
 
-oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource.yaml -p QUARKUS_VERSION_TAG=${QUARKUS_VERSION_TAG} -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}
+*For the native build to be successful in an OpenShift cluster with Pod and container resource limits, you may need to increase the cpu and memory resource limits for the container and pods within the OpenShift project.*
 
-#To delete everything
-# oc delete all,secrets,pvc -lapp=userprofile
-# delete everything but data
-# oc delete all,secrets -lapp=userprofile
+#### Atternate deployment - Deploying jvm-based container (faster build, regular startup time)
+```bash
+oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}  -p APPLICATION_NAME=$APPLICATION_NAME
+```
+
+#### To Cleanup OpenShift Deployment
+```bash
+#delete everything but data (ie saved profiles)
+oc delete all,secrets -lapp=$APPLICATION_NAME
+#delete everything
+oc delete all,secrets,pvc -lapp=$APPLICATION_NAME
 ```
 
 ### Building a container image for this service
-You can use [s2i][4] to easily build this into a container image. For example to use the Quarkus Native image as our base:
+You can use [s2i][4] to easily build this into a native container image. For example to use the Quarkus Native image as our base:
+
+#### Native image
 ```bash
-QUARKUS_VERSION_TAG=graalvm-1.0.0-rc16
-s2i build . quay.io/quarkus/centos-quarkus-native-s2i:$QUARKUS_VERSION_TAG openshift-microservices-userprofile --loglevel 3
+QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
+s2i build . quay.io/quarkus/ubi-quarkus-native-s2i:$QUARKUS_NATIVE_IMAGE_VERSION_TAG openshift-microservices-userprofile --loglevel 3
+```
+
+#### JVM image
+```bash
+s2i build . fabric8/java-alpine-openjdk8-jre:1.6.5 openshift-microservices-userprofile-jvm --loglevel 3
+```
+
+If you prefer to use docker/buildah -
+
+#### To build native image  
+```bash
+mvn package -Pnative -Dquarkus.native.container-build=true
+docker build -f src/main/docker/Dockerfile.native -t quarkus/openshift-microservices-userprofile .
+```
+
+#### To build jvm-based image  
+```bash
+mvn package
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/openshift-microservices-userprofile-jvm .
 ```
 
 [1]: https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/

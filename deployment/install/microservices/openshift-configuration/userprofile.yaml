@@ -1,7 +1,7 @@
 # Usage example:
 # oc new-app -f ./userprofile.yaml \
 #     -p APPLICATION_NAME=userprofile \
-#     -p APPLICATION_IMAGE_URI= 'quay.io/gbengataylor/openshift-microservices-userprofile' \
+#     -p APPLICATION_IMAGE_URI='quay.io/gbengataylor/openshift-microservices-userprofile' \
 #     -p DATABASE_SERVICE_NAME=userprofile-postgresql
 
 apiVersion: template.openshift.io/v1
@@ -45,6 +45,7 @@ objects:
       version: ${APP_VERSION_TAG}
       application: ${APPLICATION_NAME}
       component: ${APPLICATION_NAME}-microservice    
+      app.kubernetes.io/part-of: ${APPLICATION_NAME}
     name: ${APPLICATION_NAME}
   spec:
     replicas: 1
@@ -201,7 +202,8 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME} 
-      component: ${APPLICATION_NAME}-postgresql     
+      component: ${APPLICATION_NAME}-postgresql 
+      app.kubernetes.io/part-of: ${APPLICATION_NAME}   
     annotations:
       template.alpha.openshift.io/wait-for-ready: 'true'
     name: '${DATABASE_SERVICE_NAME}'
