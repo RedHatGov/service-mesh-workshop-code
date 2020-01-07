@@ -2,9 +2,9 @@
 # Usage example:
 # oc new-app -f ./userprofile-fromsource.yaml \
 #     -p APPLICATION_NAME=userprofile \
-#     -p QUARKUS_IMAGE_TAG=graalvm-1.0.0-rc16 \
+#     -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1 \
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
-#     -p GIT_BRANCH=develop \
+#     -p GIT_BRANCH=moving-to-four \
 #     -p DATABASE_SERVICE_NAME=userprofile-postgresql
 
 apiVersion: template.openshift.io/v1

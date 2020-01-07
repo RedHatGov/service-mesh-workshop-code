@@ -1,10 +1,9 @@
 # Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
 # Usage example:
-# oc new-app -f ./userprofile-fromsource.yaml \
-#     -p APPLICATION_NAME=userprofile \
-#     -p QUARKUS_IMAGE_TAG=graalvm-1.0.0-rc16 \
+# oc new-app -f ./userprofile-fromsource-jvm.yaml \
+#     -p APPLICATION_NAME=openshift-microservices-userprofile\
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
-#     -p GIT_BRANCH=develop \
+#     -p GIT_BRANCH=moving-to-four \
 #     -p DATABASE_SERVICE_NAME=userprofile-postgresql
 
 apiVersion: template.openshift.io/v1
