@@ -108,7 +108,7 @@ You can use a template to create all the build and deployment resources for Open
 ```bash
 POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 USER_PROFILE_GIT_REPO=https://github.com/dudash/openshift-microservices
-USER_PROFILE_GIT_BRANCH=master 
+USER_PROFILE_GIT_BRANCH=master
 QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1
 APPLICATION_NAME=openshift-microservices-userprofile
 ```
