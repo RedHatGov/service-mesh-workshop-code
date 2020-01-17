@@ -6,7 +6,7 @@ POSTGRESQL_SERVICE_HOST=userprofile-postgresql
 
 
 USER_PROFILE_GIT_REPO=https://github.com/gbengataylor/openshift-microservices
-USER_PROFILE_GIT_BRANCH=develop 
+USER_PROFILE_GIT_BRANCH=moving-to-four 
 USER_PROFILE_OCP_PROJECT=user-profile-gbenga
 
 oc new-project $USER_PROFILE_OCP_PROJECT
@@ -22,22 +22,21 @@ do
 	sleep 2
 done
 
-#  
-#using specific version of s2i as latest (rc16 wasn't working)
+
 # this can be improved to use the generated secret from postgressql deploy. for now just use env variable
-oc new-app quay.io/quarkus/centos-quarkus-native-s2i:graalvm-1.0.0-rc16~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
- --context-dir=/code/userprofile --name=userprofile -luserprofile-component=microservice \
+oc new-app registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~${USER_PROFILE_GIT_REPO}#${USER_PROFILE_GIT_BRANCH}  \
+ --context-dir=/code/userprofile --name=userprofile-jvm -luserprofile-component=microservice \
  --env POSTGRESQL_USER=$POSTGRESQL_USER \
  --env POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD \
  --env POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE \
  --env POSTGRESQL_SERVICE_HOST=$POSTGRESQL_SERVICE_HOST 
 
-oc expose service userprofile
+oc expose service userprofile-jvm
 
 echo 'Wait for build to complete ..'
 
 until 
- oc get builds -lapp=userprofile | grep Complete 
+ oc get builds -lapp=userprofile-jvm | grep Complete 
 do
 	sleep 20
 done 
@@ -50,12 +49,11 @@ do
 	sleep 5
 done 
 
-#openjdk - won't work
-#oc new-app java~https://github.com/gbengataylor/openshift-microservices#develop --context-dir=/code/userprofile --name=userprofile-jdk
 
 # delete
-# oc delete all -lapp=userprofile
+# oc delete all -lapp=userprofile-jvm
 # oc delete all,secret -lapp=userprofile-postgresql
 
-#clean pvc
+#clean pvc, secret
 # oc delete pvc userprofile-postgresql
+# oc delete secret userprofile-postgresql

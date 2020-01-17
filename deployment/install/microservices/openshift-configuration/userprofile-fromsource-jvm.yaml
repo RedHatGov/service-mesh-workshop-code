@@ -1,8 +1,7 @@
 # Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
 # Usage example:
-# oc new-app -f ./userprofile-fromsource.yaml \
-#     -p APPLICATION_NAME=userprofile \
-#     -p QUARKUS_NATIVE_IMAGE_VERSION_TAG=19.2.1 \
+# oc new-app -f ./userprofile-fromsource-jvm.yaml \
+#     -p APPLICATION_NAME=openshift-microservices-userprofile\
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
 #     -p GIT_BRANCH=moving-to-four \
 #     -p DATABASE_SERVICE_NAME=userprofile-postgresql
@@ -137,10 +136,7 @@ objects:
         kind: ImageStreamTag
         name: ${APPLICATION_NAME}:latest
     postCommit: {}
-    resources:
-      limits:
-        cpu: '2'
-        memory: 6Gi
+    resources: {}
     runPolicy: Serial
     source:
       contextDir: /code/userprofile
@@ -152,7 +148,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: ${QUARKUS_S2I_IMAGE}:${QUARKUS_NATIVE_IMAGE_VERSION_TAG}
+          name: ${QUARKUS_S2I_IMAGE}
       type: Source
     triggers:
     - github:
@@ -187,13 +183,12 @@ objects:
       local: false
     tags:
       - annotations:
-          openshift.io/imported-from: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_NATIVE_IMAGE_VERSION_TAG}'
+          openshift.io/imported-from: '${QUARKUS_S2I_IMAGE}'
         from:
           kind: DockerImage
-          name: 'quay.io/quarkus/${QUARKUS_S2I_IMAGE}:${QUARKUS_NATIVE_IMAGE_VERSION_TAG}'
+          name: '${QUARKUS_S2I_IMAGE}'
         generation: 2
         importPolicy: {}
-        name: ${QUARKUS_NATIVE_IMAGE_VERSION_TAG}
         referencePolicy:
           type: Source      
 #Route?
@@ -393,12 +388,7 @@ parameters:
   displayName: Quarkus s2i image
   name: QUARKUS_S2I_IMAGE
   required: true
-  value: 'ubi-quarkus-native-s2i'    
-- description: The Quarkus version tag to use
-  displayName: Quarkus version tag
-  name: QUARKUS_NATIVE_IMAGE_VERSION_TAG
-  required: true
-  value: '19.2.1'  
+  value: 'registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift'    
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MEMORY_LIMIT
