@@ -1,16 +1,8 @@
-apiVersion: istio.openshift.com/v1alpha3
-kind: ControlPlane
+apiVersion: maistra.io/v1
+kind: ServiceMeshControlPlane
 metadata:
   name: istio-demo
 spec:
-  launcher:
-    enabled: false
-    # specify the url to master, e.g. https://master.some.domain.com:443
-    LAUNCHER_MISSIONCONTROL_OPENSHIFT_CONSOLE_URL: https://xxx.xxx.com
-    # Your GitHub username
-    LAUNCHER_MISSIONCONTROL_GITHUB_USERNAME: x
-    # Your GitHub Mission Control access token
-    LAUNCHER_MISSIONCONTROL_GITHUB_TOKEN: x
 
   threeScale:
     enabled: false
@@ -28,8 +20,6 @@ spec:
 
   istio:
     global:
-      hub: openshift-istio-tech-preview
-      tag: 0.10.0
       proxy:
         resources:
           requests:
@@ -38,22 +28,16 @@ spec:
           limits:
             cpu: 500m
             memory: 128Mi
-      mtls: true
+      mtls:
+        enabled: true
+      # set to false for 3scale Istio adapter
       disablePolicyChecks: true
-      policyCheckFailOpen: false
-      # imagePullSecrets:
-      #   - MyPullSecret
 
     gateways:
       istio-egressgateway:
         autoscaleEnabled: false
-        autoscaleMin: 1
-        autoscaleMax: 5
       istio-ingressgateway:
         autoscaleEnabled: false
-        autoscaleMin: 1
-        autoscaleMax: 5
-        ior_enabled: false
 
     mixer:
       policy:
@@ -75,11 +59,15 @@ spec:
 
     kiali:
       enabled: true
-      hub: kiali
-      tag: v0.16.2
       dashboard:
         user: admin
         passphrase: admin
 
+    grafana:
+      enabled: true
+
     tracing:
       enabled: true
+      jaeger:
+        template: all-in-one
+
