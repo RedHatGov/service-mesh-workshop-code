@@ -1,0 +1,52 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: userprofile
+    deploymentconfig: userprofile
+    userprofile-component: userprofile-microservice 
+    version: '1.0'
+  name: userprofile
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: userprofile:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: /code/userprofile
+    git:
+      ref: moving-to-four
+      uri: https://github.com/dudash/openshift-microservices.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: openjdk18-openshift:1.8
+    type: Source
+  triggers:
+  - github:
+      secret: hQl_Gp1l1syRc2mHuKh3
+    type: GitHub
+  - generic:
+      secret: hPM0ezNga5Khwvxbn3C2
+    type: Generic
+  - type: ConfigChange
+  - imageChange:
+    type: ImageChange
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: userprofile
+    deploymentconfig: userprofile
+    userprofile-component: userprofile-microservice
+  name: userprofile
+spec:
+  lookupPolicy:
+    local: false
