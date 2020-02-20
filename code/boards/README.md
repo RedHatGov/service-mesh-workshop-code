@@ -18,13 +18,21 @@ UI -<get /user345/boards/10>-> GATEWAY <-> Common(validate user 345 can access b
 
 ### Env Vars
 - MONGODB_USER - overrride the user for database access
+  - default=`dummy`
 - MONGODB_PASSWORD - overrride the password for database access
+  - default=`dummy`
 - MONGODB_SERVICE_HOST - override the database location
+  - default=`localhost`
 - MONGODB_SERVICE_PORT - override the database port
+  - default=`27017`
 - MONGODB_DATABASE - override the database name
+  - default=`boardsDevelopment`
 - MONGODB_USEAUTH - use auth when connecting to the database, defaults to true
-- DEBUG - specify the debug loggers to print out (use a comma separated list)
+  - default=`true`
+- DEBUG - specify the debug loggers to print out (use a comma separated list: e.g `service,database,swagger-tools:middleware:*`)
+  - default=empty
 - BREAKME - set to `true` to force the service to spit out 503 errors
+  - default=`false`
 
 ### Local Installation / Run / Test
 Install the dependencies:
@@ -43,7 +51,21 @@ Start the service:
 $ npm run-script dev
 ```
 
-### Running on OpenShift
+### Deploy / Run / Test Local Code to OpenShift - The easy way 
+We can use odo to do our OpenShift deployments and iterations on code/test:
+```
+odo component create nodejs boards --now
+odo service create mongodb-persistent --plan default --wait \
+    -p DATABASE_SERVICE_NAME=boards-mongodb -p MONGODB_PASSWORD=dummy -p MONGODB_USER=dummy \
+    -p MONGODB_DATABASE=boardsDevelopment -p VOLUME_CAPACITY=256Mi
+odo link mongodb-persistent
+odo config set --env MONGODB_SERVICE_HOST=boards-mongodb
+odo push
+```
+
+### Deploy / Run / Test Local Code to OpenShift - The complicated but configurable YAML way
+*(you will need a mongodb running first, and to match the config)*
+
 You can use a template to create all the build and deployment resources for OpenShift. Here's an example that overrides the defaults:
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/boards-fromsource.yaml \
@@ -67,7 +89,9 @@ Note: we remove the node_modules to avoid conflicts during the build process
 - API is generated via [swagger-tools, read more here][3] [and here][4].
 - MongoDB is being accessed via a thin helper library on top called monk. [Read how to use it here][2].
 - Using DEBUG. Available debuggers are: service, database, swagger-tools:middleware:* 
-
+- odo can be downloaded from here: https://docs.openshift.com/container-platform/4.3/cli_reference/openshift_developer_cli/installing-odo.html
+- You can deploy a MongoDB container in OpenShift with: `oc new-app -e MONGODB_USER=dummy -e MONGODB_PASSWORD=dummy -e MONGODB_DATABASE=boardsDevelopment -e MONGODB_ADMIN_PASSWORD=dummy mongodb:latest`
+  
 [1]: https://www.apicur.io/
 [2]: https://automattic.github.io/monk/
 [3]: https://github.com/apigee-127/swagger-tools/blob/master/docs/QuickStart.md
