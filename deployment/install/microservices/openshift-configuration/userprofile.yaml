@@ -220,6 +220,8 @@ objects:
           app: ${APPLICATION_NAME} 
           component: ${APPLICATION_NAME}-postgresql              
           name: '${DATABASE_SERVICE_NAME}'
+        annotations:
+         sidecar.istio.io/inject: "true"        
       spec:
         containers:
           - capabilities: {}
