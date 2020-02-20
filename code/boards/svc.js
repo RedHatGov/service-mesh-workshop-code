@@ -14,14 +14,14 @@ var debugdb = require('debug')('database')
 
 const SERVICE_NAME = process.env.SERVICE_NAME || 'boards'
 
-var breakme = process.env.BREAKME || 'false'
+var breakme = process.env.BREAKME || 'false' // TODO: make this realtime vs on startup
 
-// database setup
+// database setup - we might need to switch to something more robust than monk
 var user = process.env.MONGODB_USER || 'dummy'
 var pass = process.env.MONGODB_PASSWORD || 'dummy'
 var dbip = process.env.MONGODB_SERVICE_HOST || 'localhost'
 var dbport = process.env.MONGODB_SERVICE_PORT || 27017
-var dbproj = process.env.MONGODB_DATABASE || 'microservicesDev'
+var dbproj = process.env.MONGODB_DATABASE || 'boardsDevelopment'
 //var dbproj = process.env.MONGODB_DATABASE || 'microservicesTest'
 //var dbdbprojcoll = process.env.MONGODB_DATABASE || 'microservicesProd'
 var useAuth = process.env.MONGODB_USEAUTH || 'true'
@@ -35,14 +35,20 @@ else {
 }
 debugdb('connecting to mongodb at ' + url)
 var monk = require('monk')
-var db = monk(url);
+var db = monk(url)
 db.then(() => { debugdb('Connected correctly to database server') })
+db.catch((err) => { debugdb('Failed to connect to database server it told us:' + err) })
+// monk has a problem with promises:
+// https://github.com/Automattic/monk/issues/258
 
 var app = express()
 var port = process.env.PORT || '8080'
 
 // var propagateTrace = require('istio-tracing-headers')
 // app.use(propagateTrace())
+
+// check to create the db connection on every request if it hasn't been created properly
+// TODO:
 
 // DEMO ONLY
 if (breakme === 'true') { app.use(function(req, res, next) {next(createError(503))})}

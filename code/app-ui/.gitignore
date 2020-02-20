@@ -72,3 +72,8 @@ typings/
 
 # Serverless directories
 .serverless
+
+# nodeshift and odo
+tmp/*
+.odo/*
+.odo/odo-file-index.json

@@ -104,3 +104,8 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# nodeshift and odo
+tmp/*
+.odo/*
+.odo/odo-file-index.json

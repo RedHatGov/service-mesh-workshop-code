@@ -35,8 +35,6 @@ If running on localhost, the APU is accessible to test and download at:
 
 
 ### Environment variables
-
-
 If building natively, set the location of GRAAVLM_HOME
 ```bash
 $ GRAALVM_HOME=<GRAALVM_LOCATION>
@@ -100,7 +98,23 @@ curl -v -X  GET  http://localhost:8080/users/$USER_ID/photo
 
 This produces content of type 'application/octet-stream'. You can redirect the output to a file
 
-### Running on OpenShift
+
+### Deploy / Run / Test Local Code to OpenShift - The easy way 
+We can use odo to do our OpenShift deployments and iterations on code/test:
+```bash
+odo component create java:11 userprofile \
+    --env ARTIFACT_COPY_ARGS="-p -r lib/ *-runner.jar" --env JAVA_OPTIONS=-Dquarkus.http.host=0.0.0.0
+odo url create --port 8080
+odo config set --env DATABASE_SERVICE_NAME=userprofile-postgresql
+odo push
+odo service create postgresql-persistent --plan default --wait \
+    -p POSTGRESQL_DATABASE=userprofiledb -p POSTGRESQL_USER=sarah \
+    -p POSTGRESQL_PASSWORD=connor -p VOLUME_CAPACITY=256Mi \
+    -p DATABASE_SERVICE_NAME=userprofile-postgresql
+odo link postgresql-persistent
+```
+
+### Deploy / Run / Test Local Code on OpenShift - The complicated but configurable YAML way 
 
 The OpenShift instructions will deploy a postgreSQL database and the userprofile microservice.
 
@@ -119,7 +133,7 @@ oc new-app -f ../../deployment/install/microservices/openshift-configuration/use
 
 *For the native build to be successful in an OpenShift cluster with Pod and container resource limits, you may need to increase the cpu and memory resource limits for the container and pods within the OpenShift project.*
 
-#### Atternate deployment - Deploying jvm-based container (faster build, regular startup time)
+#### Alternate deployment - Deploying jvm-based container (faster build, regular startup time)
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/userprofile-fromsource-jvm.yaml -p GIT_URI=${USER_PROFILE_GIT_REPO}  -p GIT_BRANCH=${USER_PROFILE_GIT_BRANCH} -p DATABASE_SERVICE_NAME=${POSTGRESQL_SERVICE_HOST}  -p APPLICATION_NAME=$APPLICATION_NAME
 ```
