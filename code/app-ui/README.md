@@ -50,7 +50,7 @@ Note: the template uses S2I which pulls from git and builds the container image 
 You can use [s2i][2] to build this into a container image. For example to use the OpenShift runtimes node.js as our base:
 ```bash
 rm -rf node_modules
-s2i build . registry.access.redhat.com/ubi7/nodejs-12 openshift-microservices-app-ui --loglevel 3
+s2i build . registry.access.redhat.com/ubi8/nodejs-12 openshift-microservices-app-ui --loglevel 3
 ```
 Note: we remove the node_modules to avoid conflicts during the build process
 
