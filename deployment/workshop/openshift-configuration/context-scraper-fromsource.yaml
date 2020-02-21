@@ -1,0 +1,176 @@
+# Note: the template uses S2I which pulls from git and builds the container image from source code then deploys.
+# Usage example:
+# oc new-app -f ./context-scraper-fromsource.yaml \
+#   -p APPLICATION_NAME=context-scraper \
+#   -p NODEJS_VERSION_TAG=8-RHOAR \
+#   -p GIT_BRANCH=develop \
+#   -p GIT_URI=https://github.com/dudash/openshift-microservices.git
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: context-scraper-fromsource
+message: A new context-scraper service has been created in your project. 
+metadata:
+  annotations:
+    description: An context-scraper application for the microservices demo
+    openshift.io/display-name: context-scraper
+    template.openshift.io/long-description: This template defines the context-scraper microservice
+  name: context-scraper-fromsource
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+      application: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+    selector:
+      deploymentconfig: ${APPLICATION_NAME}
+  status:
+    loadBalancer: {}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${APPLICATION_NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: ${APPLICATION_NAME}
+          application: ${APPLICATION_NAME}
+          deploymentconfig: ${APPLICATION_NAME}
+          version: ${APP_VERSION_TAG}
+        annotations:
+          sidecar.istio.io/inject: "true"
+      spec:
+        containers:
+        - env:
+          - name: SSO_SVC_HOST
+            value: auth-sso73-x509
+          - name: SSO_SVC_HOST
+            value: '8443'
+          image: ${APPLICATION_NAME}
+          imagePullPolicy: Always
+          name: ${APPLICATION_NAME}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: code/context-scraper
+      git:
+        ref: ${GIT_BRANCH}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: 'nodejs:${NODEJS_VERSION_TAG}'
+          namespace: openshift
+      type: Source
+    triggers:
+    - generic:
+        secret: 1ee531e8754cceaa
+      type: Generic
+    - github:
+        secret: e7d3062bfd0f73e4
+      type: GitHub
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      application: ${APPLICATION_NAME}
+      version: ${APP_VERSION_TAG}
+    name: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
+parameters:
+- description: The name for the application.
+  displayName: Application Name
+  name: APPLICATION_NAME
+  required: true
+  value: context-scraper
+- description: The version to tag the app with
+  displayName: app version tag
+  name: APP_VERSION_TAG
+  required: true
+  value: 'latest'
+- description: The source code branch
+  displayName: git branch
+  name: GIT_BRANCH
+  required: true
+  value: master
+- description: The source code URI
+  displayName: git URI
+  name: GIT_URI
+  required: true
+  value: 'https://github.com/dudash/openshift-microservices.git'
+- description: The nodejs version tag to uses
+  displayName: Node.js version tag
+  name: NODEJS_VERSION_TAG
+  required: true
+  value: '10'
