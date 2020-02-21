@@ -96,5 +96,5 @@ Apache 2.0.
 [1]: https://github.com/dudash/openshift-microservices/issues
 [2]: https://github.com/dudash/openshift-microservices/labels/discussion
 
-[openshift-heximage]: https://img.shields.io/badge/openshift-3.11-BB261A.svg
-[openshift-url]: https://docs.openshift.com/container-platform/3.11/welcome/index.html
+[openshift-heximage]: https://img.shields.io/badge/openshift-4.3-BB261A.svg
+[openshift-url]: https://docs.openshift.com/container-platform/4.3/welcome/index.html

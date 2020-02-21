@@ -3,11 +3,12 @@ This folder contains instructions on how to configure and install dependencies o
 
 Some notes on configuration file paths:
 - `.s2i` folders will go in each microservice along with the code (because it's a service specific build-time config)
+- other openshift build-time resources can live with the microservice in a `.openshift` folder (if it has something to do with the build)
+- `.odo` folders are config we are currently considering developer specific (so currently `.gitignore'd`)
 - openshift/kubernetes resources required for running will live in `deployment/install/microservices/openshift-configuration/*.yaml`
 - istio resources will live in the folders `deployment/install/microservices/istio-configuration/*.yaml`
 - optional openshift resources for specific demo purposes can live in `deployment/demos/DEMOXYZ/openshift-configuration/*.yaml`
 - optional istio resources for specific demo purposes can live in `deployment/demos/DEMOXYZ/istio-configuration/*.yaml`
-- openshift build-time resources can live with the microservice in a `.openshift` folder (if it has something to do with the build)
 
 To get up and running you'll need to setup the platform dependencies on your cluster. Once those are available, follow the steps to install the application.
 

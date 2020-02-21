@@ -45,3 +45,8 @@ Thumbs.db
 
 # Mock API
 /api/node_modules
+
+# nodeshift and odo
+tmp/*
+.odo/*
+.odo/odo-file-index.json

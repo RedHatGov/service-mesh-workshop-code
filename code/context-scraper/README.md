@@ -58,12 +58,18 @@ In another terminal you can test with:
 $ http GET localhost:8080/scrape/custom_search?term==YOUR_TERM_HERE
 ```
 
-### Running on OpenShift
+### Deploy / Run / Test Local Code to OpenShift - The easy way 
+We can use odo to do our OpenShift deployments and iterations on code/test:
+```
+odo component create nodejs context-scraper --now
+```
+
+### Deploy / Run / Test Local Code to OpenShift - The complicated but configurable YAML way
 You can use a template to create all the build and deployment resources for OpenShift. Here's an example that overrides the defaults:
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/context-scraper-fromsource.yaml \
     -p APPLICATION_NAME=context-scraper \
-    -p NODEJS_VERSION_TAG=8-RHOAR \
+    -p NODEJS_VERSION_TAG=12 \
     -p GIT_BRANCH=develop \
     -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 ```
@@ -74,7 +80,7 @@ Note: the template uses S2I which pulls from git and builds the container image 
 You can use [s2i][5] to easily build this into a container image. For example to use the OpenShift runtimes node.js as our base:
 ```bash
 rm -rf node_modules
-s2i build . registry.access.redhat.com/ubi7/nodejs-8 openshift-microservices-context-scraper --loglevel 3
+s2i build . registry.access.redhat.com/ubi8/nodejs-12 openshift-microservices-context-scraper --loglevel 3
 ```
 Note: we remove the node_modules to avoid conflicts during the build process
 

@@ -1,5 +1,9 @@
 # These are a set of destination rules that can be used
 # as a simple base for more advanced demos to build upon
+#
+# you use destination rules to configure what happens to traffic (the destination itself is set in a virtual service)
+# Destination rules are applied after virtual service routing rules are evaluated
+# read more here: https://istio.io/docs/reference/config/networking/destination-rule/
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -27,3 +31,10 @@ metadata:
   name: context-scraper
 spec:
   host: context-scraper
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: userprofile
+spec:
+  host: userprofile

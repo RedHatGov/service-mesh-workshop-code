@@ -43,6 +43,7 @@ objects:
     ports:
     - port: 8443
       targetPort: 8443
+      name: https
     selector:
       deploymentConfig: ${APPLICATION_NAME}
 - apiVersion: v1
@@ -57,6 +58,7 @@ objects:
     ports:
     - port: 5432
       targetPort: 5432
+      name: tcp-postgres
     selector:
       deploymentConfig: ${APPLICATION_NAME}-postgresql
 - apiVersion: v1
