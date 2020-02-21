@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: app-ui
+spec:
+  host: app-ui
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards
+spec:
+  host: boards
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: boards-mongodb
+spec:
+  host: boards-mongodb
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: userprofile
+spec:
+  host: userprofile
+  subsets:
+  - name: v1
+    labels:
+      version: '1.0'
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN        
+  - name: v2
+    labels:
+      version: '2.0'
+    trafficPolicy:
+      loadBalancer:
+        simple: RANDOM
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: userprofile-postgresql
+spec:
+  host: userprofile-postgresql
