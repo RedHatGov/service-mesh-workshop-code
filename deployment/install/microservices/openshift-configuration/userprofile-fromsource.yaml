@@ -33,9 +33,8 @@ objects:
     name: ${APPLICATION_NAME}
   spec:
     ports:
-    - name: 8080-tcp
+    - name: http
       port: 8080
-      protocol: TCP
       targetPort: 8080
     selector:
       deploymentconfig: ${APPLICATION_NAME}
@@ -248,7 +247,7 @@ objects:
     name: '${DATABASE_SERVICE_NAME}'
   spec:
     ports:
-      - name: postgresql
+      - name: tcp-postgresql
         nodePort: 0
         port: 5432
         protocol: TCP

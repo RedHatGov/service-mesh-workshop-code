@@ -11,8 +11,6 @@
 # around from domain to domain and cluster to cluster. You can easily scope it
 # to run with custom ingress by adding one or more explicit hosts in place of '*'.
 #
-# Also, OpenShift *should* automatically create routes for me based on this:
-# https://docs.openshift.com/container-platform/3.11/servicemesh-install/servicemesh-install.html#automatic-route-creation
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:

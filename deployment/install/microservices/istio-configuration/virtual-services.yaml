@@ -1,5 +1,8 @@
 # These are a set of virtual service routes that can be used
 # as a simple base for more advanced demos to build upon
+#
+# A virtual service lets you configure how requests are routed to a service within the service mesh
+# They decouple where a client sends a request from the actual destination that processes the request
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
