@@ -38,6 +38,9 @@ spec:
     trafficPolicy:
       loadBalancer:
         simple: RANDOM
+  - name: v3
+    labels:
+      version: '3.0'
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
