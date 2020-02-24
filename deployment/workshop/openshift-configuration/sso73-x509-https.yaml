@@ -1,12 +1,10 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  rhsso: 7.3.1.GA
-  template: auth-sso73-x509
-message: A new persistent RH-SSO service (using PostgreSQL) has been created in your
-  project. The admin username/password for accessing the master realm via the RH-SSO
-  console is ${SSO_ADMIN_USERNAME}/${SSO_ADMIN_PASSWORD}. The username/password for
-  accessing the PostgreSQL database "${DB_DATABASE}" is ${DB_USERNAME}/${DB_PASSWORD}.
+  rhsso: 7.3.2.GA
+  template: sso73-x509-https
+message: A new RH-SSO service has been created in your project. The admin username/password
+  for accessing the master realm via the RH-SSO console is ${SSO_ADMIN_USERNAME}/${SSO_ADMIN_PASSWORD}.
   The HTTPS keystore used for serving secure content, the JGroups keystore used for
   securing JGroups communications, and server truststore used for securing RH-SSO
   requests were automatically created via OpenShift's service serving x509 certificate
@@ -16,25 +14,22 @@ metadata:
     description: An example application based on RH-SSO 7.3 image. For more information
       about using this template, see https://github.com/jboss-container-images/redhat-sso-7-openshift-image/docs.
     iconClass: icon-sso
-    openshift.io/display-name: Red Hat Single Sign-On 7.3 + PostgreSQL (Persistent)
+    openshift.io/display-name: Red Hat Single Sign-On 7.3 (Ephemeral)
     openshift.io/provider-display-name: Red Hat, Inc.
     tags: sso,keycloak,jboss
     template.openshift.io/documentation-url: https://access.redhat.com/documentation/en/red-hat-single-sign-on/
     template.openshift.io/long-description: This template defines resources needed
-      to develop Red Hat Single Sign-On 7.3 server based deployment, deployment configuration
-      for PostgreSQL using persistence, and securing RH-SSO communication using re-encrypt
-      TLS.
+      to develop Red Hat Single Sign-On 7.3 server based deployment, securing RH-SSO
+      communication using re-encrypt TLS.
     template.openshift.io/support-url: https://access.redhat.com
-    version: 7.3.1.GA
-  name: auth-sso73-x509
+    version: 7.3.2.GA
+  name: sso73-x509-https
 objects:
 - apiVersion: v1
   kind: Service
   metadata:
     annotations:
       description: The web server's https port.
-      service.alpha.openshift.io/dependencies: '[{"name": "${APPLICATION_NAME}-postgresql",
-        "kind": "Service"}]'
       service.alpha.openshift.io/serving-cert-secret-name: sso-x509-https-secret
     labels:
       application: ${APPLICATION_NAME}
@@ -43,24 +38,8 @@ objects:
     ports:
     - port: 8443
       targetPort: 8443
-      name: https
     selector:
       deploymentConfig: ${APPLICATION_NAME}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    annotations:
-      description: The database server's port.
-    labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}-postgresql
-  spec:
-    ports:
-    - port: 5432
-      targetPort: 5432
-      name: tcp-postgres
-    selector:
-      deploymentConfig: ${APPLICATION_NAME}-postgresql
 - apiVersion: v1
   kind: Service
   metadata:
@@ -117,18 +96,6 @@ objects:
         - env:
           - name: SSO_HOSTNAME
             value: ${SSO_HOSTNAME}
-          - name: DB_SERVICE_PREFIX_MAPPING
-            value: ${APPLICATION_NAME}-postgresql=DB
-          - name: DB_JNDI
-            value: ${DB_JNDI}
-          - name: DB_USERNAME
-            value: ${DB_USERNAME}
-          - name: DB_PASSWORD
-            value: ${DB_PASSWORD}
-          - name: DB_DATABASE
-            value: ${DB_DATABASE}
-          - name: TX_DATABASE_PREFIX_MAPPING
-            value: ${APPLICATION_NAME}-postgresql=DB
           - name: DB_MIN_POOL_SIZE
             value: ${DB_MIN_POOL_SIZE}
           - name: DB_MAX_POOL_SIZE
@@ -150,7 +117,7 @@ objects:
           - name: SSO_ADMIN_PASSWORD
             value: ${SSO_ADMIN_PASSWORD}
           - name: SSO_REALM
-            value: ${SSO_REALM}        
+            value: ${SSO_REALM}
           - name: SSO_SERVICE_USERNAME
             value: ${SSO_SERVICE_USERNAME}
           - name: SSO_SERVICE_PASSWORD
@@ -160,8 +127,7 @@ objects:
           livenessProbe:
             exec:
               command:
-              - /bin/bash
-              - -c
+              - cat
               - /opt/eap/bin/livenessProbe.sh
             initialDelaySeconds: 60
           name: ${APPLICATION_NAME}
@@ -181,8 +147,7 @@ objects:
           readinessProbe:
             exec:
               command:
-              - /bin/bash
-              - -c
+              - cat
               - /opt/eap/bin/readinessProbe.sh
           resources:
             limits:
@@ -194,9 +159,6 @@ objects:
           - mountPath: /etc/x509/jgroups
             name: sso-x509-jgroups-volume
             readOnly: true
-          - mountPath: /opt/eap/standalone/configuration/import-realm.json  
-            name: sso-import-realm-volume
-            subPath: import-realm.json           
         terminationGracePeriodSeconds: 75
         volumes:
         - name: sso-x509-https-volume
@@ -205,12 +167,6 @@ objects:
         - name: sso-x509-jgroups-volume
           secret:
             secretName: sso-x509-jgroups-secret
-        - name: sso-import-realm-volume
-          configMap:
-            name: sso-realm
-            items: 
-            - key: import-realm.json
-              path: import-realm.json
     triggers:
     - imageChangeParams:
         automatic: true
@@ -218,109 +174,16 @@ objects:
         - ${APPLICATION_NAME}
         from:
           kind: ImageStreamTag
-          name: ${AUTH_IMAGE_NAME}:${AUTH_IMAGE_TAG}
-          namespace: ${AUTH_IMAGE_STREAM_NAMESPACE}
-      type: ImageChange
-    - type: ConfigChange
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}-postgresql
-  spec:
-    replicas: 1
-    selector:
-      deploymentConfig: ${APPLICATION_NAME}-postgresql
-    strategy:
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          application: ${APPLICATION_NAME}
-          deploymentConfig: ${APPLICATION_NAME}-postgresql
-        annotations:
-          sidecar.istio.io/inject: "true"
-        name: ${APPLICATION_NAME}-postgresql
-      spec:
-        containers:
-        - env:
-          - name: POSTGRESQL_USER
-            value: ${DB_USERNAME}
-          - name: POSTGRESQL_PASSWORD
-            value: ${DB_PASSWORD}
-          - name: POSTGRESQL_DATABASE
-            value: ${DB_DATABASE}
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: ${POSTGRESQL_MAX_CONNECTIONS}
-          - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
-            value: ${POSTGRESQL_MAX_CONNECTIONS}
-          - name: POSTGRESQL_SHARED_BUFFERS
-            value: ${POSTGRESQL_SHARED_BUFFERS}
-          image: postgresql
-          imagePullPolicy: Always
-          livenessProbe:
-            initialDelaySeconds: 30
-            exec:
-              command:
-                - /usr/libexec/check-container
-                - '--live'            
-            # tcpSocket:
-            #   port: 5432
-            # timeoutSeconds: 1
-          name: ${APPLICATION_NAME}-postgresql
-          ports:
-          - containerPort: 5432
-            protocol: TCP
-          readinessProbe:
-            exec:
-              command:
-              # - /bin/sh
-              # - -i
-              # - -c
-              # - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
-              #   'SELECT 1'
-              #   'SELECT 1'
-                - /usr/libexec/check-container              
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
-          volumeMounts:
-          - mountPath: /var/lib/pgsql/data
-            name: ${APPLICATION_NAME}-postgresql-pvol
-        terminationGracePeriodSeconds: 60
-        volumes:
-        - name: ${APPLICATION_NAME}-postgresql-pvol
-          persistentVolumeClaim:
-            claimName: ${APPLICATION_NAME}-postgresql-claim
-    triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${APPLICATION_NAME}-postgresql
-        from:
-          kind: ImageStreamTag
-          name: postgresql:${POSTGRESQL_IMAGE_STREAM_TAG}
+          name: redhat-sso73-openshift:1.0
           namespace: ${IMAGE_STREAM_NAMESPACE}
       type: ImageChange
     - type: ConfigChange
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}-postgresql-claim
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: ${VOLUME_CAPACITY}
 parameters:
 - description: The name for the application.
   displayName: Application Name
   name: APPLICATION_NAME
   required: true
-  value: auth-sso73-x509
+  value: sso
 - description: Custom hostname for the RH-SSO server.
   displayName: Custom RH-SSO Server Hostname
   name: SSO_HOSTNAME
@@ -330,16 +193,6 @@ parameters:
   generate: expression
   name: JGROUPS_CLUSTER_PASSWORD
   required: true
-- description: Database JNDI name used by application to resolve the datasource, e.g.
-    java:/jboss/datasources/postgresql
-  displayName: Database JNDI Name
-  name: DB_JNDI
-  value: java:jboss/datasources/KeycloakDS
-- description: Database name
-  displayName: Database Name
-  name: DB_DATABASE
-  required: true
-  value: root
 - description: Sets xa-pool/min-pool-size for the configured datasource.
   displayName: Datasource Minimum Pool Size
   name: DB_MIN_POOL_SIZE
@@ -349,30 +202,6 @@ parameters:
 - description: Sets transaction-isolation for the configured datasource.
   displayName: Datasource Transaction Isolation
   name: DB_TX_ISOLATION
-- description: The maximum number of client connections allowed. This also sets the
-    maximum number of prepared transactions.
-  displayName: PostgreSQL Maximum number of connections
-  name: POSTGRESQL_MAX_CONNECTIONS
-- description: Configures how much memory is dedicated to PostgreSQL for caching data.
-  displayName: PostgreSQL Shared Buffers
-  name: POSTGRESQL_SHARED_BUFFERS
-- description: Database user name
-  displayName: Database Username
-  from: user[a-zA-Z0-9]{3}
-  generate: expression
-  name: DB_USERNAME
-  required: true
-- description: Database user password
-  displayName: Database Password
-  from: '[a-zA-Z0-9]{32}'
-  generate: expression
-  name: DB_PASSWORD
-  required: true
-- description: Size of persistent storage for database volume.
-  displayName: Database Volume Capacity
-  name: VOLUME_CAPACITY
-  required: true
-  value: 1Gi
 - description: Namespace in which the ImageStreams for Red Hat Middleware images are
     installed. These ImageStreams are normally installed in the openshift namespace.
     You should only need to modify this if you've installed the ImageStreams in a
@@ -381,28 +210,13 @@ parameters:
   name: IMAGE_STREAM_NAMESPACE
   required: true
   value: openshift
-- description: Namespace in which this auth service image is located (in case you built it elsewhere)
-  displayName: Auth ImageStream Namespace
-  name: AUTH_IMAGE_STREAM_NAMESPACE
-  required: true
-  value: microservices-demo
-- description: Name of the custom SSO auth service image
-  displayName: Auth Image Name
-  name: AUTH_IMAGE_NAME
-  required: true
-  value: auth
-- description: Tag name of the custom SSO auth service image
-  displayName: Auth Image Tag
-  name: AUTH_IMAGE_TAG
-  required: true
-  value: latest
 - description: RH-SSO Server administrator username
   displayName: RH-SSO Administrator Username
   from: '[a-zA-Z0-9]{8}'
   generate: expression
   name: SSO_ADMIN_USERNAME
   required: true
-- description: RH-SSO Server administrator password
+- description: RH-SSO Server admininistrator password
   displayName: RH-SSO Administrator Password
   from: '[a-zA-Z0-9]{32}'
   generate: expression
@@ -411,7 +225,6 @@ parameters:
 - description: Realm to be created in the RH-SSO server (e.g. demorealm).
   displayName: RH-SSO Realm
   name: SSO_REALM
-  value: microservices
 - description: The username used to access the RH-SSO service. This is used by clients
     to create the appliction client(s) within the specified RH-SSO realm.
   displayName: RH-SSO Service Username
@@ -419,12 +232,6 @@ parameters:
 - description: The password for the RH-SSO service user.
   displayName: RH-SSO Service Password
   name: SSO_SERVICE_PASSWORD
-- description: The tag to use for the "postgresql" image stream.  Typically, this
-    aligns with the major.minor version of PostgreSQL.
-  displayName: PostgreSQL Image Stream Tag
-  name: POSTGRESQL_IMAGE_STREAM_TAG
-  required: true
-  value: "9.5"
 - description: Container memory limit.
   displayName: Container Memory Limit
   name: MEMORY_LIMIT
