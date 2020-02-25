@@ -5,6 +5,7 @@ body {
 
 body {
   padding-top: 56px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 @media (max-width: 991.98px) {

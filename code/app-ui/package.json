@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "build": "echo \"Info: no build steps here - in the future we might minify\"",
-    "dev": "DEBUG=app PORT=3000 BOARDS_SVC_HOST=localhost BOARDS_SVC_PORT=3001 nodemon ./bin/www",
+    "dev": "DEBUG=app PORT=3000 BOARDS_SVC_HOST=localhost BOARDS_SVC_PORT=3001 PROFILE_SVC_HOST=localhost PROFILE_SVC_PORT=8080 nodemon ./bin/www",
     "audit": "snyk test"
   },
   "author": "dudash",
