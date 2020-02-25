@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: userprofile
+spec:
+  host: userprofile
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+  - name: v1
+    labels:
+      version: '1.0'
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN        
+  - name: v2
+    labels:
+      version: '2.0'
+    trafficPolicy:
+      loadBalancer:
+        simple: RANDOM
+  - name: v3
+    labels:
+      version: '3.0'
+    trafficPolicy:
+      connectionPool:
+        http:
+          http1MaxPendingRequests: 1
+          maxRequestsPerConnection: 1
+      outlierDetection:
+        consecutiveErrors: 1
+        interval: 1s
+        baseEjectionTime: 3m
+        maxEjectionPercent: 100
+        
