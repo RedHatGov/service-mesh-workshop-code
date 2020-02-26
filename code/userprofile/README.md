@@ -23,10 +23,13 @@ Open questions/notes:
 ## API documentation
 The API has been visually designed via Apicurio, it's based on the OpenAPI Specification. see userprofile_v1_api.yaml
 
-If running on localhost, the APU is accessible to test and download at:
+If running on localhost, the API is accessible to test and download at:
 
 * http://localhost:8080/swagger-ui
 * http://localhost:8080/api-docs
+
+A fake user can be retrieved by asking for user with ID of "575ddb6a-8d2f-4baf-9e7e-4d0184d69259"
+
 
 ## Developer instructions
 - JDK 8+
