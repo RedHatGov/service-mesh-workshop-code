@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: userprofile
+  name: userprofile-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deploymentconfig: userprofile
+      version: "2.0"
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        deploymentconfig: userprofile
+        version: "2.0"
+    spec:
+      containers:
+      - env:
+        - name: POSTGRESQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database-name
+              name: userprofile-postgresql
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: database-password
+              name: userprofile-postgresql
+        - name: POSTGRESQL_SERVICE_HOST
+          value: userprofile-postgresql
+        - name: POSTGRESQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: database-user
+              name: userprofile-postgresql
+        - name: POSTGRESQL_SERVICE_PORT
+          value: "5432"
+        image: image-registry.openshift-image-registry.svc:5000/microservices-demo/userprofile:1.0
+        imagePullPolicy: Always
+        name: userprofile
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
