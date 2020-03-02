@@ -54,7 +54,7 @@ items:
                 name: userprofile-postgresql
           - name: POSTGRESQL_SERVICE_PORT
             value: "5432"
-          image: image-registry.openshift-image-registry.svc:5000/microservices-demo/userprofile:1.0
+          image: %USER_PROFILE_IMAGE_URI%:1.0
           imagePullPolicy: Always
           name: userprofile
           ports:
