@@ -5,25 +5,23 @@ var request = require('request-promise')
 
 /* Show users profile page or login/create account */
 router.get('/', function(req, res, next) {
-  var user = res.locals.user
-
-  // TODO: lookup profile for my user ID
-  // TODO: get my profile image
-
-  var fakeme = {
-    aboutMe: 'I know that I am intelligent, because I know that I know nothing',
-    emailAddress: 'jdudash@redhat.com',
-    firstName: 'Jason',
-    lastName: 'Dudash'
-  }
-
-  res.render('profile', { title: "Jason's Profile", profile: fakeme, isMyProfile: true, errorWithProfile: false })
+  
+  // TODO: if not logged in redirect to login page
+  
+  const user = res.locals.user
+  const userId = res.locals.userId  // this will be set if we are logged in, or fake if we are DEBUGGING
+  getAndRender(req, res, next, userId)
 })
 
 /* GET a user's page. */
 router.get('/:userId', function(req, res, next) {
   var user = res.locals.user
-  const profileGetURI = req.HTTP_PROTOCOL + req.PROFILE_SVC_HOST + ':' + req.PROFILE_SVC_PORT + '/users/' + req.params.userId 
+  var userId = req.params.userId
+  getAndRender(req, res, next, userId)
+})
+
+function getAndRender(req, res, next, userId) {
+  const profileGetURI = req.HTTP_PROTOCOL + req.PROFILE_SVC_HOST + ':' + req.PROFILE_SVC_PORT + '/users/' + userId
   req.debug('GET from profile SVC at: ' + profileGetURI)
   var request_get_options = {
       method: 'GET',
@@ -57,6 +55,6 @@ router.get('/:userId', function(req, res, next) {
       req.debug(err)
       res.render('profile', { title: 'Unknown User', errorWithProfile: true })
   })
-})
+}
 
 module.exports = router

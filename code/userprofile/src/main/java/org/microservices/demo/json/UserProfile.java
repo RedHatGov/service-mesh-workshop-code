@@ -172,4 +172,15 @@ public class UserProfile {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    public static UserProfile getFakeUser(String id) {
+        UserProfile user = new UserProfile();
+        user.id = id;
+        user.firstName = "Sarah";
+        user.lastName = "Connor";
+        user.emailAddress = "sarahc@skynet.com";
+        user.aboutMe = "There is no fate but what we make for ourselves.";
+        user.createdAt = Calendar.getInstance().getTime();
+        return user;
+    }
 }

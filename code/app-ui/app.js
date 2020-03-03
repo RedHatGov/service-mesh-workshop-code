@@ -64,6 +64,7 @@ app.use(function(req,res,next) {
 // TODO: we need to do real auth
 app.use(function (req, res, next) {
   res.locals.user = 'anonymous'
+  res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'
   res.locals.authenticated = false
   next()
 })

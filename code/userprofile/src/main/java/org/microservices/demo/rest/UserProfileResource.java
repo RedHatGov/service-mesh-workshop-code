@@ -53,14 +53,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Consumes(MediaType.APPLICATION_JSON)
 //TODO: fix generated OpenAPI spec/swagger-ui. PUT and POST examples aren't generating the proper rer to UserProfile
 public class UserProfileResource {
+    
+    private final String MAGIC_NUMBER = "575ddb6a-8d2f-4baf-9e7e-4d0184d69259";
 
     // Using Spring-DI
     @Autowired
     // @Qualifier("${user.profile.source}")
     // TODO: figure how to make this more configurable at runtime
-    // spring boot has ConditionalOnProperty that can be set on bean. can the
-    // quarkus springDI processor
-    // handle this...probably not at the moment.
+    // spring boot has ConditionalOnProperty that can be set on bean
+    // can the quarkus springDI processor handle this...probably not at the moment.
     // for now in dev mode this can be done by modifying the hardcoded value then
     // saving the file and letting hot deploy do it's thing
     @Qualifier("jpa")
@@ -81,7 +82,6 @@ public class UserProfileResource {
     @POST
     @APIResponse(responseCode = "201", description = "User Profile Created") 
     @APIResponse(responseCode = "400", description = "Bad Request")
-    // submitted https://github.com/quarkusio/quarkus/issues/2262s
     public Response createProfile(@Valid @NotNull UserProfile profile) {
         return userProfileService.createProfile(profile) ? Response.status(Response.Status.CREATED).build()
                 : Response.status(Response.Status.BAD_REQUEST).build();
@@ -92,13 +92,19 @@ public class UserProfileResource {
     @APIResponse(responseCode = "200", description = "User Profile Retrieved",
     content = @Content( 
                         mediaType = "application/json",
-                        schema = @Schema(implementation = UserProfile.class))) // this usually isn't necessary with the smallrye-openapi feature but once you add APIResonse, 
-                                                                            // it has to be specified
+                        schema = @Schema(implementation = UserProfile.class))) // this usually isn't necessary with the smallrye-openapi
+                                                                               // feature but once you add APIResponse, it has to be specified
     @APIResponse(responseCode = "404", description = "User Profile Not Found")      
     public Response getProfile(@PathParam("id") String id) {
-        UserProfile profile = userProfileService.getProfile(id);
-        Response.Status status = (profile != null) ? Response.Status.OK : Response.Status.NOT_FOUND;
-        return Response.status(status).entity(profile).build();
+        if (id.equals(MAGIC_NUMBER)) {
+            UserProfile profile = UserProfile.getFakeUser(id);
+            Response.Status status = Response.Status.OK;
+            return Response.status(status).entity(profile).build();
+        } else {
+            UserProfile profile = userProfileService.getProfile(id);
+            Response.Status status = (profile != null) ? Response.Status.OK : Response.Status.NOT_FOUND;
+            return Response.status(status).entity(profile).build();
+        }
     }
 
     @PUT
