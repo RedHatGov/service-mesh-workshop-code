@@ -1,53 +1,73 @@
-apiVersion: build.openshift.io/v1
-kind: BuildConfig
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: userprofile-build
+message: A User Profile service has been built.
 metadata:
-  labels:
-    app: userprofile
-    deploymentconfig: userprofile
-    userprofile-component: userprofile-microservice 
-    version: '1.0'
-  name: userprofile
-spec:
-  nodeSelector: null
-  output:
-    to:
-      kind: ImageStreamTag
-      name: userprofile:latest
-  postCommit: {}
-  resources: {}
-  runPolicy: Serial
-  source:
-    contextDir: /code/userprofile
-    git:
-      ref: moving-to-four
-      uri: https://github.com/dudash/openshift-microservices.git
-    type: Git
-  strategy:
-    sourceStrategy:
-      from:
+  annotations:
+    description: An user profile build for the microservices demo
+    openshift.io/display-name: userprofile-build
+    template.openshift.io/long-description: This template defines the userprofile microservice build.
+  name: userprofile-build
+objects:
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}-${APP_VERSION_TAG}
+  spec:
+    output:
+      to:
         kind: ImageStreamTag
-        name: java:11
-        namespace: openshift
-    type: Source
-  triggers:
-  - github:
-      secret: hQl_Gp1l1syRc2mHuKh3
-    type: GitHub
-  - generic:
-      secret: hPM0ezNga5Khwvxbn3C2
-    type: Generic
-  - type: ConfigChange
-  - imageChange:
-    type: ImageChange
----
-apiVersion: image.openshift.io/v1
-kind: ImageStream
-metadata:
-  labels:
-    app: userprofile
-    deploymentconfig: userprofile
-    userprofile-component: userprofile-microservice
-  name: userprofile
-spec:
-  lookupPolicy:
-    local: false
+        name: ${APPLICATION_NAME}:${APP_VERSION_TAG}
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: /code/userprofile
+      git:
+        ref: ${APPLICATION_CODE_BRANCH}
+        uri: ${APPLICATION_CODE_URI}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: java:11
+          namespace: openshift
+      type: Source
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    lookupPolicy:
+      local: false
+
+# -----------------------------------------------------------------------------
+# Parameters Section
+# -----------------------------------------------------------------------------    
+parameters:
+- description: The name for the application.
+  displayName: Application Name
+  name: APPLICATION_NAME
+  required: true
+  value: userprofile
+- description: The app code branch
+  displayName: Application code branch
+  name: APPLICATION_CODE_BRANCH
+  required: true
+  value: moving-to-four
+- description: The URI to pull the application code from
+  displayName: Application code URI
+  name: APPLICATION_CODE_URI
+  required: true
+  value: https://github.com/dudash/openshift-microservices.git
+- description: The version to tag the app with
+  displayName: app version tag
+  name: APP_VERSION_TAG
+  required: true
+  value: '1.0'
