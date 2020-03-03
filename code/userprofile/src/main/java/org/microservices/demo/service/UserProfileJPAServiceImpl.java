@@ -81,6 +81,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
     //TODO: when moving image to different table, this can be removed
     public UserProfile getProfile(@NotBlank String id) {
         UserProfileJPA dbProfile = findExisting(id);
+        Thread.sleep(10000);
         return copyDbProfile(dbProfile);
     }
 
