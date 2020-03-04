@@ -11,8 +11,6 @@ spec:
         host: userprofile
         subset: v1
       weight: 50
-  http:
-  - route:
     - destination:
         host: userprofile
         subset: v3
