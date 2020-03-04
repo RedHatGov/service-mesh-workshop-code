@@ -1,4 +1,8 @@
-# Distributed cache setup
+# Distributed Cache Installation
+
+TODO rewrite this for OCP 4.x
+
+---
 
 # THIS IS CURRENTLY NOT WORKING... NEED TO DEBUG
 

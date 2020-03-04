@@ -22,7 +22,7 @@ import org.microservices.demo.json.UserProfilePhoto;
  * User Profile Service
  * Segregating service from rest resource.
  */
-//TODO: JSR validations and exception handling 
+// TODO: JSR validations and exception handling 
 // TODO: validations on parameters
 public interface UserProfileService {
     /**
