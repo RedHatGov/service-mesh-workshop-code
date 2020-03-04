@@ -96,6 +96,11 @@ public class UserProfileResource {
                                                                                // feature but once you add APIResponse, it has to be specified
     @APIResponse(responseCode = "404", description = "User Profile Not Found")      
     public Response getProfile(@PathParam("id") String id) {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+
+        }
         if (id.equals(MAGIC_NUMBER)) {
             UserProfile profile = UserProfile.getFakeUser(id);
             Response.Status status = Response.Status.OK;
