@@ -6,12 +6,11 @@ spec:
   hosts:
   - userprofile
   http:
-  - route:
-    - destination:
-        host: userprofile
-        subset: v1
-      weight: 90
+  - fault:
+      delay:
+        fixedDelay: 5s
+        percent: 50
+    route:
     - destination:
         host: userprofile
         subset: v3
-      weight: 10
