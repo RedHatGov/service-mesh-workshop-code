@@ -32,6 +32,7 @@ items:
         labels:
           deploymentconfig: userprofile
           version: "1.0"
+          app: userprofile
       spec:
         containers:
         - env:
@@ -117,11 +118,12 @@ items:
       template.alpha.openshift.io/wait-for-ready: "true"
     labels:
       app: userprofile
+      name: userprofile-postgresql
     name: userprofile-postgresql
   spec:
     replicas: 1
     selector:
-      app: userprofile-postgresql
+      name: userprofile-postgresql
     strategy:
       type: Recreate
     template:
@@ -129,7 +131,7 @@ items:
         annotations:
           sidecar.istio.io/inject: "true"
         labels:
-          app: userprofile-postgresql
+          app: userprofile
       spec:
         containers:
         - capabilities: {}
