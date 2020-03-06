@@ -93,7 +93,7 @@ items:
       protocol: TCP
       targetPort: 5432
     selector:
-      app: userprofile-postgresql
+      name: userprofile-postgresql
     sessionAffinity: None
     type: ClusterIP
   status:
@@ -132,6 +132,8 @@ items:
           sidecar.istio.io/inject: "true"
         labels:
           app: userprofile
+          name: userprofile-postgresql
+        name: userprofile-postgresql
       spec:
         containers:
         - capabilities: {}
