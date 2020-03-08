@@ -152,9 +152,9 @@ objects:
           - --connectTimeout
           - 10s
           - --serviceCluster
-          - istio-${INGRESS_GATEWAY_NAME}
+          - ingress-$(POD_NAMESPACE)
           - --zipkinAddress
-          - zipkin.istio-system.svc.cluster.local:9411
+          - zipkin.istio-system:9411
           - --proxyAdminPort
           - "15000"
           - --statusPort
@@ -162,7 +162,7 @@ objects:
           - --controlPlaneAuthPolicy
           - NONE
           - --discoveryAddress
-          - istio-pilot.istio-system.svc.cluster.local:15010
+          - istio-pilot.istio-system:15010
           env:
           - name: POD_NAME
             valueFrom:
