@@ -1,6 +1,6 @@
 # Usage example:
-# oc new-app -f ./ingress-gateway.yaml \
-#   -p INGRESS_GATEWAY_NAME=microservices-demo-ingressgateway
+# oc process -f ./ingress-gateway.yaml \
+#   -p INGRESS_GATEWAY_NAME=microservices-demo-ingressgateway | oc create -f -
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
