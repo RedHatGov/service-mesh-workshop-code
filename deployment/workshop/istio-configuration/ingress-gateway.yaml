@@ -38,7 +38,7 @@ objects:
 - apiVersion: networking.istio.io/v1alpha3
   kind: VirtualService
   metadata:
-    name: app-ui-gateway
+    name: ${INGRESS_GATEWAY_NAME}
   spec:
     hosts:
     - '*'
@@ -55,4 +55,4 @@ parameters:
   displayName: Ingress Gateway Name
   name: INGRESS_GATEWAY_NAME
   required: true
-  value: microservices-demo-ingressgateway
+  value: demogateway

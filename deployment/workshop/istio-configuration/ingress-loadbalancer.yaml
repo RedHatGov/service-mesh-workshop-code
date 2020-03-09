@@ -11,6 +11,25 @@ metadata:
     description: An Istio ingress load balancer
   name: ingress-loadbalancer
 objects:
+- apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: istio-${INGRESS_GATEWAY_NAME}
+  spec:
+    podSelector:
+      matchLabels:
+        istio: ${INGRESS_GATEWAY_NAME}
+    ingress:
+    - {}
+    policyTypes:
+    - Ingress
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: ${INGRESS_GATEWAY_NAME}-service-account
+    labels:
+      app: istio-${INGRESS_GATEWAY_NAME}
+      istio: ${INGRESS_GATEWAY_NAME}
 - apiVersion: v1
   kind: Service
   metadata:
@@ -245,15 +264,15 @@ objects:
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
-        serviceAccount: istio-ingressgateway-service-account
-        serviceAccountName: istio-ingressgateway-service-account
+        serviceAccount: ${INGRESS_GATEWAY_NAME}-service-account
+        serviceAccountName: ${INGRESS_GATEWAY_NAME}-service-account
         terminationGracePeriodSeconds: 30
         volumes:
         - name: istio-certs
           secret:
             defaultMode: 420
             optional: true
-            secretName: istio.istio-ingressgateway-service-account
+            secretName: istio.${INGRESS_GATEWAY_NAME}-service-account
         - name: ingressgateway-certs
           secret:
             defaultMode: 420
@@ -298,4 +317,4 @@ parameters:
   displayName: Ingress Gateway Name
   name: INGRESS_GATEWAY_NAME
   required: true
-  value: microservices-demo-ingressgateway
+  value: demogateway
