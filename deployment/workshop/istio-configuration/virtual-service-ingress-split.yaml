@@ -1,0 +1,28 @@
+# This would allow us to see the context scraper in the Web UI too
+# 
+# Note: you need to replace the gateway name with your actual gateway
+# sed "s|microservices-demo|$PROJECT_NAME|" ./virtual-service-ingress-split.yaml | oc apply -f -
+- apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: app-ui-gateway
+  spec:
+  hosts:
+      - '*'
+    gateways:
+      - microservices-demo-ingressgateway
+    http:
+      - match:
+          - uri:
+              prefix: /scrape
+        route:
+          - destination:
+              host: context-scraper
+      - match:
+          - uri:
+              prefix: /
+        route:
+          - destination:
+              host: app-ui
+              port:
+                number: 8080
