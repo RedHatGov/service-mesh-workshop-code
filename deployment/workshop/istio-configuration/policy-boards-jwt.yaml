@@ -13,12 +13,10 @@ spec:
       mode: STRICT
   origins:
   - jwt:
-      issuer: "https://securetoken.google.com"
+      issuer: "https://SSO_SERVICE:8080/auth/realms/servicemesh"
       audiences:
       - "boards"
-      jwksUri: "https://www.googleapis.com/oauth2/v1/certs"
-      jwtHeaders:
-      - "x-goog-iap-jwt-assertion"
+      jwksUri: "https://SSO_SERVICE:8080/auth/realms/servicemesh/protocol/openid-connect/certs"
       triggerRules:
       - excludedPaths:
         - exact: /health_check

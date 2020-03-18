@@ -1,20 +1,22 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
- name: boards-shared-lockdown
- namespace: microservices-demo
+  name: boards-shared-lockdown
+  namespace: microservices-demo
 spec:
- selector:
-   matchLabels:
-     app: boards
+  selector:
+    matchLabels:
+      app: boards
  rules:
  - from:
    - source:
-       principals: ["*"]
+      principals: ["*"]
    to:
    - operation:
-       methods: ["POST"]
-       paths: ["/shareditems/*"]
-    when:
-    - key: request.auth.claims[iss]
-        values: ["https://accounts.google.com"]
+     methods: ["POST"]
+     paths: ["/shareditems/*"]
+     when:
+     - key: request.auth.claims[role]
+       values: ["member"]
+     - key: request.auth.claims[iss]
+       values: ["keycloak"]
