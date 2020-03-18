@@ -1,0 +1,25 @@
+# Rule for boards service servers to only accept mTLS + JWT traffic
+#
+# You need to replace the namespace with your own here
+# sed "s|microservices-demo|$PROJECT_NAME|" ./policy-boards-jwt.yaml | oc apply -f -
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: boards-jwt
+  namespace: microservices-demo
+spec:
+  peers:
+  - mtls:
+      mode: STRICT
+  origins:
+  - jwt:
+      issuer: "https://securetoken.google.com"
+      audiences:
+      - "boards"
+      jwksUri: "https://www.googleapis.com/oauth2/v1/certs"
+      jwtHeaders:
+      - "x-goog-iap-jwt-assertion"
+      triggerRules:
+      - excludedPaths:
+        - exact: /health_check
+  principalBinding: USE_ORIGIN
