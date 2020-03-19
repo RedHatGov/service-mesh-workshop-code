@@ -1,0 +1,24 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakUser
+metadata:
+  name: theterminator
+  labels:
+    app.realm: microservices-demo
+  namespace: sso-shared
+spec:
+  user:
+    username: theterminator
+    firstName: The
+    lastName: Terminator
+    email: t2@redhatgov.io
+    enabled: true
+    emailVerified: false
+    realmRoles:
+      - "offline_access"
+      - "member"
+    clientRoles:
+      - client-app:
+        - "cool-kids"
+  realmSelector:
+    matchLabels:
+      app.realm: microservices-demo

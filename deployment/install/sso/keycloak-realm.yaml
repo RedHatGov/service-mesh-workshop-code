@@ -1,0 +1,17 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakRealm
+metadata:
+  name: microservices-demo-keycloakrealm
+  namespace: sso-shared
+  labels:
+    app: sso
+    app.realm: microservices-demo
+spec:
+  realm:
+    id: microservices-demo
+    realm: microservices-demo
+    enabled: true
+    displayName: Microservices Demo
+  instanceSelector:
+    matchLabels:
+      app: sso

@@ -1,3 +1,7 @@
+# Rule for Envoy sidecar servers to lockdown POSTs to shareditems
+#
+# You need to replace the namespace with your own here
+# sed "s|microservices-demo|$PROJECT_NAME|" ./authorization-boards-shared-lockdown.yaml | oc apply -f -
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -7,16 +11,23 @@ spec:
   selector:
     matchLabels:
       app: boards
- rules:
- - from:
-   - source:
+  rules:
+  - from:
+    - source:
       principals: ["*"]
-   to:
-   - operation:
-     methods: ["POST"]
-     paths: ["/shareditems/*"]
-     when:
-     - key: request.auth.claims[role]
-       values: ["member"]
-     - key: request.auth.claims[iss]
-       values: ["keycloak"]
+    to:
+    - operation:
+      methods: ["POST"]
+      paths: ["/shareditems/*"]
+      when:
+      - key: request.auth.claims[realm_access.roles]
+        values: ["cool-kids"]
+  - from:
+    - source:
+      principals: ["*"]
+    to:
+    - operation:
+      methods: ["GET"]
+      when:
+      - key: request.auth.claims[scope]
+      values: ["openid"]
