@@ -6,6 +6,12 @@ TBD
 ## Demo Steps
 *TODO - write-up this demo after we integrate the SSO component*
 
+We can sneak peak at our JWT with the following command:
+
+```
+curl -k -L -X POST 'https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo/protocol/openid-connect/token' -H 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'client_id=client-app' --data-urlencode 'grant_type=password' --data-urlencode 'scope=openid' --data-urlencode 'username=theterminator' --data-urlencode 'password=illbeback'
+```
+
 ## Summary
 TBD
 

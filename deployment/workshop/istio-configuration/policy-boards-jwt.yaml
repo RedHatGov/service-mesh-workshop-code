@@ -4,7 +4,7 @@
 # sed "s|microservices-demo|$PROJECT_NAME|" ./policy-boards-jwt.yaml
 #
 # You also need to replace the domain with your SSO path and domain
-# sed "s|replace-me-sso|keycloak-sso-shared.apps.clustername.domain.com|" ./policy-boards-jwt.yaml
+# sed "s|replace-me-sso|keycloak-sso-shared.apps.cluster.domain.com|" ./policy-boards-jwt.yaml
 #
 apiVersion: authentication.istio.io/v1alpha1
 kind: Policy
@@ -19,10 +19,10 @@ spec:
       mode: STRICT
   origins:
   - jwt:
-      issuer: "https://keycloak-sso-shared.apps.leonardo.nub3s.io/auth/realms/microservices-demo"
+      issuer: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo"
       # audiences: ["boards"]
       # jwtHeaders: ["x-goog-iap-jwt-assertion"]
-      jwksUri: "https://keycloak-sso-shared.apps.leonardo.nub3s.io/auth/realms/microservices-demo/protocol/openid-connect/certs"
+      jwksUri: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo/protocol/openid-connect/certs"
       triggerRules:
       - excludedPaths:
         - exact: /health_check

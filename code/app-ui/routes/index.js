@@ -79,13 +79,13 @@ router.post('/newboard', function(req, res) {
   .then(function (result) {
       //req.debug(result)
       req.app.locals.errorAlertText = null
-      res.redirect('/')
+      res.redirect('back')
   })
   .catch(function (err) {
       req.debug('ERROR POSTING DATA TO CREATE NEW BOARD')
       req.debug(err)
       req.app.locals.errorAlertText = err.toString()
-      res.redirect('/')
+      res.redirect('back')
   })
 })
 

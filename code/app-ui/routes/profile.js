@@ -6,8 +6,11 @@ var request = require('request-promise')
 /* Show users profile page or login/create account */
 router.get('/', function(req, res, next) {
   
-  // TODO: if not logged in redirect to login page
-  
+  // TODO: if not logged in redirect to login page or jump page to allow login / registration
+  // req.auth.checkSso()
+  // this might change some assumptions for the service mesh workshop, need to update that 
+  // when we implement this - see redhatgov.io
+
   const user = res.locals.user
   const userId = res.locals.userId  // this will be set if we are logged in, or fake if we are DEBUGGING
   getAndRender(req, res, next, userId)
@@ -53,6 +56,11 @@ function getAndRender(req, res, next, userId) {
   .catch(function (err) {
       req.debug('ERROR GETTING DATA FROM PROFILE SERVICE')
       req.debug(err)
+
+      // TODO: show a error popup alert vs rendering an unknown user
+      // unknown user should only popup if you aren't found from the service
+      // not being able to call the service should have a different error
+
       res.render('profile', { title: 'Unknown User', errorWithProfile: true })
   })
 }

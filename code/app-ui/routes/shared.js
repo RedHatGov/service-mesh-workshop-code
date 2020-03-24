@@ -70,12 +70,12 @@ router.post('/paste', function(req, res) {
     request(request_options)
     .then(function (result) {
         // req.debug(result)
-        res.redirect("/shared")
+        res.redirect('back')
     })
     .catch(function (err) {
         req.debug('ERROR POSTING DATA TO BOARDS SERVICE')
         req.debug(err)
-        res.redirect("/shared")
+        res.redirect('back')
     })
 })
 

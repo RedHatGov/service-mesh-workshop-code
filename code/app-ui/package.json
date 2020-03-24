@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "build": "echo \"Info: no build steps here - in the future we might minify\"",
-    "dev": "DEBUG=app PORT=3000 BOARDS_SVC_HOST=localhost BOARDS_SVC_PORT=3001 PROFILE_SVC_HOST=localhost PROFILE_SVC_PORT=8080 nodemon ./bin/www",
+    "dev": "DEBUG=app,sso PORT=3000 BOARDS_SVC_HOST=localhost BOARDS_SVC_PORT=3001 PROFILE_SVC_HOST=localhost PROFILE_SVC_PORT=8080 nodemon ./bin/www",
     "audit": "snyk test"
   },
   "author": "dudash",
@@ -17,12 +17,12 @@
   "dependencies": {
     "cookie-parser": "^1.4.4",
     "cors": "~2.8.5",
-    "debug": "^2.6.9",
+    "debug": "^4.1.1",
     "express": "~4.16.4",
     "express-session": "^1.17.0",
     "http-errors": "~1.6.3",
     "kafka-node": "^4.1.3",
-    "keycloak-connect": "^6.0.1",
+    "keycloak-connect": "^8.0.2",
     "moment": "~2.24.0",
     "pug": "^2.0.4",
     "request": "^2.88.2",

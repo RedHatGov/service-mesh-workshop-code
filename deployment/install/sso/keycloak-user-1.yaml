@@ -15,7 +15,9 @@ spec:
     emailVerified: false
     realmRoles:
       - "offline_access"
-      - "member"
+    clientRoles:
+      client-app:
+        - "app-member"
   realmSelector:
     matchLabels:
       app.realm: microservices-demo

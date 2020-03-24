@@ -41,9 +41,21 @@ html(lang='en')
             a#dropdown-notifications.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Notifications
             .dropdown-menu(aria-labelledby='dropdown-notifications')
               a.dropdown-item(href='#').disabled No new notifications
-        form.form-inline.my-2.my-lg-0
-          input.form-control.mr-sm-2(type='text', placeholder='Search', aria-label='Search')
-          button.btn.btn-outline-light.my-2.my-sm-0(type='submit') Search
+          form.form-inline.my-2.my-lg-0(type='form' action='/search' method='post')
+            input.form-control.mr-2(name='term' type='text', placeholder='Search', aria-label='Search')
+            button.btn.btn-outline-light.my-2.my-sm-0(type='submit') Search
+        //- login button and form
+        ul.navbar-nav.navbar-right
+          li
+            p.navbar-text Already have an account?
+          li.nav-item.dropdown
+            a#dropdown-login.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Login
+            ul#login-dp.dropdown-menu.dropdown-menu-right(aria-labelledby='dropdown-login')
+              li
+                .row
+                  .col-md-12
+                    | You are anonymous right now
+                    a.btn.btn-primary.btn-block.my-3(href='/login', role='button') Login
     br
     block secondbar
 
