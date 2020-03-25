@@ -55,13 +55,13 @@ function getAndRender(req, res, next, userId) {
   })
   .catch(function (err) {
       req.debug('ERROR GETTING DATA FROM PROFILE SERVICE')
-      req.debug(err)
+      req.debug(JSON.stringify(err))
 
-      // TODO: show a error popup alert vs rendering an unknown user
-      // unknown user should only popup if you aren't found from the service
-      // not being able to call the service should have a different error
-
-      res.render('profile', { title: 'Unknown User', errorWithProfile: true })
+      if (JSON.stringify(err).includes('ECONNREFUSED')) {
+        res.render('profile', { title: 'Unknown User', errorWithProfile: true, errorAlert: true, errorAlertText: err.message })
+      } else {
+        res.render('profile', { title: 'Unknown User', errorWithProfile: true })
+      }
   })
 }
 

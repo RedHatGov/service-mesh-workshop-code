@@ -1,5 +1,6 @@
 #
 # You will need to replace the rootUrl below with your proper path
+# DONT USE THIS FOR PRODUCTION - IT'S VERY OPEN
 #
 apiVersion: keycloak.org/v1alpha1
 kind: KeycloakRealm
@@ -32,9 +33,12 @@ spec:
         clientId: client-app
         publicClient: true
         redirectUris:
-        - "/*"
-        rootUrl: "http://istio-ingressgateway-istio-system.apps.cluster.domain.com/"
+        - "http://istio-ingressgateway-istio-system.apps.cluster.domain.com/*"
+        adminUrl: "http://istio-ingressgateway-istio-system.apps.cluster.domain.com/"
         directAccessGrantsEnabled: true
+        webOrigins:
+          - "*"
+          - "+"
   instanceSelector:
     matchLabels:
       app: sso

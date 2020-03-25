@@ -153,6 +153,12 @@ body {
   outline: none;
 }
 
+.info-text
+{
+    text-align: left;
+    margin-left: 50px;
+}
+
 /* 
 Top bar login button and form theme 
 from here: https://bootsnipp.com/snippets/DV3m4

@@ -6,9 +6,10 @@ var request = require('request-promise')
 /* POST (search form submission) */
 router.post('/', function(req, res) {
     var searchTerm = req.body.term
-    if (searchTerm.length < 1) { 
+    req.debug('searching for ' + searchTerm)
+    if (searchTerm===null || searchTerm.length < 1) { 
         req.debug('ignoring zero length searchTerm')
-        res.redirect('back')
+        res.redirect('/')
     }
     res.render('search', { title: 'Search Results', searchTerm: searchTerm })
 
