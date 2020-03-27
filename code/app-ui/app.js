@@ -79,24 +79,37 @@ app.use(function(req,res,next) {
   req.PROFILE_SVC_HOST = PROFILE_SVC_HOST
   req.PROFILE_SVC_PORT = PROFILE_SVC_PORT
   res.locals.ua = req.get('user-agent')  // put user agent info into the response data for client side logic
-
-  // TODO: check to see if auth token is expired 
-  res.locals.authenticated = false
-  // TODO: check login status always (in case session was revoked) - this isn't working HOW>???!?!
-
   next()
 })
 
-// we need to do real auth - for now dump some fake stuff in here
-if (FAKE_USER) {
-  app.use(function (req, res, next) {
-    debug('injecting a FAKE user named: anonymous')
-    res.locals.username = 'Mr. Fake'
-    res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'
-    res.locals.authenticated = true
-    next()
-  })
-}
+// check SSO status before every call
+app.use(auth.checkSso(), function (req, res, next) {
+  var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')'
+  debugSSO(authenticated)
+  if (req.session['keycloak-token']) {
+    res.locals.username = req.kauth.grant.access_token.content.name
+    res.locals.useremail = req.kauth.grant.access_token.content.email
+    res.locals.userId = req.kauth.grant.access_token.content.preferred_username
+    res.locals.authToken = req.kauth.grant.access_token.token
+    res.locals.authenticated=true
+  } else {
+    // we need to do real auth - for now dump some fake stuff in here
+    if (FAKE_USER) {
+      debugSSO('injecting a FAKE user named: anonymous with magic profile service key')
+      res.locals.username = 'Mr. Fake'
+      res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'
+      res.locals.authenticated = true
+      res.locals.authToken = 'XXXXXXXXX'
+    } else {
+      res.locals.username = ''
+      res.locals.useremail = ''
+      res.locals.userId = ''
+      res.locals.authToken = ''
+      res.locals.authenticated=false
+    }
+  }
+  next()
+})
 
 app.get('/login', auth.protect(), function (req, res) {
   debugSSO('login attempted')
@@ -108,10 +121,6 @@ app.get('/login', auth.protect(), function (req, res) {
   res.locals.userId = req.kauth.grant.access_token.content.preferred_username
   res.locals.authToken = req.kauth.grant.access_token.token
   res.locals.authenticated=true
-  // res.render('info-page', {
-  //   infoDetails: JSON.stringify(JSON.parse(req.session['keycloak-token']), null, 4),
-  //   infoMessage: 'Login Success'
-  // })
   res.redirect('back')
 })
 
@@ -120,9 +129,9 @@ var profileRouter = require('./routes/profile')
 var searchRouter = require('./routes/search')
 var sharedRouter = require('./routes/shared')
 var boardRouter = require('./routes/board')
-app.use('/', indexRouter)
+app.use('/', indexRouter)  // check sso to pull in the user details and bearer token
 app.use('/profile', profileRouter)
-app.use('/search', auth.checkSso(), searchRouter)
+app.use('/search', searchRouter)
 app.use('/shared', sharedRouter)
 app.use('/:user/board', boardRouter)
 //app.use('/:user/dashboard', auth.protect('realm:user'), dashboardRouter)

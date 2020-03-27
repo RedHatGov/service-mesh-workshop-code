@@ -12,7 +12,7 @@ We can install via Operator into OpenShift. (You can also choose to do this in w
 * Wait until everything finishes and the operator is running
 
 ### Customize the Resources
-Check out the .yaml files here and customize if necessary (e.g. redirect urls and security settings). Note that we have super relaxed security settings for the demo and they are not recommended to be used like this in production.
+Check out the .yaml files here and customize for your cluster and domain (also you can customize other things like redirect urls, security settings, CORS, etc). Note that we have super relaxed security settings for the demo and they are not recommended to be used like this in production.
 
 ### Create an Instance of SSO / Configuration
 You can do this CLI or webconsole. If using web console just use the + button at the top then drag'n'drop the file from the steps below.
