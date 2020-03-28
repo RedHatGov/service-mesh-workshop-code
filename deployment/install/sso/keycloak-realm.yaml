@@ -1,5 +1,5 @@
 #
-# You will need to replace the rootUrl below with your proper path
+# You will need to replace the URLs below with your proper path
 # DONT USE THIS FOR PRODUCTION - IT'S VERY OPEN
 #
 apiVersion: keycloak.org/v1alpha1

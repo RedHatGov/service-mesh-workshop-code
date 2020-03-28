@@ -21,7 +21,6 @@ spec:
   - jwt:
       issuer: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo"
       # audiences: ["boards"]
-      # jwtHeaders: ["x-goog-iap-jwt-assertion"]
       jwksUri: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo/protocol/openid-connect/certs"
       triggerRules:
       - excludedPaths:

@@ -86,7 +86,7 @@ app.use(function(req,res,next) {
 app.use(auth.checkSso(), function (req, res, next) {
   var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')'
   debugSSO(authenticated)
-  if (req.session['keycloak-token']) {
+  if (req.session['keycloak-token'] ? true : false) {
     res.locals.username = req.kauth.grant.access_token.content.name
     res.locals.useremail = req.kauth.grant.access_token.content.email
     res.locals.userId = req.kauth.grant.access_token.content.preferred_username
@@ -94,7 +94,7 @@ app.use(auth.checkSso(), function (req, res, next) {
     res.locals.authenticated=true
   } else {
     // we need to do real auth - for now dump some fake stuff in here
-    if (FAKE_USER) {
+    if (FAKE_USER===true) {
       debugSSO('injecting a FAKE user named: anonymous with magic profile service key')
       res.locals.username = 'Mr. Fake'
       res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'

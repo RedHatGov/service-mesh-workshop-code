@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
       uri: boardsURI,
       headers: {
           'user-agent': req.header('user-agent'),
+          'Authorization': 'Bearer ' + res.locals.authToken,
           'x-request-id': req.header('x-request-id'),
           'x-b3-traceid': req.header('x-b3-traceid'),
           'x-b3-spanid': req.header('x-b3-spanid'),
@@ -64,6 +65,7 @@ router.post('/newboard', function(req, res) {
       },
       headers: {
           'user-agent': req.header('user-agent'),
+          'Authorization': 'Bearer ' + res.locals.authToken,
           'x-request-id': req.header('x-request-id'),
           'x-b3-traceid': req.header('x-b3-traceid'),
           'x-b3-spanid': req.header('x-b3-spanid'),
