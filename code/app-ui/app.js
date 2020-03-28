@@ -82,7 +82,7 @@ app.use(function(req,res,next) {
   next()
 })
 
-// check SSO status before every call
+// check SSO status before every call - TODO what happens when SSO is unreachable?
 app.use(auth.checkSso(), function (req, res, next) {
   var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')'
   debugSSO(authenticated)

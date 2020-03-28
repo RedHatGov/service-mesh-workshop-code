@@ -30,7 +30,7 @@ router.get('/:boardId', function(req, res, next) {
     .then(function (getresult) {
         // req.debug(getresult)  // uncomment to show board JSON
         var itemsData = []
-        var itemListPromises = getresult.items.map(function(itemId) { return getItemRequest(req, user, itemId, itemsData)});
+        var itemListPromises = getresult.items.map(function(itemId) { return getItemRequest(req, res, user, itemId, itemsData)});
         Promise.all(itemListPromises).then(function(itemsData) {
             res.render('board', { title: 'Cut and Paster', board: getresult, items: itemsData, errorWithItems: false })
         })
@@ -47,7 +47,7 @@ router.get('/:boardId', function(req, res, next) {
     })
 })
 
-function getItemRequest(req, user, itemId, itemsData) {
+function getItemRequest(req, res, user, itemId, itemsData) {
     const boardsGetItemURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/items/' + itemId
     req.debug('GET from boards SVC at: ' + boardsGetItemURI)
     var request_getitem_options = {
