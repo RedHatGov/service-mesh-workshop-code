@@ -3,7 +3,7 @@ var router = express.Router()
 var moment = require('moment')
 var request = require('request-promise')
 
-/* GET dashboard page. */
+/* GET dashboard page. TODO: render different views based on authenticated or not */
 router.get('/', function(req, res, next) {
   var userboards = ''
   var user = res.locals.user
