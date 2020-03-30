@@ -1,5 +1,6 @@
 extends layout-topbar
-
+block append stylesheets
+  link(href='/stylesheets/dashboard.css', rel='stylesheet')
 block content
   h1= message
   h2= error.status

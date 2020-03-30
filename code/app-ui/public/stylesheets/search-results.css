@@ -1,0 +1,9 @@
+body
+{
+    font-family: 'Open Sans', sans-serif;
+}
+
+.jumbotron {
+    background-image: url("/images/search-results-banner.png");
+    background-size: cover;
+}

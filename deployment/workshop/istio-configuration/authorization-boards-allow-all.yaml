@@ -1,0 +1,15 @@
+# Rule for Envoy sidecar servers to open up all authorization to the boards service
+#
+# You need to replace the namespace with your own here
+# sed "s|microservices-demo|$PROJECT_NAME|" ./authorization-allow-all.yaml | oc apply -f -
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: boards-allow-all
+  namespace: microservices-demo
+spec:
+  selector:
+    matchLabels:
+      app: boards
+  rules:
+  - {}

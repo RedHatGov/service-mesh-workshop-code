@@ -13,12 +13,19 @@ block content
     section.jumbotron.text-center
       .container
         if boards != null && boards.length != 0
-          h1.jumbotron-heading Your Boards
-            p.lead.text-muted
-              | Your boards are below, click on one to see the items.
-              br
-              | You can also create more boards using the button below.
-        else
+          if locals.authenticated == false
+            h1.jumbotron-heading Public Boards
+              p.lead.text-muted
+                | Public and anonymous boards are below, click on one to see the items.
+                br
+                | You can also create more boards using the button below.
+          else  //if not authenticated
+            h1.jumbotron-heading Your Boards
+              p.lead.text-muted
+                | Your boards are below, click on one to see the items.
+                br
+                | You can also create more boards using the button below.
+        else // if no existing boards
           h1.jumbotron-heading Look at all the empty
             p.lead.text-muted
               | You can create a new board by clicking the button below. Once you've created a board, you can start to paste items into it.

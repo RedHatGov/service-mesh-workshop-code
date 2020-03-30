@@ -1,0 +1,19 @@
+extends layout-topbar
+block append stylesheets
+  link(href='/stylesheets/dashboard.css', rel='stylesheet')
+block content
+  if infoAlert == true
+    .alert.alert-info.alert-dismissible.fade.show(role='alert')
+      strong Hey, read this info
+      br 
+      | #{infoAlertText}
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') ×
+  main(role='main')
+    section.jumbotron.text-center
+      .container
+        h3.jumbotron-heading INFO:
+          p.lead.text-muted
+          | #{infoMessage}
+          br
+      p.info-text #{infoDetails}
