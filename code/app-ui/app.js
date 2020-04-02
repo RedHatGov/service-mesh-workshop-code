@@ -93,10 +93,10 @@ app.use(auth.checkSso(), function (req, res, next) {
     res.locals.authToken = req.kauth.grant.access_token.token
     res.locals.authenticated=true
   } else {
-    // we need to do real auth - for now dump some fake stuff in here
+    // we should do real auth - but we can also dump some fake stuff in here
     if (FAKE_USER===true) {
       debugSSO('injecting a FAKE user named: anonymous with magic profile service key')
-      res.locals.username = 'Mr. Fake'
+      res.locals.username = 'Sarah'
       res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'
       res.locals.authenticated = true
       res.locals.authToken = 'XXXXXXXXX'
