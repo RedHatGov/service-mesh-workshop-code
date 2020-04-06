@@ -18,7 +18,7 @@ cd openshift-microservices/deployment/install/istio
 
 Start by installing the Istio [Operator][1].  The operator is used to install and manage Istio in the cluster.
 ```
-oc apply -f ./istio-operator.yaml
+oc create -f ./istio-operator.yaml
 ```
 
 Watch the operator installation:
@@ -62,23 +62,74 @@ Output:
 
 ```
 NAME                                      READY   STATUS    RESTARTS   AGE
-grafana-xxxxxxxxx-xxxxx                  2/2     Running   0          17m
-istio-citadel-xxxxxxxxx-xxxxx            1/1     Running   0          20m
-istio-egressgateway-xxxxxxxx-xxxxx       1/1     Running   0          17m
-istio-galley-xxxxxxxx-xxxxx              1/1     Running   0          19m
-istio-ingressgateway-xxxxxxxxx-xxxxx     1/1     Running   0          17m
-istio-pilot-xxxxxxxxx-xxxxx              2/2     Running   0          18m
-istio-policy-xxxxxxxxx-xxxxx             2/2     Running   0          19m
-istio-sidecar-injector-xxxxxxxxx-xxxxx   1/1     Running   0          17m
-istio-telemetry-xxxxxxxxx-xxxxx          2/2     Running   0          19m
-jaeger-xxxxxxxxx-xxxxx                   2/2     Running   0          19m
-kiali-xxxxxxxxx-xxxxx                    1/1     Running   0          16m
-prometheus-xxxxxxxxx-xxxxx               2/2     Running   0          19m
+grafana-xxxxxxxxx-xxxxx                   2/2     Running   0          17m
+istio-citadel-xxxxxxxxx-xxxxx             1/1     Running   0          20m
+istio-egressgateway-xxxxxxxx-xxxxx        1/1     Running   0          17m
+istio-galley-xxxxxxxx-xxxxx               1/1     Running   0          19m
+istio-ingressgateway-xxxxxxxxx-xxxxx      1/1     Running   0          17m
+istio-pilot-xxxxxxxxx-xxxxx               2/2     Running   0          18m
+istio-policy-xxxxxxxxx-xxxxx              2/2     Running   0          19m
+istio-sidecar-injector-xxxxxxxxx-xxxxx    1/1     Running   0          17m
+istio-telemetry-xxxxxxxxx-xxxxx           2/2     Running   0          19m
+jaeger-xxxxxxxxx-xxxxx                    2/2     Running   0          19m
+kiali-xxxxxxxxx-xxxxx                     1/1     Running   0          16m
+prometheus-xxxxxxxxx-xxxxx                2/2     Running   0          19m
 ```
 
 ## Setup Users and Projects
 
-Create projects for users (identified as users1...x).  You also need to grant each user view access to the Istio namespace `istio-system`.
+Navigate to the workshop directory:
+```
+cd ../../workshop
+```
+
+Create a group for the workshop:
+```
+oc adm groups new workshop
+```
+
+Create the following role and role bindings:
+```
+oc create -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: istio-system
+  name: istio-reader
+rules:
+- apiGroups: ["authentication.istio.io", "networking.istio.io"]
+  resources: ["policies", virtualservices", "destinationrules", "serviceentries", "gateway"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: istio-reader
+  namespace: istio-system
+subjects:
+- kind: Group
+  name: workshop
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: istio-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: istio-viewer
+  namespace: istio-system
+subjects:
+- kind: Group
+  name: workshop
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: view
+  apiGroup: rbac.authorization.k8s.io
+EOF
+```
 
 Set the number of users:
 ```
@@ -89,17 +140,19 @@ Then run the following:
 ```
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
 do 
+  oc adm groups add-users workshop user$i
   oc new-project user$i --as=user$i \
     --as-group=system:authenticated --as-group=system:authenticated:oauth
-  oc adm policy add-role-to-user view user$i -n istio-system
+  oc process -f ./istio-configuration/ingress-loadbalancer.yaml \
+  -p INGRESS_GATEWAY_NAME=demogateway-user$i | oc create -n user$i -f -
 done
 ```
 
 Next, add projects to the service mesh using a [Member Roll][2] resource.  If you do not add the projects to the mesh, the users' microservices will not be added to the service mesh.
 
-Add projects to the mesh (adjust the number of user projects if needed):
+Add projects to the mesh (adjust the number of user projects as needed):
 ```
-oc apply -f - <<EOF
+oc create -f - <<EOF
 apiVersion: maistra.io/v1
 kind: ServiceMeshMemberRoll
 metadata:
