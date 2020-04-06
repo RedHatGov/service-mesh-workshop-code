@@ -50,27 +50,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-// Choose to use this config variable vs. the keycloak.json file
-debugSSO('using JavaScript config')
-debugSSO('SSO_SVC_HOST=' + SSO_SVC_HOST)
-debugSSO('SSO_SVC_PORT=' + SSO_SVC_PORT)
-const authConfig = {
-  'realm': 'microservices-demo',
-  'auth-server-url': 'https://' + SSO_SVC_HOST + '/auth',
-  'ssl-required': 'external',
-  'resource': 'client-app',
-  'public-client': true,
-  'verify-token-audience': true,
-  'use-resource-role-mappings': true,
-  'confidential-port': 0
-}
-var auth = new keycloak({store: memoryStore}, authConfig)
-// Choose to use keycloak.json file vs. config variable
-// debugSSO('using keycloak.json config')
-// var auth = new SSO({store: memoryStore})
-app.use(auth.middleware({logout: '/logout'}))
-
-app.use(function(req,res,next) {
+app.use(function(req, res, next) {
   req.SERVICE_NAME = SERVICE_NAME
   req.debug = debug // pass along debugger for service
   req.HTTP_PROTOCOL = HTTP_PROTOCOL
@@ -82,47 +62,75 @@ app.use(function(req,res,next) {
   next()
 })
 
-// check SSO status before every call - TODO what happens when SSO is unreachable?
-app.use(auth.checkSso(), function (req, res, next) {
-  var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')'
-  debugSSO(authenticated)
-  if (req.session['keycloak-token'] ? true : false) {
-    res.locals.username = req.kauth.grant.access_token.content.name
-    res.locals.useremail = req.kauth.grant.access_token.content.email
-    res.locals.userId = req.kauth.grant.access_token.content.preferred_username
-    res.locals.authToken = req.kauth.grant.access_token.token
-    res.locals.authenticated=true
-  } else {
-    // we should do real auth - but we can also dump some fake stuff in here
-    if (FAKE_USER===true) {
-      debugSSO('injecting a FAKE user named: anonymous with magic profile service key')
-      res.locals.username = 'Sarah'
-      res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'
-      res.locals.authenticated = true
-      res.locals.authToken = 'XXXXXXXXX'
-    } else {
+// Ignore real auth and fake stuff in here
+if (FAKE_USER === true || FAKE_USER == "true") {
+  debugSSO('injecting a FAKE user named: anonymous with magic profile service key')
+  app.use(function(req, res, next) {
+    res.locals.username = 'Sarah'
+    res.locals.userId = '575ddb6a-8d2f-4baf-9e7e-4d0184d69259'
+    res.locals.authenticated = true
+    res.locals.authToken = 'XXXXXXXXX'
+    next()
+  })
+  app.get('/logout', function (req, res) {
+    debugSSO('FAKE logout attempted')
+    res.render('info-page', {
+      infoMessage: "Can't logout FAKE user",
+      infoDetails: "Please turn off FAKE_USER env variable to hookup to real SSO"
+    })
+  })
+} else {
+  // Choose to use this config variable vs. the keycloak.json file
+  debugSSO('using JavaScript config')
+  debugSSO('SSO_SVC_HOST=' + SSO_SVC_HOST)
+  debugSSO('SSO_SVC_PORT=' + SSO_SVC_PORT)
+  const authConfig = {
+    'realm': 'microservices-demo',
+    'auth-server-url': 'https://' + SSO_SVC_HOST + '/auth',
+    'ssl-required': 'external',
+    'resource': 'client-app',
+    'public-client': true,
+    'verify-token-audience': true,
+    'use-resource-role-mappings': true,
+    'confidential-port': 0
+  }
+  var auth = new keycloak({store: memoryStore}, authConfig)
+  // Choose to use keycloak.json file vs. config variable
+  // debugSSO('using keycloak.json config')
+  // var auth = new SSO({store: memoryStore})
+  app.use(auth.middleware({logout: '/logout'}))
+  // check SSO status before every call - TODO what happens when SSO is unreachable?
+  app.use(auth.checkSso(), function (req, res, next) {
+    var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')'
+    debugSSO(authenticated)
+    if (req.session['keycloak-token'] ? true : false) {
+      res.locals.username = req.kauth.grant.access_token.content.name
+      res.locals.useremail = req.kauth.grant.access_token.content.email
+      res.locals.userId = req.kauth.grant.access_token.content.preferred_username
+      res.locals.authToken = req.kauth.grant.access_token.token
+      res.locals.authenticated=true
+    } else { // not authenticated or auth invalid
       res.locals.username = ''
       res.locals.useremail = ''
       res.locals.userId = ''
       res.locals.authToken = ''
       res.locals.authenticated=false
     }
-  }
-  next()
-})
-
-app.get('/login', auth.protect(), function (req, res) {
-  debugSSO('login attempted')
-  debugSSO(req.session)
-  debugSSO(req.kauth.grant.access_token.header)
-  debugSSO(req.kauth.grant.access_token.content)
-  res.locals.username = req.kauth.grant.access_token.content.name
-  res.locals.useremail = req.kauth.grant.access_token.content.email
-  res.locals.userId = req.kauth.grant.access_token.content.preferred_username
-  res.locals.authToken = req.kauth.grant.access_token.token
-  res.locals.authenticated=true
-  res.redirect('back')
-})
+    next()
+  })
+  app.get('/login', auth.protect(), function (req, res) {
+    debugSSO('login attempted')
+    debugSSO(req.session)
+    debugSSO(req.kauth.grant.access_token.header)
+    debugSSO(req.kauth.grant.access_token.content)
+    res.locals.username = req.kauth.grant.access_token.content.name
+    res.locals.useremail = req.kauth.grant.access_token.content.email
+    res.locals.userId = req.kauth.grant.access_token.content.preferred_username
+    res.locals.authToken = req.kauth.grant.access_token.token
+    res.locals.authenticated=true
+    res.redirect('back')
+  })
+}
 
 var indexRouter = require('./routes/index')
 var profileRouter = require('./routes/profile')
