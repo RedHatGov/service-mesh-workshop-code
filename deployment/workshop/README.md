@@ -92,9 +92,8 @@ Create the following role and role bindings:
 ```
 oc create -f - <<EOF
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
-  namespace: istio-system
   name: istio-reader
 rules:
 - apiGroups: ["authentication.istio.io", "networking.istio.io"]
@@ -111,7 +110,7 @@ subjects:
   name: workshop
   apiGroup: rbac.authorization.k8s.io
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name: istio-reader
   apiGroup: rbac.authorization.k8s.io
 ---
@@ -125,7 +124,7 @@ subjects:
   name: workshop
   apiGroup: rbac.authorization.k8s.io
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name: view
   apiGroup: rbac.authorization.k8s.io
 EOF
