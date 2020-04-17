@@ -15,10 +15,10 @@ spec:
     emailVerified: false
     realmRoles:
       - "offline_access"
-      - "member"
+      - "cool-kids"
     clientRoles:
-      - client-app:
-        - "cool-kids"
+      client-app:
+        - "app-member"
   realmSelector:
     matchLabels:
       app.realm: microservices-demo

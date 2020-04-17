@@ -15,6 +15,7 @@ This microservice provides the main user interface into the application.
 - SSO_SVC_HOST, default='auth-sso73-x509'
 - SSO_SVC_PORT, default='8443'
 - SESSION_SECRET, default='pleasechangeme'
+- FAKE_USER, default=false (this turns off SSO checks and injects a fake user)
 
 ### Local Installation / Run / Test
 ```bash
@@ -62,3 +63,6 @@ Useful tool for converting HTML examples to pug files: [https://html2jade.org/][
 
 ### Other Notes
 You will need to deploy the boards microservice for this app-ui to function properly.
+
+If you have a self signed cert on your keycloak SSO you might need to tell node.js that's OK:
+```export set NODE_TLS_REJECT_UNAUTHORIZED=0```

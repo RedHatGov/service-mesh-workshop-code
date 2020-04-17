@@ -2,26 +2,33 @@ extends layout-topbar
 block append stylesheets
   link(href='/stylesheets/user-profile.css', rel='stylesheet')
 block content
- main(role='main')
-  section.jumbotron.text-center
-    h1.jumbotron-heading #{title}
-    .container
-      .user-profile
-        img.user-profile-image.thumbnail(align='left' src='/images/profile.png' alt='profile photo')
-        //- a(href='https://www.vecteezy.com/free-vector/cover-page-design') Cover Page Design Vectors by Vecteezy
-        p.lead.text-muted
-        .mx-auto(style='width: 300px;')
-          if errorWithProfile == true
-            | This profile doesn't exist or at least we couldn't find it
-          else
-            .user-profile-text
-              b Full Name: 
-              | #{profile.firstName} #{profile.lastName}
-              br
-              b Email: 
-              | #{profile.emailAddress}
-              br
-              br
-              b About me: 
-              br
-              | #{profile.aboutMe}
+  if errorAlert == true
+    .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+      strong Yikes! Something went wrong... Please try again. 
+      br 
+      | The details: #{errorAlertText}
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') ×
+  main(role='main')
+    section.jumbotron.text-center
+      h1.jumbotron-heading #{title}
+      .container
+        .user-profile
+          img.user-profile-image.thumbnail(align='left' src='/images/profile.png' alt='profile photo')
+          //- a(href='https://www.vecteezy.com/free-vector/cover-page-design') Cover Page Design Vectors by Vecteezy
+          p.lead.text-muted
+          .mx-auto(style='width: 300px;')
+            if errorWithProfile === true
+              | This profile doesn't exist or at least we couldn't find it
+            else
+              .user-profile-text
+                b Full Name: 
+                | #{profile.firstName} #{profile.lastName}
+                br
+                b Email: 
+                | #{profile.emailAddress}
+                br
+                br
+                b About me: 
+                br
+                | #{profile.aboutMe}

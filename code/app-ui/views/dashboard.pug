@@ -13,11 +13,18 @@ block content
     section.jumbotron.text-center
       .container
         if boards != null && boards.length != 0
-          h1.jumbotron-heading Your Boards
-            p.lead.text-muted
-              | Your boards are below, click on one to see the items.
-              br
-              | You can also create more boards using the button below.
+          if locals.authenticated == false
+            h1.jumbotron-heading Public Boards
+              p.lead.text-muted
+                | Public and anonymous boards are below, click on one to see the items.
+                br
+                | You can also create more boards using the button below.
+          else
+            h1.jumbotron-heading Your Boards
+              p.lead.text-muted
+                | Your boards are below, click on one to see the items.
+                br
+                | You can also create more boards using the button below.
         else
           h1.jumbotron-heading Look at all the empty
             p.lead.text-muted

@@ -22,13 +22,12 @@ html(lang='en')
   block stylesheets
     link(href='/stylesheets/topbar.css', rel='stylesheet')
   body.bg-light
-    nav.navbar.navbar-expand-lg.fixed-top.navbar-dark.bg-dark
-      //- a.navbar-brand.mr-auto.mr-lg-0(href='/') #{title}
+    nav.navbar.navbar-expand-lg.fixed-top.navbar-dark.bg-dark.flex-wrap2.flex-md-nowrap
       img.mr-3(src='/images/clipboard.png', alt='', width='50', height='50')
       button.navbar-toggler.p-0.border-0(type='button', data-toggle='offcanvas')
         span.navbar-toggler-icon
-      #navbarsExampleDefault.navbar-collapse.offcanvas-collapse
-        ul.navbar-nav.mr-auto
+      .navbar-collapse.offcanvas-collapse(id='navbarContent')
+        ul.navbar-nav.flex-grow-1
           li.nav-item
             a.nav-link(href='/')
               | Dashboard 
@@ -37,13 +36,33 @@ html(lang='en')
             a.nav-link(href='/shared') Shared
           li.nav-item
             a.nav-link(href='/profile') Profile
+          form.flex-grow-1.mx-5.my-2.my-lg-0(type='form' action='/search' method='post')
+            .input-group.py-1.px-2.px-md-0
+              input.form-control.form-control-dark(name='term' type='text' placeholder='Search here...' aria-label='Search')
+              .input-group-append
+                button.btn.btn-outline-light(type='submit')
+                  i.fa.fa-search Search
+        //- login button and form
+        ul.navbar-nav.navbar-right
           li.nav-item.dropdown
             a#dropdown-notifications.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Notifications
             .dropdown-menu(aria-labelledby='dropdown-notifications')
               a.dropdown-item(href='#').disabled No new notifications
-        form.form-inline.my-2.my-lg-0
-          input.form-control.mr-sm-2(type='text', placeholder='Search', aria-label='Search')
-          button.btn.btn-outline-light.my-2.my-sm-0(type='submit') Search
+          li.nav-item.dropdown
+            if locals.authenticated == false
+              a#dropdown-login.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Login
+            else
+              a#dropdown-login.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') #{locals.username}
+            ul#login-dp.dropdown-menu.dropdown-menu-right(aria-labelledby='dropdown-login')
+              li
+                .row
+                  .col-md-12
+                    if locals.authenticated == false
+                      a.dropdown-item(href='#').disabled You are anonymous right now
+                      a.btn.btn-primary.btn-block.my-3(href='/login', role='button') Login
+                    else
+                      a.dropdown-item(href='#').disabled #{locals.username}
+                      a.btn.btn-primary.btn-block.my-3(href='/logout', role='button') Logout
     br
     block secondbar
 

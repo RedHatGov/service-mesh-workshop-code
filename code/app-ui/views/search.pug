@@ -1,0 +1,10 @@
+extends layout-topbar
+block append stylesheets
+  link(href='/stylesheets/search-results.css', rel='stylesheet')
+block content
+ main(role='main')
+  section.jumbotron.text-center
+    h1.jumbotron-heading #{title}
+    .container
+      .search-results
+        | Search unavailable for #{searchTerm}

@@ -12,6 +12,7 @@ router.get('/', function(req, res, next) {
         uri: boardsURI,
         headers: {
             'user-agent': req.header('user-agent'),
+            'Authorization': 'Bearer ' + res.locals.authToken,
             'x-request-id': req.header('x-request-id'),
             'x-b3-traceid': req.header('x-b3-traceid'),
             'x-b3-spanid': req.header('x-b3-spanid'),
@@ -56,6 +57,7 @@ router.post('/paste', function(req, res) {
         },
         headers: {
             'User-Agent': req.header('user-agent'),
+            'Authorization': 'Bearer ' + res.locals.authToken,
             'x-request-id': req.header('x-request-id'),
             'x-b3-traceid': req.header('x-b3-traceid'),
             'x-b3-spanid': req.header('x-b3-spanid'),
@@ -70,12 +72,12 @@ router.post('/paste', function(req, res) {
     request(request_options)
     .then(function (result) {
         // req.debug(result)
-        res.redirect("/shared")
+        res.redirect('back')
     })
     .catch(function (err) {
         req.debug('ERROR POSTING DATA TO BOARDS SERVICE')
         req.debug(err)
-        res.redirect("/shared")
+        res.redirect('back')
     })
 })
 

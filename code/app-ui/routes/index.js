@@ -3,7 +3,7 @@ var router = express.Router()
 var moment = require('moment')
 var request = require('request-promise')
 
-/* GET dashboard page. */
+/* GET dashboard page. TODO: render different views based on authenticated or not */
 router.get('/', function(req, res, next) {
   var userboards = ''
   var user = res.locals.user
@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
       uri: boardsURI,
       headers: {
           'user-agent': req.header('user-agent'),
+          'Authorization': 'Bearer ' + res.locals.authToken,
           'x-request-id': req.header('x-request-id'),
           'x-b3-traceid': req.header('x-b3-traceid'),
           'x-b3-spanid': req.header('x-b3-spanid'),
@@ -64,6 +65,7 @@ router.post('/newboard', function(req, res) {
       },
       headers: {
           'user-agent': req.header('user-agent'),
+          'Authorization': 'Bearer ' + res.locals.authToken,
           'x-request-id': req.header('x-request-id'),
           'x-b3-traceid': req.header('x-b3-traceid'),
           'x-b3-spanid': req.header('x-b3-spanid'),
@@ -79,13 +81,13 @@ router.post('/newboard', function(req, res) {
   .then(function (result) {
       //req.debug(result)
       req.app.locals.errorAlertText = null
-      res.redirect('/')
+      res.redirect('back')
   })
   .catch(function (err) {
       req.debug('ERROR POSTING DATA TO CREATE NEW BOARD')
       req.debug(err)
       req.app.locals.errorAlertText = err.toString()
-      res.redirect('/')
+      res.redirect('back')
   })
 })
 
