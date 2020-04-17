@@ -13,6 +13,7 @@ router.get('/:boardId', function(req, res, next) {
         uri: boardsGetURI,
         headers: {
             'user-agent': req.header('user-agent'),
+            'Authorization': 'Bearer ' + res.locals.authToken,
             'x-request-id': req.header('x-request-id'),
             'x-b3-traceid': req.header('x-b3-traceid'),
             'x-b3-spanid': req.header('x-b3-spanid'),
@@ -29,7 +30,7 @@ router.get('/:boardId', function(req, res, next) {
     .then(function (getresult) {
         // req.debug(getresult)  // uncomment to show board JSON
         var itemsData = []
-        var itemListPromises = getresult.items.map(function(itemId) { return getItemRequest(req, user, itemId, itemsData)});
+        var itemListPromises = getresult.items.map(function(itemId) { return getItemRequest(req, res, user, itemId, itemsData)});
         Promise.all(itemListPromises).then(function(itemsData) {
             res.render('board', { title: 'Cut and Paster', board: getresult, items: itemsData, errorWithItems: false })
         })
@@ -46,7 +47,7 @@ router.get('/:boardId', function(req, res, next) {
     })
 })
 
-function getItemRequest(req, user, itemId, itemsData) {
+function getItemRequest(req, res, user, itemId, itemsData) {
     const boardsGetItemURI = req.HTTP_PROTOCOL + req.BOARDS_SVC_HOST + ':' + req.BOARDS_SVC_PORT + '/' + user + '/items/' + itemId
     req.debug('GET from boards SVC at: ' + boardsGetItemURI)
     var request_getitem_options = {
@@ -54,6 +55,7 @@ function getItemRequest(req, user, itemId, itemsData) {
         uri: boardsGetItemURI,
         headers: {
             'user-agent': req.header('user-agent'),
+            'Authorization': 'Bearer ' + res.locals.authToken,
             'x-request-id': req.header('x-request-id'),
             'x-b3-traceid': req.header('x-b3-traceid'),
             'x-b3-spanid': req.header('x-b3-spanid'),
@@ -99,6 +101,7 @@ router.post('/:boardId/paste', function(req, res) {
         },
         headers: {
             'User-Agent': req.header('user-agent'),
+            'Authorization': 'Bearer ' + res.locals.authToken,
             'x-request-id': req.header('x-request-id'),
             'x-b3-traceid': req.header('x-b3-traceid'),
             'x-b3-spanid': req.header('x-b3-spanid'),
@@ -130,6 +133,7 @@ router.post('/:boardId/paste', function(req, res) {
             body: board,
             headers: {
                 'User-Agent': req.header('user-agent'),
+                'Authorization': 'Bearer ' + res.locals.authToken,
                 'x-request-id': req.header('x-request-id'),
                 'x-b3-traceid': req.header('x-b3-traceid'),
                 'x-b3-spanid': req.header('x-b3-spanid'),

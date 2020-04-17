@@ -1,0 +1,29 @@
+# Rule for boards service servers to only accept mTLS + JWT traffic
+#
+# You need to replace the namespace with your own here
+# sed "s|microservices-demo|$PROJECT_NAME|" ./policy-boards-jwt.yaml
+#
+# You also need to replace the domain with your SSO path and domain
+# sed "s|replace-me-sso|keycloak-sso-shared.apps.cluster.domain.com|" ./policy-boards-jwt.yaml
+#
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: boards-jwt
+  namespace: microservices-demo
+spec:
+  targets:
+  - name: boards
+  peers:
+  - mtls:
+      mode: STRICT
+  origins:
+  - jwt:
+      issuer: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo"
+      # audiences: ["boards"]
+      jwksUri: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo/protocol/openid-connect/certs"
+      triggerRules:
+      - excludedPaths:
+        - exact: /health_check
+        - prefix: /status/
+  principalBinding: USE_ORIGIN

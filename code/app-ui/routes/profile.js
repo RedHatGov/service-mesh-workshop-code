@@ -6,8 +6,11 @@ var request = require('request-promise')
 /* Show users profile page or login/create account */
 router.get('/', function(req, res, next) {
   
-  // TODO: if not logged in redirect to login page
-  
+  // TODO: if not logged in redirect to login page or jump page to allow login / registration
+  // req.auth.checkSso()
+  // this might change some assumptions for the service mesh workshop, need to update that 
+  // when we implement this - see redhatgov.io
+
   const user = res.locals.user
   const userId = res.locals.userId  // this will be set if we are logged in, or fake if we are DEBUGGING
   getAndRender(req, res, next, userId)
@@ -28,6 +31,7 @@ function getAndRender(req, res, next, userId) {
       uri: profileGetURI,
       headers: {
           'user-agent': req.header('user-agent'),
+          'Authorization': 'Bearer ' + res.locals.authToken,
           'x-request-id': req.header('x-request-id'),
           'x-b3-traceid': req.header('x-b3-traceid'),
           'x-b3-spanid': req.header('x-b3-spanid'),
@@ -48,12 +52,17 @@ function getAndRender(req, res, next, userId) {
 
       // TODO: get the profile image
 
-      res.render('profile', { title: title, profile: getresult, isMyProfile: false, errorWithProfile: false })
+      res.render('profile', { title: title, profile: getresult, isMyProfile: false, errorWithProfile: false, style: req.USER_PROFILE_STYLE_ID })
   })
   .catch(function (err) {
       req.debug('ERROR GETTING DATA FROM PROFILE SERVICE')
-      req.debug(err)
-      res.render('profile', { title: 'Unknown User', errorWithProfile: true })
+      req.debug(JSON.stringify(err))
+
+      if (JSON.stringify(err).includes('ECONNREFUSED')) {
+        res.render('profile', { title: 'Unknown User', errorWithProfile: true, errorAlert: true, errorAlertText: err.message, style: req.USER_PROFILE_STYLE_ID })
+      } else {
+        res.render('profile', { title: 'Unknown User', errorWithProfile: true, style: req.USER_PROFILE_STYLE_ID })
+      }
   })
 }
 

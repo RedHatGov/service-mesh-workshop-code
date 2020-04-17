@@ -14,7 +14,7 @@ var debugdb = require('debug')('database')
 
 const SERVICE_NAME = process.env.SERVICE_NAME || 'boards'
 
-var breakme = process.env.BREAKME || 'false' // TODO: make this realtime vs on startup
+var breakme = process.env.BREAKME || 'false'
 
 // database setup - we might need to switch to something more robust than monk
 var user = process.env.MONGODB_USER || 'dummy'

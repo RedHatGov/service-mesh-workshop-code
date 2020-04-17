@@ -1,0 +1,13 @@
+# Rule for Envoy sidecar servers to only accept mTLS traffic
+#
+# You need to replace the namespace with your own here
+# sed "s|microservices-demo|$PROJECT_NAME|" ./policy-mtls.yaml | oc apply -f -
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: "default"
+  namespace: "microservices-demo"
+spec:
+  peers:
+  - mtls:
+      mode: STRICT
