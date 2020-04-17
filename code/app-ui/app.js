@@ -25,6 +25,7 @@ const SSO_SVC_HOST = process.env.SSO_SVC_HOST || 'sso73-x509'
 const SSO_SVC_PORT = process.env.SSO_SVC_PORT || '8443'
 const SESSION_SECRET = process.env.SESSION_SECRET || 'pleasechangeme'
 const FAKE_USER = process.env.FAKE_USER || false
+const USER_PROFILE_STYLE_ID = process.env.USER_PROFILE_STYLE_ID || 1
 
 var app = express()
 app.use(cors())
@@ -58,6 +59,7 @@ app.use(function(req, res, next) {
   req.BOARDS_SVC_PORT = BOARDS_SVC_PORT
   req.PROFILE_SVC_HOST = PROFILE_SVC_HOST
   req.PROFILE_SVC_PORT = PROFILE_SVC_PORT
+  req.USER_PROFILE_STYLE_ID = USER_PROFILE_STYLE_ID
   res.locals.ua = req.get('user-agent')  // put user agent info into the response data for client side logic
   next()
 })
