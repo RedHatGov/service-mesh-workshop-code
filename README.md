@@ -1,8 +1,8 @@
 # PLEASE NOTE THIS REPO IS IN-WORK 
 We are still building out the core capabilities. Current status:
-- Working services: app-ui, boards, context-scraper, and profile service
-- Coming soon: Auth via SSO
+- Working services: app-ui, boards, context-scraper, profile service, and Auth via SSO
 - Working platform components integrated: Istio
+- Coming soon: search, censor 
 ## This header will be removed when the initial version is ready for beta usage
 [![OpenShift Version][openshift-heximage]][openshift-url]
 
@@ -35,13 +35,13 @@ This repo is an example microservices based application. It's core functionality
 ![Diagram](design/ocp-arch.png)
 *The above diagram shows how the services are related and additionally how they are abstracted from the underlying infrastructure (compute and storage) when deployed on top of an OpenShift cluster. (The abstraction means this can be run in AWS, GCP, Azure, on-prem, or in some hybrid combination).*
 
-###### :information_source: This example is based on OpenShift Container Platform version 3.11.  It should work with other versions but has not been tested.
+###### :information_source: This example is based on OpenShift Container Platform version 4.3.
 
 ## How to run this?
-First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? That's OK, download the CDK (or minishift) for free here: https://developers.redhat.com/products/cdk/overview/. You will need a fairly beefy machine to run *everything* on the same machine via CDK, so I'd recommend you expose extra CPUs and Mem to the CDK when you start your cluster.
+First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? Download Code Ready Containers (CRC) for free here: https://developers.redhat.com/products/codeready-containers/overview. You will need a fairly beefy machine to run *everything* on the same machine, so I'd recommend you expose extra CPUs and Mem to CRC when you start your cluster - I actually haven't tried it so YMMV.
 
 You will also need to install/configure the additional dependencies you plan to leverage. We assume you want to run these in the cluster, so you might need to tweak the install scripts to move things outside or to use already existing shared services in different namespaces.
-   - Istio
+   - Service Mesh (Istio)
    - 3Scale - COMING SOON
    - Kafka - COMING SOON
    - Caching - COMING SOON

@@ -16,7 +16,8 @@ This microservice provides the main user interface into the application.
 - SSO_SVC_PORT, default='8443'
 - SESSION_SECRET, default='pleasechangeme'
 - FAKE_USER, default=false (this turns off SSO checks and injects a fake user)
-
+- USER_PROFILE_STYLE_ID, default=1 (this tweaks the style of user profiles - used for workshop exercises)
+  
 ### Local Installation / Run / Test
 ```bash
 $ npm install

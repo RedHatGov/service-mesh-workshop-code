@@ -2,7 +2,7 @@
 # Usage example:
 # oc new-app -f ./context-scraper-fromsource.yaml \
 #   -p APPLICATION_NAME=context-scraper \
-#   -p NODEJS_VERSION_TAG=8-RHOAR \
+#   -p NODEJS_VERSION_TAG=node-12 \
 #   -p GIT_BRANCH=develop \
 #   -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 apiVersion: template.openshift.io/v1

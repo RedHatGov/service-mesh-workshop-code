@@ -1,6 +1,12 @@
 extends layout-topbar
 block append stylesheets
-  link(href='/stylesheets/user-profile.css', rel='stylesheet')
+  //- this is for the workshop
+  if (style == 2)
+    link(href='/stylesheets/user-profile2.css', rel='stylesheet')
+  else if (style == 3)
+    link(href='/stylesheets/user-profile3.css', rel='stylesheet')
+  else
+    link(href='/stylesheets/user-profile.css', rel='stylesheet')
 block content
   if errorAlert == true
     .alert.alert-danger.alert-dismissible.fade.show(role='alert')
