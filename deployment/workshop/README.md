@@ -182,5 +182,14 @@ spec:
 EOF
 ```
 
+### Install the Keycloak Operator
+We have each student install Keycloak as part of a security lab but you need to provide the operator to them:
+
+* As admin, Goto the OpenShift webconsole and Operators > OperatorHub
+* Filter by keyword "Keycloak" and you should see a community operator show up - Click it.
+* The details will slide in from the right, Click Install (we are using version 8.0.2 today, higher should be OK too)
+* Wait until everything finishes and the operator is running
+
+
 [1]: https://www.openshift.com/learn/topics/operators
 [2]: https://docs.openshift.com/container-platform/4.1/service_mesh/service_mesh_install/installing-ossm.html#ossm-member-roll_installing-ossm
