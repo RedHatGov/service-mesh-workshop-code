@@ -2,18 +2,18 @@
 
 Clone this repo to get started:
 ```
-git clone https://github.com/dudash/openshift-microservices.git
+git clone https://github.com/RedHatGov/openshift-microservices.git
 ```
 
 Checkout the workshop-stable branch:
 ```
-git checkout workshop-stable
+cd openshift-microservices && git checkout workshop-stable
 ```
 
 ## Install Istio
 Navigate to the directory for installing Istio:
 ```
-cd openshift-microservices/deployment/install/istio
+cd deployment/install/istio
 ```
 
 Start by installing the Istio [Operator][1].  The operator is used to install and manage Istio in the cluster.
