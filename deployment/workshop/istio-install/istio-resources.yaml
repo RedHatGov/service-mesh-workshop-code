@@ -21,7 +21,7 @@ spec:
   istio:
     global:
       outboundTrafficPolicy:
-        mode: ALLOW_ANY
+        mode: REGISTRY_ONLY
       proxy:
         resources:
           requests:
@@ -31,7 +31,7 @@ spec:
             cpu: 500m
             memory: 128Mi
       mtls:
-        enabled: true
+        enabled: false
       # set to false for 3scale Istio adapter
       disablePolicyChecks: true
 

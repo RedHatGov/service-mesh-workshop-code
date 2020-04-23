@@ -357,7 +357,7 @@ parameters:
   displayName: Node.js version tag
   name: NODEJS_VERSION_TAG
   required: true
-  value: '12'
+  value: '10'
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MONGODB_MEMORY_LIMIT

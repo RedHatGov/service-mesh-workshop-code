@@ -175,4 +175,4 @@ parameters:
   displayName: Node.js version tag
   name: NODEJS_VERSION_TAG
   required: true
-  value: '12'
+  value: '10'
