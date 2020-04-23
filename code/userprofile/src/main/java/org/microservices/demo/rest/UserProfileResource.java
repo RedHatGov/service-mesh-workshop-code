@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -34,6 +35,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -55,7 +57,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class UserProfileResource {
     
     private final String MAGIC_NUMBER = "575ddb6a-8d2f-4baf-9e7e-4d0184d69259";
-
+    @Inject
+    @ConfigProperty(name = "defaultprofilestyle", defaultValue = "1")
+    protected String defaultStyleId;
+    
     // Using Spring-DI
     @Autowired
     // @Qualifier("${user.profile.source}")
@@ -98,6 +103,7 @@ public class UserProfileResource {
     public Response getProfile(@PathParam("id") String id) {
         if (id.equals(MAGIC_NUMBER)) {
             UserProfile profile = UserProfile.getFakeUser(id);
+            profile.setStyleId(defaultStyleId); // this is for the workshop to inject style with env vars
             Response.Status status = Response.Status.OK;
             return Response.status(status).entity(profile).build();
         } else {

@@ -38,6 +38,8 @@ public class UserProfileJPA {
 
     private Date createdAt;
 
+    private String styleId;
+
     // storing image in db. in future, this can be stored in object store
     @Lob // TODO: this should ideally be in separate table or another db
     // or at least make this transient or lazy loaded
@@ -95,6 +97,14 @@ public class UserProfileJPA {
 
     public void setCreatedAt(Long createdAt) {
         this.createdAt = new Date(createdAt);
+    }
+
+    public String getStyleId() {
+        return styleId;
+    }
+
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
     }
 
     public String getImage() {

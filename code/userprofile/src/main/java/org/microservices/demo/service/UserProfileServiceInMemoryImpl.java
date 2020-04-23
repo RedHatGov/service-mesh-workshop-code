@@ -75,6 +75,7 @@ public class UserProfileServiceInMemoryImpl implements UserProfileService {
                     existing.setLastName(profile.getLastName());
                     existing.setAboutMe(profile.getAboutMe());
                     existing.setEmailAddress(profile.getEmailAddress());
+                    existing.setStyleId(profile.getStyleId());
                     return true;
                 }               
             }

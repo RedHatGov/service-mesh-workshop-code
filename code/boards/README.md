@@ -70,7 +70,7 @@ You can use a template to create all the build and deployment resources for Open
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/boards-fromsource.yaml \
     -p APPLICATION_NAME=boards \
-    -p NODEJS_VERSION_TAG=12 \
+    -p NODEJS_VERSION_TAG=10 \
     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
     -p GIT_BRANCH=develop \
     -p DATABASE_SERVICE_NAME=boards-mongodb \
