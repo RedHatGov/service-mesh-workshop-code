@@ -30,8 +30,8 @@ spec:
           limits:
             cpu: 500m
             memory: 128Mi
-      mtls:
-        enabled: false
+      # mtls:
+      #   enabled: true
       # set to false for 3scale Istio adapter
       disablePolicyChecks: true
 
