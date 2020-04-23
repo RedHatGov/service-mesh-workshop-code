@@ -49,19 +49,20 @@ function getAndRender(req, res, next, userId) {
   .then(function (getresult) {
       req.debug(getresult)  // uncomment to show JSON
       let title = getresult.firstName + "\'s Profile"
+      let styleId = getresult.styleId
 
       // TODO: get the profile image
 
-      res.render('profile', { title: title, profile: getresult, isMyProfile: false, errorWithProfile: false, style: req.USER_PROFILE_STYLE_ID })
+      res.render('profile', { title: title, profile: getresult, isMyProfile: false, errorWithProfile: false, style: styleId })
   })
   .catch(function (err) {
       req.debug('ERROR GETTING DATA FROM PROFILE SERVICE')
       req.debug(JSON.stringify(err))
 
       if (JSON.stringify(err).includes('ECONNREFUSED')) {
-        res.render('profile', { title: 'Unknown User', errorWithProfile: true, errorAlert: true, errorAlertText: err.message, style: req.USER_PROFILE_STYLE_ID })
+        res.render('profile', { title: 'Unknown User', errorWithProfile: true, errorAlert: true, errorAlertText: err.message, style: 0 })
       } else {
-        res.render('profile', { title: 'Unknown User', errorWithProfile: true, style: req.USER_PROFILE_STYLE_ID })
+        res.render('profile', { title: 'Unknown User', errorWithProfile: true, style: 0 })
       }
   })
 }

@@ -12,15 +12,12 @@ package org.microservices.demo.json;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
  * User Profile 
  */
-
-
 public class UserProfile {
 
     @NotBlank(message="Id cannot be blank")
@@ -40,16 +37,18 @@ public class UserProfile {
     private String emailAddress;
 
     private Date createdAt;
+    
+    private String styleId;
 
-    public UserProfile() {
+    public UserProfile() {}
 
-    }
     public UserProfile(String id, String firstname, String lastname, String aboutme) {
         this.id = id;
         this.firstName = firstname;
         this.lastName = lastname;
         this.aboutMe = aboutme;
         this.createdAt = Calendar.getInstance().getTime();
+        this.styleId = "1";
     }
     
     /**
@@ -143,6 +142,20 @@ public class UserProfile {
         this.createdAt = new Date(createdAt);
     }
 
+    /**
+     * @return the styleId
+     */
+    public String getStyleId() {
+        return styleId;
+    }
+
+    /**
+     * @param styleId the style to set
+     */
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
+    }
+
     @Override
     public int hashCode() {
        return Objects.hash(this.id);
@@ -169,6 +182,7 @@ public class UserProfile {
                 ", lastName='" + lastName + '\'' +
                 ", aboutMe='" + aboutMe + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +
+                ", styleId='" + styleId + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
