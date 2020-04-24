@@ -16,7 +16,7 @@ This microservice provides the main user interface into the application.
 - SSO_SVC_PORT, default='8443'
 - SESSION_SECRET, default='pleasechangeme'
 - FAKE_USER, default=false (this turns off SSO checks and injects a fake user)
-- USER_PROFILE_STYLE_ID, default=1 (this tweaks the style of user profiles - used for workshop exercises)
+- NODE_TLS_REJECT_UNAUTHORIZED, default=unset (this tells node.js to reject or accept self-signed certs)
   
 ### Local Installation / Run / Test
 ```bash
@@ -42,7 +42,7 @@ You can use a template to create all the build and deployment resources for Open
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/app-ui-fromsource.yaml \
     -p APPLICATION_NAME=app-ui \
-    -p NODEJS_VERSION_TAG=12 \
+    -p NODEJS_VERSION_TAG=10 \
     -p GIT_BRANCH=develop \
     -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 ```

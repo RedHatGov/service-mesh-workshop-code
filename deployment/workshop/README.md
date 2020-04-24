@@ -2,7 +2,7 @@
 
 Clone this repo to get started:
 ```
-git clone https://github.com/dudash/openshift-microservices.git
+git clone https://github.com/RedHatGov/openshift-microservices.git
 ```
 
 Checkout the workshop-stable branch:
@@ -13,7 +13,7 @@ git checkout workshop-stable
 ## Install Istio
 Navigate to the directory for installing Istio:
 ```
-cd openshift-microservices/deployment/install/istio
+cd openshift-microservices/deployment/workshop/istio-install
 ```
 
 Start by installing the Istio [Operator][1].  The operator is used to install and manage Istio in the cluster.
@@ -181,6 +181,18 @@ spec:
     - user20
 EOF
 ```
+
+### Install the Keycloak Operator
+We have each student install Keycloak as part of a security lab but you need to provide the operator to them:
+
+* As admin, Goto the OpenShift webconsole and Operators > OperatorHub
+* Filter by keyword "Keycloak" and you should see a community operator show up - Click it.
+* The details will slide in from the right, Click Install (we are using version 8.0.2 today, higher should be OK too)
+* Install for every user project 
+  * eek, that's a lot! I know there's a CLI for this - *TODO replace GUI with CLI instructions*
+  * we plan to automate all this so don't worry it'll be easier soon
+* Wait until everything finishes and the operator is running
+
 
 [1]: https://www.openshift.com/learn/topics/operators
 [2]: https://docs.openshift.com/container-platform/4.1/service_mesh/service_mesh_install/installing-ossm.html#ossm-member-roll_installing-ossm

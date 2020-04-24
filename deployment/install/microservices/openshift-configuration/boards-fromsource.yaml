@@ -2,7 +2,7 @@
 # Usage example:
 # oc new-app -f ./boards-fromsource.yaml \
 #     -p APPLICATION_NAME=boards \
-#     -p NODEJS_VERSION_TAG=12 \
+#     -p NODEJS_VERSION_TAG=10 \
 #     -p GIT_URI=https://github.com/dudash/openshift-microservices.git \
 #     -p GIT_BRANCH=develop \
 #     -p DATABASE_SERVICE_NAME=boards-mongodb \
@@ -357,7 +357,7 @@ parameters:
   displayName: Node.js version tag
   name: NODEJS_VERSION_TAG
   required: true
-  value: '12'
+  value: '10'
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MONGODB_MEMORY_LIMIT

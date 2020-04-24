@@ -69,7 +69,7 @@ You can use a template to create all the build and deployment resources for Open
 ```bash
 oc new-app -f ../../deployment/install/microservices/openshift-configuration/context-scraper-fromsource.yaml \
     -p APPLICATION_NAME=context-scraper \
-    -p NODEJS_VERSION_TAG=12 \
+    -p NODEJS_VERSION_TAG=10 \
     -p GIT_BRANCH=develop \
     -p GIT_URI=https://github.com/dudash/openshift-microservices.git
 ```

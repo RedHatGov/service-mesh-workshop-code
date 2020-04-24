@@ -27,7 +27,7 @@ This repo is an example microservices based application. It's core functionality
 ![Screenshot](design/screenshots/2019-04-19_1042.png?raw=true)
 
 
-## Here's the planned architecture:
+## Here's the initial design for the architecture:
 
 ![Diagram](design/highlevel-arch.png)
 *In the above diagram web app users are accessing the APP UI service which in turns calls chains of microservices on the backend. Optionally the backend services have calls to API services managed via 3scale (and future access to the services from mobile apps could go through the 3scale API management capability as well). A single sign on capability provides security around user access to the application via OpenID Connect (OIDC) and OAuth2. The Istio service mesh is shown too - it provides core capabilities for traffic management and security of the services as well as detailed observation into the application's operational status. All of this is running on top of an OpenShift cluster. (Additional service interactions and deployment details are in other diagrams).*
@@ -70,6 +70,10 @@ The parts in action here are:
     * Kafka for scalable messaging
 
 
+## This demo is now part of a hands-on workshop from Red Hat!
+[Click here to check it out](http://redhatgov.io/workshops/openshift_service_mesh/)
+
+
 ## References, useful links, good videos to check out
 ### Microservices
 * [Microservices at Spotify Talk](https://www.youtube.com/watch?v=7LGPeBgNFuU)
@@ -82,7 +86,6 @@ The parts in action here are:
 * [Free Hands-on with Istio](https://learn.openshift.com/servicemesh)
 ### Single Sign On
 * [Keycloak SSO](https://www.keycloak.org/)
-
 
 ## Contributing
 [See guidelines here](./CONTRIBUTING.md). But in general I would love for help with 2 things.

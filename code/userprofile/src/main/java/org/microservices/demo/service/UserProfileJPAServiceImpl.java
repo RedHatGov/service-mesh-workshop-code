@@ -168,6 +168,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
         if(dbProfile != null) {
             profile = new UserProfile();
             profile.setAboutMe(dbProfile.getAboutMe());
+            profile.setStyleId(dbProfile.getStyleId());
             profile.setCreatedAt(dbProfile.getCreatedAt().getTime());
             profile.setEmailAddress(dbProfile.getEmailAddress());
             profile.setId(dbProfile.getId());
@@ -188,6 +189,7 @@ public class UserProfileJPAServiceImpl implements UserProfileService {
 
     protected void copyProfile(UserProfile profile, @NotNull UserProfileJPA dbProfile) {
         dbProfile.setAboutMe(profile.getAboutMe());
+        dbProfile.setStyleId(profile.getStyleId());
         dbProfile.setCreatedAt(profile.getCreatedAt().getTime());
         dbProfile.setEmailAddress(profile.getEmailAddress());
         dbProfile.setId(profile.getId());

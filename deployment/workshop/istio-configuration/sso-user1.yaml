@@ -1,0 +1,22 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakUser
+metadata:
+  name: demo-user
+  labels:
+    app.realm: microservices-demo
+spec:
+  user:
+    username: demo
+    firstName: Demo
+    lastName: Demoer
+    email: demo@redhatgov.io
+    enabled: true
+    emailVerified: false
+    realmRoles:
+      - "offline_access"
+    clientRoles:
+      client-app:
+        - "app-member"
+  realmSelector:
+    matchLabels:
+      app.realm: microservices-demo
