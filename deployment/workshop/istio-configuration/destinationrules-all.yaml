@@ -4,9 +4,6 @@ metadata:
   name: app-ui
 spec:
   host: app-ui
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -14,9 +11,6 @@ metadata:
   name: boards
 spec:
   host: boards
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL  
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -24,9 +18,6 @@ metadata:
   name: boards-mongodb
 spec:
   host: boards-mongodb
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -34,9 +25,6 @@ metadata:
   name: userprofile
 spec:
   host: userprofile
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
   subsets:
   - name: v1
     labels:
@@ -60,7 +48,4 @@ metadata:
   name: userprofile-postgresql
 spec:
   host: userprofile-postgresql
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
   
