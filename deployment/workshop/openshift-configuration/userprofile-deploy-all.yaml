@@ -36,6 +36,8 @@ items:
       spec:
         containers:
         - env:
+          - name: USER_PROFILE_STYLE_ID
+            value: "1"
           - name: POSTGRESQL_DATABASE
             valueFrom:
               secretKeyRef:
