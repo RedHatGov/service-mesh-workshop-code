@@ -10,7 +10,6 @@ apiVersion: authentication.istio.io/v1alpha1
 kind: Policy
 metadata:
   name: boards-jwt
-  namespace: microservices-demo
 spec:
   targets:
   - name: boards
