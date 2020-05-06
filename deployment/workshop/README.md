@@ -183,8 +183,9 @@ EOF
 ```
 ### Patch Kiali Config Map
 The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need to tweak the config map. You can do that by:
-* oc edit cm/kiali -n istio-system
+* `oc edit cm/kiali -n istio-system`
 * search for "excluded_workloads" and remove DeploymentConfig from the list
+* restart the Kaili pod: `oc rollout restart deployment kiali -n istio-system`
 
 ### Install the Keycloak Operator
 We have each student install Keycloak as part of a security lab but you need to provide the operator to them:
