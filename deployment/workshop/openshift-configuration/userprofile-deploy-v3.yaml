@@ -17,6 +17,7 @@ spec:
       labels:
         deploymentconfig: userprofile
         version: "3.0"
+        app: userprofile
     spec:
       containers:
       - env:
