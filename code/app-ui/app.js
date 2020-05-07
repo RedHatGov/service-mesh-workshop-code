@@ -103,13 +103,14 @@ if (FAKE_USER === true || FAKE_USER == "true") {
   app.use(auth.checkSso(), function (req, res, next) {
     var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')'
     debugSSO(authenticated)
-    if (req.session['keycloak-token'] ? true : false) {
+    if ((req.session['keycloak-token'] ? true : false) && req.kauth.grant.access_token != null) {
       res.locals.username = req.kauth.grant.access_token.content.name
       res.locals.useremail = req.kauth.grant.access_token.content.email
       res.locals.userId = req.kauth.grant.access_token.content.preferred_username
       res.locals.authToken = req.kauth.grant.access_token.token
       res.locals.authenticated=true
     } else { // not authenticated or auth invalid
+      debugSSO('no session or token is missing - clearing user')
       res.locals.username = ''
       res.locals.useremail = ''
       res.locals.userId = ''

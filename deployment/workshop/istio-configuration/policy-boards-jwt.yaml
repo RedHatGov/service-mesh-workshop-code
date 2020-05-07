@@ -16,7 +16,6 @@ spec:
   origins:
   - jwt:
       issuer: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo"
-      # audiences: ["boards"]
       jwksUri: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo/protocol/openid-connect/certs"
       triggerRules:
       - excludedPaths:
