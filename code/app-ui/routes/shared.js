@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
     .catch(function (err) {
         req.debug('ERROR GETTING DATA FROM BOARDS SERVICE')
         req.debug(err)
-        res.render('shared', { title: 'Cut and Paster', board: {name: 'Shared Items'}, items: [], errorWithItems: true })
+        res.render('shared', { title: 'Cut and Paster', board: {name: 'Shared Items'}, items: [], errorWithItems: true, errorAlert: true, errorAlertText: err.toString() })
     })
 })
 
@@ -72,12 +72,12 @@ router.post('/paste', function(req, res) {
     request(request_options)
     .then(function (result) {
         // req.debug(result)
-        res.redirect('back')
+        res.redirect('/shared')
     })
     .catch(function (err) {
         req.debug('ERROR POSTING DATA TO BOARDS SERVICE')
         req.debug(err)
-        res.redirect('back')
+        res.render('shared', { title: 'Cut and Paster', board: {name: 'Shared Items'}, items: [], errorWithItems: true, errorAlert: true, errorAlertText: err.toString() })
     })
 })
 
