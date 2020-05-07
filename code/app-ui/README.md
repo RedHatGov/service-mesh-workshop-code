@@ -67,3 +67,7 @@ You will need to deploy the boards microservice for this app-ui to function prop
 
 If you have a self signed cert on your keycloak SSO you might need to tell node.js that's OK:
 ```export set NODE_TLS_REJECT_UNAUTHORIZED=0```
+
+To debug your app in OpenShift you can use the following env vars:
+* DEBUG = sso, app
+* NODE_DEBUG = request
