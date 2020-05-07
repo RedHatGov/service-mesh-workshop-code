@@ -14,20 +14,20 @@ spec:
   rules:
   - from:
     - source:
-      principals: ["*"]
+        principals: ["*"]
     to:
     - operation:
-      methods: ["POST"]
-      paths: ["/shareditems/*"]
-      when:
-      - key: request.auth.claims[realm_access.roles]
-        values: ["cool-kids"]
+        methods: ["POST"]
+        paths: ["/shareditems/*"]
+    when:
+    - key: request.auth.claims[realm_access.roles]
+      values: ["cool-kids"]
   - from:
     - source:
-      principals: ["*"]
+        principals: ["*"]
     to:
     - operation:
-      methods: ["GET"]
-      when:
-      - key: request.auth.claims[scope]
+        methods: ["GET"]
+    when:
+    - key: request.auth.claims[scope]
       values: ["openid"]
