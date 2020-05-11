@@ -150,9 +150,7 @@ We have each student install Keycloak as part of a security lab but you need to 
 
 * As admin, Goto the OpenShift webconsole and Operators > OperatorHub
 * Filter by keyword "Keycloak" and you should see a community operator show up - Click it.
-* The details will slide in from the right. Note the version and see that it matches the version in the
-* file keycloak/keycloak-operator-install.sh
-*
+* The details will slide in from the right. Note the version and see that it matches the version in the file `keycloak/keycloak-operator-install.sh`
 * Install for every user project using the following script
 ```
    sh keycloak/keycloak-operator-install.sh
