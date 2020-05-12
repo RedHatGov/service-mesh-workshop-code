@@ -90,7 +90,7 @@ oc create -f ./istio-configuration/istio-rbac.yaml
 
 Set the number of users:
 ```
-NUM_USERS=<enter number of users>
+export NUM_USERS=<enter number of users>
 ```
 
 Then run the following:
