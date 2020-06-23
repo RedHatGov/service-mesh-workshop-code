@@ -20,11 +20,18 @@ metadata:
   namespace: user$i
 spec:
   channel: alpha
-  Install Plan Approval: Automatic
+  installPlanApproval: Manual
   name: keycloak-operator
   source: community-operators
   sourceNamespace: openshift-marketplace
-  Starting CSV: keycloak-operator.v9.0.2
+  startingCSV: keycloak-operator.v9.0.2
 EOF
 
+done
+
+sleep 5
+
+for (( i=1 ; i <= $NUM_USERS ; i++ ))
+do
+  oc patch ip $(oc get ip -n user${i} -o jsonpath={.items[0].metadata.name}) -n user${i} --type merge -p '{"spec":{"approved":true}}'
 done
