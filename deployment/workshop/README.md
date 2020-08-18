@@ -96,7 +96,7 @@ export NUM_USERS=<enter number of users>
 Then run the following:
 ```
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do 
+do
   oc adm groups add-users workshop user$i
   oc new-project user$i --as=user$i \
     --as-group=system:authenticated --as-group=system:authenticated:oauth
@@ -148,10 +148,7 @@ The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need 
 ### Install the Keycloak Operator
 We have each student install Keycloak as part of a security lab but you need to provide the operator to them:
 
-* As admin, Goto the OpenShift webconsole and Operators > OperatorHub
-* Filter by keyword "Keycloak" and you should see a community operator show up - Click it.
-* The details will slide in from the right. Note the version and see that it matches the version in the file `keycloak/keycloak-operator-install.sh`
-* Install for every user project using the following script
+* Use the following script to install Keycloak `v9.0.2` for every user project.  We will update to a newer version of Keycloak at a later time.
 ```
    sh keycloak/keycloak-operator-install.sh
 ```
