@@ -29,6 +29,22 @@ const FAKE_USER = process.env.FAKE_USER || false
 var app = express()
 app.use(cors())
 
+// force sleep
+function sleep(time) {
+
+  var start = new Date();
+  var now;
+
+  while (true) {
+      now = new Date();
+      if (now - start >= time) {
+          break;
+      }
+  }
+}
+
+sleep(3000)
+
 // Create a session-store for keycloak middleware.
 // Warning! MemoryStore, is purposely not designed for a production environment. 
 // It will leak memory under most conditions, does not scale past a single 
@@ -146,7 +162,8 @@ app.use('/:user/board', boardRouter)
 //app.use('/:user/dashboard', auth.protect('realm:user'), dashboardRouter)
 //app.use('/:user/board', auth.protect('realm:user'), boardRouter) // must be logged in and have 'user' role in the realm. TODO: switch to this when SSO is ready
 
-app.get('/info', function (req, res) {
+app.get('/info', async function (req, res) {
+  await new Promise (r => setTimeout(r, 3000)) // force pause for workshop purposes
   debug('info req:' + req.query.infoMessage)
   res.render('info-page', {
     infoAlert: req.query.infoAlert,
