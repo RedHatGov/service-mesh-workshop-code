@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "build": "echo \"Info: no build steps here - in the future we might minify\"",
-    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 DEBUG=app,sso PORT=3000 BOARDS_SVC_HOST=localhost BOARDS_SVC_PORT=3001 PROFILE_SVC_HOST=localhost PROFILE_SVC_PORT=8080 nodemon ./bin/www",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 DEBUG=app,sso PORT=3000 BOARDS_SVC_HOST=localhost BOARDS_SVC_PORT=3001 PROFILE_SVC_HOST=localhost PROFILE_SVC_PORT=8080 FAKE_USER=true nodemon ./bin/www",
     "audit": "snyk test"
   },
   "author": "dudash",

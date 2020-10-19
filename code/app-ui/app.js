@@ -173,6 +173,16 @@ app.get('/info', async function (req, res) {
   })
 })
 
+app.get('/stress', async function (req, res) {
+  var result = 0
+  for (var i = 0; i < 1e6; i++) {
+    console.log(i)
+    result += Math.random() * Math.random();
+  }
+  res.status(200);
+  res.send('done\n');
+})
+
 app.use(function(req, res, next) {
   next(createError(404)) // catch 404 and forward to error handler
 })
