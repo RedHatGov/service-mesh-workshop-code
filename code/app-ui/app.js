@@ -182,8 +182,7 @@ app.get('/stress', async function (req, res) {
   }
 
   var result = 0
-  for (var i = 0; i < 1e6; i++) {
-    console.log(i)
+  for (var i = 0; i < 100000; i++) {
     result += Math.random() * Math.random();
     await setImmediatePromise()
   }
