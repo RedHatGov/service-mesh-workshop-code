@@ -4,27 +4,16 @@ Run the following as cluster admin.
 
 ### Users and Projects
 
-Create a group for the workshop:
-```
-oc adm groups new workshop
-```
-
-Create roles and role bindings for the workshop group:
-```
-oc create -f ./setup/istio-rbac.yaml
-```
-
 Set the number of users:
 ```bash
 export NUM_USERS=5  # replace me
 ```
 
-Add each user to the workshop group.  Create two projects for each user (user project and user's service mesh project):
+Create two projects for each user (user project and user's service mesh project):
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
 do
-  oc adm groups add-users workshop user$i
   oc new-project user$i --as=user$i \
     --as-group=system:authenticated --as-group=system:authenticated:oauth
   oc new-project user$i-istio --as=user$i \
