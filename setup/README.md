@@ -80,7 +80,11 @@ done
 ```
 
 ### Patch Kiali Config Map
-The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need to tweak the config map. You can do that by:
-* `oc edit cm/kiali -n istio-system`
-* search for "excluded_workloads" and remove DeploymentConfig from the list
-* restart the Kaili pod: `oc rollout restart deployment kiali -n istio-system`
+The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need to tweak the config map. 
+
+```bash
+for (( i=1 ; i<=$NUM_USERS ; i++ ))
+do
+  oc get cm kiali -n user$i-istio -o yaml | sed '/DeploymentConfig/d' | oc apply -n user$i-istio -f -
+done
+```
