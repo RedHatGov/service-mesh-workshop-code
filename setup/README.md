@@ -81,7 +81,7 @@ Wait until the control plane is running:
 oc get pods -n user$NUM_USERS-istio --watch
 ```
 
-Add each user project as a member to its corresponding service mesh project.
+Add each user project as a member to its corresponding service mesh project:
 
 ```bash
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
