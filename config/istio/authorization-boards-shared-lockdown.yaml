@@ -1,12 +1,9 @@
 # Rule for Envoy sidecar servers to lockdown POSTs to shareditems
 #
-# You need to replace the namespace with your own here
-# sed "s|microservices-demo|$PROJECT_NAME|" ./authorization-boards-shared-lockdown.yaml | oc apply -f -
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: boards-shared-lockdown
-  namespace: microservices-demo
 spec:
   selector:
     matchLabels:

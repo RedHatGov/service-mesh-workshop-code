@@ -1,0 +1,17 @@
+# Rule for boards service servers to only accept mTLS + JWT traffic
+#
+# You also need to replace the domain with your SSO path and domain
+# sed "s|replace-me-sso|keycloak-sso-shared.apps.cluster.domain.com|" ./policy-boards-jwt.yaml
+#
+apiVersion: "security.istio.io/v1beta1"
+kind: RequestAuthentication
+metadata:
+  name: "boards-jwt"
+spec:
+  selector:
+    matchLabels:
+      app: boards
+      deploymentconfig: boards
+  jwtRules:
+  - issuer: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo"
+    jwksUri: "https://keycloak-sso-shared.apps.cluster.domain.com/auth/realms/microservices-demo/protocol/openid-connect/certs"
