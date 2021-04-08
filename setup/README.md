@@ -86,5 +86,6 @@ The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need 
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
 do
   oc get cm kiali -n user$i-istio -o yaml | sed '/DeploymentConfig/d' | oc apply -n user$i-istio -f -
+  oc rollout restart deployment kiali -n user$-istio
 done
 ```
