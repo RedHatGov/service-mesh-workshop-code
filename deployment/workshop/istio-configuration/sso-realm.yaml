@@ -38,6 +38,18 @@ spec:
         webOrigins:
           - "*"
           - "+"
+        protocolMappers:
+        - name: realm-role-mapper
+          protocol: openid-connect
+          protocolMapper: oidc-usermodel-realm-role-mapper
+          consentRequired: false
+          config:
+            multivalued: "true"
+            userinfo.token.claim: "false"
+            id.token.claim: "false"
+            access.token.claim: "true"
+            claim.name: realm_access_roles
+            jsonType.label: String
   instanceSelector:
     matchLabels:
       app: sso

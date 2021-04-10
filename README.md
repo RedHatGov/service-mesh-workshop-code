@@ -1,15 +1,18 @@
-# PLEASE NOTE THIS REPO IS IN-WORK 
-We are still building out the core capabilities. Current status:
-- Working services: app-ui, boards, context-scraper, profile service, and Auth via SSO
-- Working platform components integrated: Istio
-- Coming soon: search, censor 
-## This header will be removed when the initial version is ready for beta usage
+# THIS IS EXAMPLE CODE FOR THE SERVICE MESH WORKSHOP 
+We will not be merging anything back from this repo to the upstream it was forked from. It can follow it's own path.
+
+Also, note that this code intentionally has bugs, strange env vars, and unfinished parts - this is so that the workshop can demonstrate features of OpenShift and the OpenShift Service Mesh (Istio). This let's us examine use cases where the service mesh can aid in development as well as operational activities.
+
+The main services used in the workshop are: app-ui, boards, context-scraper, profile service, and Keycloak (SSO)
+
 [![OpenShift Version][openshift-heximage]][openshift-url]
+
+You can find [the corresponding labs here](http://redhatgov.io/workshops/openshift_service_mesh/)
 
 # Microservices
 Microservices, also known as the microservice architecture, is a software development technique that structures an application as a collection of loosely coupled services. Microservice architectures enable the continuous delivery/deployment/scaling of complex applications.
 
-This git repo showcases an app built using the microservice architecture with several intentionally simple components. The goal is to showcase an example way to develop and manage microservices using a container platform. However, this example is not meant to be prescriptive - obviously your team and business goals will drive your specific architecture and environment. The technology should translate and hopefully you will find this repo helpful.
+This git repo showcases an app built using the microservice architecture with several intentionally simple components. The goal is to showcase an example way to develop and manage microservices using a container platform and service mesh.
 
 ## Why microservices?
 Agility. Deliver application updates faster. Isolate and fix bugs easier. Done right, a microservices architecture will you help to meet several important non-functional requirements for your software:
@@ -19,9 +22,6 @@ Agility. Deliver application updates faster. Isolate and fix bugs easier. Done r
 * resiliency
 * extensibility
 * availability
-
-# This Repo
-This repo is an example microservices based application. It's core functionality is a paste board. It's an intentionally simple example that could be the prototype for something bigger like a [Pinterest](https://www.pinterest.com/), a [PasteBin](https://pastebin.com/), a [CodePen](https://codepen.io/pens/), or even a [Ranker](https://www.ranker.com/).
 
 ## Current screenshot
 ![Screenshot](design/screenshots/2019-04-19_1042.png?raw=true)
@@ -38,18 +38,12 @@ This repo is an example microservices based application. It's core functionality
 ###### :information_source: This example is based on OpenShift Container Platform version 4.3.
 
 ## How to run this?
-First off, you need access to an OpenShift cluster. Don't have an OpenShift cluster? Download Code Ready Containers (CRC) for free here: https://developers.redhat.com/products/codeready-containers/overview. You will need a fairly beefy machine to run *everything* on the same machine, so I'd recommend you expose extra CPUs and Mem to CRC when you start your cluster - I actually haven't tried it so YMMV.
-
-You will also need to install/configure the additional dependencies you plan to leverage. We assume you want to run these in the cluster, so you might need to tweak the install scripts to move things outside or to use already existing shared services in different namespaces.
-   - Service Mesh (Istio)
-   - 3Scale - COMING SOON
-   - Kafka - COMING SOON
-   - Caching - COMING SOON
+We recommend using RHPDS (if you have access) to run this workshop.
 
 To install everything:
-- [Follow instructions here](./deployment/install/)
+- [Follow instructions here](./deployment/workshop/README.md)
 
-Once you have the basic app up and running, how about trying out [some demos](./deployment/demos)
+Once you have the cluster pre-reqs up and running, the labs will walk you through install and using the application.
 
 
 ## About the code / software architecture
@@ -70,10 +64,6 @@ The parts in action here are:
     * Kafka for scalable messaging
 
 
-## This demo is now part of a hands-on workshop from Red Hat!
-[Click here to check it out](http://redhatgov.io/workshops/openshift_service_mesh/)
-
-
 ## References, useful links, good videos to check out
 ### Microservices
 * [Microservices at Spotify Talk](https://www.youtube.com/watch?v=7LGPeBgNFuU)
@@ -87,17 +77,10 @@ The parts in action here are:
 ### Single Sign On
 * [Keycloak SSO](https://www.keycloak.org/)
 
-## Contributing
-[See guidelines here](./CONTRIBUTING.md). But in general I would love for help with 2 things.
-1. Use this repo and [report issues][1], even fix them if you can.
-2. Have [discussions][2] on topics related to this repo. Things like "Securing services", or "Microservices vs SOA"... 
-   - currently doing this in issues (and tagging them as a `discussion`).
 
 ## License
 Apache 2.0.
 
-[1]: https://github.com/dudash/openshift-microservices/issues
-[2]: https://github.com/dudash/openshift-microservices/labels/discussion
 
 [openshift-heximage]: https://img.shields.io/badge/openshift-4.3-BB261A.svg
 [openshift-url]: https://docs.openshift.com/container-platform/4.3/welcome/index.html

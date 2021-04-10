@@ -10,15 +10,15 @@ Checkout the workshop-stable branch:
 git checkout workshop-stable
 ```
 
-## Install Istio
-Navigate to the directory for installing Istio:
+Navigate to the workshop directory:
 ```
-cd openshift-microservices/deployment/workshop/istio-install
+cd openshift-microservices/deployment/workshop/
 ```
 
+## Install Istio
 Start by installing the Istio [Operator][1].  The operator is used to install and manage Istio in the cluster.
 ```
-oc create -f ./istio-operator.yaml
+oc create -f ./istio-install/istio-operator.yaml
 ```
 
 Watch the operator installation:
@@ -34,7 +34,7 @@ istio-operator-xxxxxxxxx-xxxxx   1/1   Running   0     17s
 Once the operator is running, install the Istio control plane in its own namespace `istio-system`:
 ```
 oc new-project istio-system
-oc create -n istio-system -f ./istio-resources.yaml
+oc create -n istio-system -f ./istio-install/istio-resources.yaml
 ```
 
 Watch the control plane installation:
@@ -78,11 +78,6 @@ prometheus-xxxxxxxxx-xxxxx                2/2     Running   0          19m
 
 ## Setup Users and Projects
 
-Navigate to the workshop directory:
-```
-cd ../../workshop
-```
-
 Create a group for the workshop:
 ```
 oc adm groups new workshop
@@ -90,55 +85,18 @@ oc adm groups new workshop
 
 Create the following role and role bindings:
 ```
-oc create -f - <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: istio-reader
-rules:
-- apiGroups: ["authentication.istio.io", "networking.istio.io"]
-  resources: ["policies", virtualservices", "destinationrules", "serviceentries", "gateway"]
-  verbs: ["get", "watch", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: istio-reader
-  namespace: istio-system
-subjects:
-- kind: Group
-  name: workshop
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: istio-reader
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: istio-viewer
-  namespace: istio-system
-subjects:
-- kind: Group
-  name: workshop
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: view
-  apiGroup: rbac.authorization.k8s.io
-EOF
+oc create -f ./istio-configuration/istio-rbac.yaml
 ```
 
 Set the number of users:
 ```
-NUM_USERS=<enter number of users>
+export NUM_USERS=<enter number of users>
 ```
 
 Then run the following:
 ```
 for (( i=1 ; i<=$NUM_USERS ; i++ ))
-do 
+do
   oc adm groups add-users workshop user$i
   oc new-project user$i --as=user$i \
     --as-group=system:authenticated --as-group=system:authenticated:oauth
@@ -181,16 +139,19 @@ spec:
     - user20
 EOF
 ```
+### Patch Kiali Config Map
+The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need to tweak the config map. You can do that by:
+* `oc edit cm/kiali -n istio-system`
+* search for "excluded_workloads" and remove DeploymentConfig from the list
+* restart the Kaili pod: `oc rollout restart deployment kiali -n istio-system`
 
 ### Install the Keycloak Operator
 We have each student install Keycloak as part of a security lab but you need to provide the operator to them:
 
-* As admin, Goto the OpenShift webconsole and Operators > OperatorHub
-* Filter by keyword "Keycloak" and you should see a community operator show up - Click it.
-* The details will slide in from the right, Click Install (we are using version 8.0.2 today, higher should be OK too)
-* Install for every user project 
-  * eek, that's a lot! I know there's a CLI for this - *TODO replace GUI with CLI instructions*
-  * we plan to automate all this so don't worry it'll be easier soon
+* Use the following script to install Keycloak `v9.0.2` for every user project.  We will update to a newer version of Keycloak at a later time.
+```
+   sh keycloak/keycloak-operator-install.sh
+```
 * Wait until everything finishes and the operator is running
 
 

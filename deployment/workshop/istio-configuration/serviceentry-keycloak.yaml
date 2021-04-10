@@ -2,12 +2,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: context-scraper-egress
+  name: keycloak-egress
 spec:
-  exportTo:
-  - "."
   hosts:
-  - www.googleapis.com
+  - "keycloak-sso-shared.apps.cluster.domain.com"
   ports:
   - number: 443
     name: https

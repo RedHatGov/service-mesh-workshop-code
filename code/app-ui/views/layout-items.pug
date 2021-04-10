@@ -9,6 +9,13 @@ block secondbar
       //a.nav-link(href='#').disabled Just Exploring (coming soon)
       //a.nav-link(href='#').disabled Similar to Mine (coming soon)
 block content
+  if errorAlert == true
+    .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+      strong Yikes! Something went wrong... Please try again. 
+      br 
+      | The details: #{errorAlertText}
+      button.close(type='button', data-dismiss='alert', aria-label='Close')
+        span(aria-hidden='true') ×
   // A modal error popup that we can rig via JS/JQuery events
   #errorModal.modal.fade
     .modal-dialog.modal-confirm

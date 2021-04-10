@@ -1,8 +1,9 @@
-apiVersion: maistra.io/v1
+apiVersion: maistra.io/v2
 kind: ServiceMeshControlPlane
 metadata:
   name: istio-demo
 spec:
+  version: v1.1
 
   threeScale:
     enabled: false

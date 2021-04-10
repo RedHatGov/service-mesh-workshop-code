@@ -11,23 +11,24 @@ spec:
   selector:
     matchLabels:
       app: boards
+      deploymentconfig: boards
   rules:
   - from:
     - source:
-      principals: ["*"]
+        requestPrincipals: ["*"]
     to:
     - operation:
-      methods: ["POST"]
-      paths: ["/shareditems/*"]
-      when:
-      - key: request.auth.claims[realm_access.roles]
-        values: ["cool-kids"]
+        methods: ["POST"]
+        paths: ["*/shareditems"]
+    when:
+    - key: request.auth.claims[realm_access_roles]
+      values: ["cool-kids"]
   - from:
     - source:
-      principals: ["*"]
+        requestPrincipals: ["*"]
     to:
     - operation:
-      methods: ["GET"]
-      when:
-      - key: request.auth.claims[scope]
+        methods: ["GET"]
+    when:
+    - key: request.auth.claims[scope]
       values: ["openid"]

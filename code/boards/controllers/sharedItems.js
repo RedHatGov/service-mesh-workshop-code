@@ -9,7 +9,7 @@ const shortid = require('shortid')
 const ITEMS_COLLECTION = 'shared_items'
 
 module.exports.shareditems = function shareditems (req, res, next) {
-    req.db.get(ITEMS_COLLECTION).find({})
+    req.db.get(ITEMS_COLLECTION).find({}, {sort:{created_at: -1}})
     .then((docs) => {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(docs || {}, null, 2));
