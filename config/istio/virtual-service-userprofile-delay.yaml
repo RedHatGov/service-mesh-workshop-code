@@ -9,7 +9,8 @@ spec:
   - fault:
       delay:
         fixedDelay: 5s
-        percent: 50
+        percentage: 
+          value: 50
     route:
     - destination:
         host: userprofile

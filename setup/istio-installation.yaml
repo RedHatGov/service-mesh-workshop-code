@@ -10,6 +10,7 @@ spec:
           policy: REGISTRY_ONLY
   tracing:
     type: Jaeger
+    sampling: 25
   addons:
     jaeger:
       name: jaeger

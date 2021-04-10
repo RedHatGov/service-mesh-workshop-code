@@ -9,7 +9,8 @@ spec:
   - fault:
       abort:
         httpStatus: 503
-        percent: 50
+        percentage: 
+          value: 50
     route:
     - destination:
         host: userprofile
