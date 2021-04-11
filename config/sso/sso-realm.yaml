@@ -32,9 +32,10 @@ spec:
         clientId: client-app
         publicClient: true
         redirectUris:
-        - "http://istio-ingressgateway-istio-system.apps.cluster.domain.com/*"
-        adminUrl: "http://istio-ingressgateway-istio-system.apps.cluster.domain.com/"
+        - %APP_URL%/*
+        adminUrl: %APP_URL%/
         directAccessGrantsEnabled: true
+        standardFlowEnabled: true
         webOrigins:
           - "*"
           - "+"

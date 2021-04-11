@@ -5,7 +5,7 @@ metadata:
   name: keycloak-egress
 spec:
   hosts:
-  - "keycloak-sso-shared.apps.cluster.domain.com"
+  - %SSO_SVC%
   ports:
   - number: 443
     name: https

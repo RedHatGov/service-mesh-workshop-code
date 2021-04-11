@@ -79,6 +79,13 @@ do
 done
 ```
 
+Label the `openshift-ingress` namespace:
+> Note: Service mesh blocks route traffic so we need to add this label for the RH-SSO route
+
+```bash
+oc label namespaces openshift-ingress network.openshift.io/policy-group=ingress
+```
+
 ### Patch Kiali Config Map
 The current Kiali defaults don't show `DeploymentConfig`'s in the UI so we need to tweak the config map. 
 
