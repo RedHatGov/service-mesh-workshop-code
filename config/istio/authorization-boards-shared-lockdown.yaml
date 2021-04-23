@@ -1,0 +1,31 @@
+# Rule for Envoy sidecar servers to lockdown POSTs to shareditems
+#
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: boards-shared-lockdown
+spec:
+  selector:
+    matchLabels:
+      app: boards
+      deploymentconfig: boards
+  rules:
+  - from:
+    - source:
+        requestPrincipals: ["*"]
+    to:
+    - operation:
+        methods: ["POST"]
+        paths: ["*/shareditems"]
+    when:
+    - key: request.auth.claims[realm_access_roles]
+      values: ["cool-kids"]
+  - from:
+    - source:
+        requestPrincipals: ["*"]
+    to:
+    - operation:
+        methods: ["GET"]
+    when:
+    - key: request.auth.claims[scope]
+      values: ["openid"]

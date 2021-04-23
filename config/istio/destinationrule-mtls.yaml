@@ -1,0 +1,12 @@
+# Rule for Envoy sidecar clients to use mTLS with Istio certs/keys when 
+# communicating to any other service in this namespace
+#
+apiVersion: "networking.istio.io/v1alpha3"
+kind: "DestinationRule"
+metadata:
+  name: "destinationrule-mtls-istio-mutual"
+spec:
+  host: "*.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

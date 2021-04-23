@@ -1,0 +1,10 @@
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
+metadata:
+  name: workshop-keycloak
+  labels:
+    app: sso
+spec:
+  externalAccess:
+    enabled: true
+  instances: 1

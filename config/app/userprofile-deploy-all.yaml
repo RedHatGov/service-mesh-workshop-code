@@ -1,0 +1,207 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: userprofile
+    name: userprofile
+  spec:
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+    selector:
+      deploymentconfig: userprofile
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      app: userprofile
+    name: userprofile
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deploymentconfig: userprofile
+        version: "1.0"
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          deploymentconfig: userprofile
+          version: "1.0"
+          app: userprofile
+      spec:
+        containers:
+        - env:
+          - name: USER_PROFILE_STYLE_ID
+            value: "1"
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: userprofile-postgresql
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: userprofile-postgresql
+          - name: POSTGRESQL_SERVICE_HOST
+            value: userprofile-postgresql
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: userprofile-postgresql
+          - name: POSTGRESQL_SERVICE_PORT
+            value: "5432"
+          image: %USER_PROFILE_IMAGE_URI%:1.0
+          imagePullPolicy: Always
+          name: userprofile
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    labels:
+      app: userprofile
+    name: userprofile-postgresql
+  stringData:
+    database-name: userprofiledb
+    database-password: connor
+    database-user: sarah
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: userprofile
+    name: userprofile-postgresql
+  spec:
+    ports:
+    - name: tcp-postgresql
+      nodePort: 0
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: userprofile-postgresql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    application: userprofile
+    labels:
+      app: userprofile
+    name: userprofile-postgresql
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    labels:
+      app: userprofile
+      name: userprofile-postgresql
+    name: userprofile-postgresql
+  spec:
+    replicas: 1
+    selector:
+      name: userprofile-postgresql
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        labels:
+          app: userprofile
+          name: userprofile-postgresql
+        name: userprofile-postgresql
+      spec:
+        containers:
+        - capabilities: {}
+          env:
+          - name: POSTGRESQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: userprofile-postgresql
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: userprofile-postgresql
+          - name: POSTGRESQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: userprofile-postgresql
+          image: ' '
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+              - --live
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+          name: postgresql
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /var/lib/pgsql/data
+            name: userprofile-postgresql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        volumes:
+        - name: userprofile-postgresql-data
+          persistentVolumeClaim:
+            claimName: userprofile-postgresql
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - postgresql
+        from:
+          kind: ImageStreamTag
+          name: postgresql:12
+          namespace: openshift
+        lastTriggeredImage: ""
+      type: ImageChange
+    - type: ConfigChange
+  status: {}
+kind: List
+metadata: {}

@@ -1,0 +1,56 @@
+#
+# You will need to replace the URLs below with your proper path
+# DONT USE THIS FOR PRODUCTION - IT'S VERY OPEN
+#
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakRealm
+metadata:
+  name: microservices-demo-keycloakrealm
+  labels:
+    app: sso
+    app.realm: microservices-demo
+spec:
+  realm:
+    id: microservices-demo
+    realm: microservices-demo
+    enabled: true
+    displayName: Microservices Demo
+    webOrigins:
+      - "*"
+    roles:
+      realm:
+      - name: cool-kids
+        description: cool kids are cool
+        clientRole: false
+      client:
+        client-app:
+        - name: client-app-member
+          description: for members of the client app
+          clientRole: true
+    clients:
+      - description: "Microservices demo application UI clients"
+        clientId: client-app
+        publicClient: true
+        redirectUris:
+        - %APP_URL%/*
+        adminUrl: %APP_URL%/
+        directAccessGrantsEnabled: true
+        standardFlowEnabled: true
+        webOrigins:
+          - "*"
+          - "+"
+        protocolMappers:
+        - name: realm-role-mapper
+          protocol: openid-connect
+          protocolMapper: oidc-usermodel-realm-role-mapper
+          consentRequired: false
+          config:
+            multivalued: "true"
+            userinfo.token.claim: "false"
+            id.token.claim: "false"
+            access.token.claim: "true"
+            claim.name: realm_access_roles
+            jsonType.label: String
+  instanceSelector:
+    matchLabels:
+      app: sso
