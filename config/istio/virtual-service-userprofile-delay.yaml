@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: userprofile
+spec:
+  hosts:
+  - userprofile
+  http:
+  - fault:
+      delay:
+        fixedDelay: 5s
+        percentage: 
+          value: 50
+    route:
+    - destination:
+        host: userprofile
+        subset: v3

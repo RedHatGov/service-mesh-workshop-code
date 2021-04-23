@@ -1,0 +1,10 @@
+# Rule for Envoy sidecar servers to only accept mTLS traffic
+#
+# Note: for the future, this is only available in Istio 1.5+
+apiVersion: "security.istio.io/v1beta1"
+kind: "PeerAuthentication"
+metadata:
+  name: "default"
+spec:
+  mtls:
+    mode: STRICT
