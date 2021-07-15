@@ -15,3 +15,20 @@ spec:
   jwtRules:
   - issuer: https://%SSO_SVC%/auth/realms/microservices-demo
     jwksUri: https://%SSO_SVC%/auth/realms/microservices-demo/protocol/openid-connect/certs
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: boards-shared
+spec:
+  selector:
+    matchLabels:
+      app: boards
+      deploymentconfig: boards
+  rules:
+  - from:
+    - source:
+        requestPrincipals: ["*"]
+    to:
+    - operation:
+        methods: ["GET"]
