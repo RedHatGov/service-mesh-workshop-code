@@ -90,7 +90,7 @@ if (FAKE_USER === true || FAKE_USER == "true") {
     'ssl-required': 'external',
     'resource': 'client-app',
     'public-client': true,
-    'verify-token-audience': true,
+    'verify-token-audience': false,
     'use-resource-role-mappings': true,
     'confidential-port': 0
   }
